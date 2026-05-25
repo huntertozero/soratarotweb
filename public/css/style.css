@@ -988,3 +988,8 @@ textarea::placeholder {
   pointer-events: none;
 }
 
+/* Reverse 카드 하이라이트 애니메이션: 정방향과 동일하게 위→아래 */
+.card-item[data-reversed="true"] .card-highlight {
+  animation-direction: normal !important;
+}
+
