@@ -88,10 +88,10 @@ function createCardElement(cardId, isReversed, position = null) {
     `;
   }
 
-  // Position 텍스트 (상단 가운데 정렬, 주황색)
+  // Position 텍스트 (카드 이름과 동일한 색상/효과, 12px)
   const positionStyle = isReversed
-    ? `color: var(--color-gold); font-size: 12px; position: absolute; bottom: 10px; top: auto; left: 0; right: 0; text-align: center; transform: rotateZ(180deg); z-index: 10;`
-    : `color: var(--color-gold); font-size: 12px; position: absolute; top: 10px; left: 0; right: 0; text-align: center; z-index: 10;`;
+    ? `color: var(--color-starlight); font-size: 12px; font-weight: 600; position: absolute; bottom: 10px; top: auto; left: 0; right: 0; text-align: center; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6); transform: rotateZ(180deg); z-index: 10;`
+    : `color: var(--color-starlight); font-size: 12px; font-weight: 600; position: absolute; top: 10px; left: 0; right: 0; text-align: center; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6); z-index: 10;`;
   const frontStyle = !isReversed ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
 
   cardElement.innerHTML = `
