@@ -75,7 +75,11 @@ async function displayAndFlipCards(cardsData, positions = null) {
 
   // 기존 카드 제거
   cardsDisplay.innerHTML = '';
-  console.log('✅ 기존 카드 제거');
+
+  // spread별 클래스 추가 (레이아웃 제어용)
+  const spreadClass = `spread-${appState.selectedSpread}`;
+  cardsDisplay.className = spreadClass;
+  console.log('✅ 기존 카드 제거, 클래스 추가:', spreadClass);
 
   // 카드 요소 생성
   const cardElements = [];
@@ -83,6 +87,10 @@ async function displayAndFlipCards(cardsData, positions = null) {
     const position = positions ? positions[index] : null;
     const cardElement = createCardElement(cardData.id, cardData.isReversed, position);
     if (cardElement) {
+      // 역방향 카드에 클래스 추가
+      if (cardData.isReversed) {
+        cardElement.classList.add('reversed');
+      }
       cardsDisplay.appendChild(cardElement);
       cardElements.push(cardElement);
     }

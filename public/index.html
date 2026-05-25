@@ -51,17 +51,17 @@
           <!-- 한 장 -->
           <div class="spread-card" data-spread="one">
             <div class="spread-icon">✦</div>
-            <h3>한 장 뽑기</h3>
-            <p class="spread-desc">빠른 통찰</p>
-            <p class="spread-detail">현재 상황과 에너지를 간결하게 읽습니다</p>
+            <h3>원 카드</h3>
+            <p class="spread-desc">오늘의 메시지</p>
+            <p class="spread-detail">현재 상황과 에너지를<br>간결하게 읽습니다</p>
           </div>
 
           <!-- 3장 -->
           <div class="spread-card" data-spread="three">
             <div class="spread-icon">▲</div>
-            <h3>과거·현재·미래</h3>
-            <p class="spread-desc">3장 리딩</p>
-            <p class="spread-detail">시간의 흐름 속 이야기를 봅니다</p>
+            <h3>쓰리 카드</h3>
+            <p class="spread-desc">과거, 현재 그리고 미래</p>
+            <p class="spread-detail">시간의 흐름 속에서<br>당신의 이야기를 봅니다</p>
           </div>
 
           <!-- 켈틱 크로스 -->
@@ -69,7 +69,7 @@
             <div class="spread-icon">⊕</div>
             <h3>켈틱 크로스</h3>
             <p class="spread-desc">심층 분석</p>
-            <p class="spread-detail">10개 위치로 전체 상황을 깊이 있게 읽습니다</p>
+            <p class="spread-detail">10장의 카드를 가지고<br>전체 상황을 다면적으로 읽습니다</p>
           </div>
         </div>
 
@@ -111,17 +111,19 @@
     <!-- SHUFFLE 화면 -->
     <div id="screen-shuffle" class="screen">
       <div class="shuffle-container">
-        <div class="shuffle-animation">
-          <div class="card shuffle-card"></div>
-          <div class="card shuffle-card"></div>
-          <div class="card shuffle-card"></div>
+        <div class="shuffle-info">
+          <p id="shuffle-message">카드를 선택해주세요</p>
+          <p id="shuffle-count" class="shuffle-count">0 / 1</p>
         </div>
 
-        <p class="shuffle-text">마음을 고요히 하고,<br>카드가 당신을 선택하도록 하세요</p>
+        <div id="cards-grid" class="cards-grid"></div>
 
-        <button class="btn btn-primary" id="btn-reveal-cards">
-          카드 공개
-        </button>
+        <div class="button-group">
+          <button class="btn btn-secondary" id="btn-back-question">돌아가기</button>
+          <button class="btn btn-primary" id="btn-cards-selected" disabled>
+            카드 선택 완료
+          </button>
+        </div>
       </div>
     </div>
 

@@ -138,9 +138,17 @@ function setupEventListeners() {
   }
 
   // ========== SHUFFLE 화면 ==========
-  const btnRevealCards = document.getElementById('btn-reveal-cards');
-  if (btnRevealCards) {
-    btnRevealCards.addEventListener('click', () => {
+  const btnBackQuestion = document.getElementById('btn-back-question');
+  if (btnBackQuestion) {
+    btnBackQuestion.addEventListener('click', () => {
+      appState.selectedCards = [];
+      showScreen('input-question');
+    });
+  }
+
+  const btnCardsSelected = document.getElementById('btn-cards-selected');
+  if (btnCardsSelected) {
+    btnCardsSelected.addEventListener('click', () => {
       proceedToCardReveal();
     });
   }
@@ -197,21 +205,113 @@ function setupEventListeners() {
 // ========== 플로우 제어 함수 ==========
 
 function proceedToShuffle() {
+  appState.selectedCards = [];
   showScreen('shuffle');
-  // 자동으로 3초 후 카드 공개 준비
-  setTimeout(() => {
-    const btn = document.getElementById('btn-reveal-cards');
-    if (btn) {
-      btn.style.display = 'block';
+  createCardGrid();
+  setupCardSelectionListeners();
+  updateCardSelectionUI();
+}
+
+// SHUFFLE 화면: 78장 카드 그리드 생성
+function createCardGrid() {
+  const cardsGrid = document.getElementById('cards-grid');
+  if (!cardsGrid) return;
+
+  cardsGrid.innerHTML = '';
+
+  // 78장의 카드 생성 (13×6 그리드)
+  for (let i = 0; i < 78; i++) {
+    const cardElement = document.createElement('div');
+    cardElement.className = 'card-back-item';
+    cardElement.dataset.cardId = i;
+    cardElement.textContent = '✦';
+    cardsGrid.appendChild(cardElement);
+  }
+}
+
+// SHUFFLE 화면: 카드 선택 이벤트 설정
+function setupCardSelectionListeners() {
+  const cardItems = document.querySelectorAll('.card-back-item');
+  const requiredCount = getCardCountForSpread(appState.selectedSpread);
+
+  cardItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const cardId = parseInt(item.dataset.cardId);
+      const isSelected = appState.selectedCards.some(c => c.id === cardId);
+
+      if (isSelected) {
+        // 선택 해제 애니메이션
+        item.classList.add('deselecting');
+        setTimeout(() => {
+          item.classList.remove('deselecting');
+          item.classList.remove('selected');
+        }, 400);
+        appState.selectedCards = appState.selectedCards.filter(c => c.id !== cardId);
+      } else if (appState.selectedCards.length < requiredCount) {
+        // 선택 추가 애니메이션
+        item.classList.add('selecting');
+        setTimeout(() => {
+          item.classList.remove('selecting');
+          item.classList.add('selected');
+        }, 600);
+        appState.selectedCards.push({
+          id: cardId,
+          isReversed: Math.random() > 0.5, // 정방향/역방향 랜덤
+        });
+      }
+
+      updateCardSelectionUI();
+    });
+  });
+}
+
+// SHUFFLE 화면: UI 업데이트 (선택 개수, 버튼 활성화)
+function updateCardSelectionUI() {
+  const requiredCount = getCardCountForSpread(appState.selectedSpread);
+  const currentCount = appState.selectedCards.length;
+  const countDisplay = document.getElementById('shuffle-count');
+  const btnCardsSelected = document.getElementById('btn-cards-selected');
+
+  if (countDisplay) {
+    countDisplay.textContent = `${currentCount} / ${requiredCount}`;
+  }
+
+  // 모든 카드 선택 완료 시 버튼 활성화
+  if (btnCardsSelected) {
+    btnCardsSelected.disabled = currentCount < requiredCount;
+  }
+
+  // 선택 완료된 카드를 disabled 상태로 표시
+  const cardItems = document.querySelectorAll('.card-back-item');
+  cardItems.forEach(item => {
+    const cardId = parseInt(item.dataset.cardId);
+    const isSelected = appState.selectedCards.some(c => c.id === cardId);
+
+    if (isSelected) {
+      item.classList.add('selected');
+      item.classList.remove('disabled');
+    } else if (currentCount >= requiredCount) {
+      item.classList.add('disabled');
+    } else {
+      item.classList.remove('disabled');
     }
-  }, 3000);
+  });
+}
+
+// 스프레드별 필요한 카드 개수 반환
+function getCardCountForSpread(spread) {
+  const cardCounts = {
+    one: 1,
+    three: 3,
+    celtic: 10,
+  };
+  return cardCounts[spread] || 1;
 }
 
 async function proceedToCardReveal() {
   showScreen('card-reveal');
 
-  // 카드 선택
-  appState.selectedCards = selectCardsForSpread(appState.selectedSpread);
+  // 사용자가 선택한 카드는 이미 appState.selectedCards에 있음
 
   // 스프레드별 위치 정보
   const spreadPositions = {

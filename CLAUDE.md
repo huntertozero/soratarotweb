@@ -75,35 +75,50 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 
 ## 구현 단계
 
-### Phase 1: 기반 구조 (완료 여부)
-- [ ] npm install (3개 의존성)
-- [ ] `.env` 파일 생성
-- [ ] `.gitignore` 생성
-- [ ] `server.js` 기본 구조
-- [ ] `public/index.html` 최소 마크업
+### Phase 1: 기반 구조 ✅ 완료
+- [x] npm install (3개 의존성)
+- [x] `.env` 파일 생성
+- [x] `.gitignore` 생성
+- [x] `server.js` 기본 구조
+- [x] `public/index.html` 최소 마크업
 
-### Phase 2: 카드 데이터
-- [ ] `data/cards.js` - 메이저 아르카나 22장
-- [ ] `data/cards.js` - 마이너 아르카나 56장
-- [ ] `public/js/cardMeta.js` - 경량 메타데이터
+### Phase 2: 카드 데이터 ✅ 완료
+- [x] `data/cards.js` - 메이저 아르카나 22장
+- [x] `data/cards.js` - 마이너 아르카나 56장
+- [x] `public/js/cardMeta.js` - 경량 메타데이터
 
-### Phase 3: 백엔드 API
-- [ ] `services/claudeService.js` - Claude 호출
-- [ ] `routes/reading.js` - 검증 + 라우팅
-- [ ] `server.js`에 라우터 연결
-- [ ] API 단독 테스트 (curl/PowerShell)
+### Phase 3: 백엔드 API ✅ 완료
+- [x] `services/claudeService.js` - Claude 호출
+- [x] `routes/reading.js` - 검증 + 라우팅
+- [x] `server.js`에 라우터 연결
+- [x] API 단독 테스트 (curl/PowerShell)
 
-### Phase 4: 프론트엔드 UI
-- [ ] `public/css/style.css` - 레이아웃 + 테마
-- [ ] `public/index.html` - 화면 상태 마크업
-- [ ] `public/js/app.js` - 화면 전환 로직
-- [ ] `public/js/cards.js` - 셔플 + 카드 선택
+### Phase 4: 프론트엔드 UI ✅ 완료
+- [x] `public/css/style.css` - 레이아웃 + 테마
+- [x] `public/index.html` - 화면 상태 마크업
+- [x] `public/js/app.js` - 화면 전환 로직
+- [x] `public/js/cards.js` - 셔플 + 카드 선택
 
-### Phase 5: 애니메이션 + 통합
-- [ ] `public/js/animation.js` - 카드 플립
-- [ ] `public/js/app.js` - API 연동 + 마크다운 렌더링
-- [ ] 3가지 스프레드 전체 흐름 테스트
-- [ ] 반응형 CSS + 엣지 케이스 확인
+### Phase 5: 애니메이션 + 통합 ✅ 완료
+- [x] `public/js/animation.js` - 카드 플립
+- [x] `public/js/app.js` - API 연동 + 마크다운 렌더링
+- [x] 3가지 스프레드 전체 흐름 테스트
+- [x] 반응형 CSS + 엣지 케이스 확인
+
+### Phase 6: UI/UX 개선 ✅ 완료
+- [x] 스프레드 카드 문구 개선 (원 카드, 쓰리 카드, 켈틱 크로스)
+- [x] 스프레드 설명 텍스트 줄바꿈 추가
+- [x] 스프레드 아이콘 크기 통일 (삼각형 축소)
+- [x] SHUFFLE 화면 버튼 위치 고정 (스크롤 시에도 중앙 유지)
+- [x] SHUFFLE 화면에 돌아가기 버튼 추가
+- [x] 78장 카드 뒷면 그리드 표시 (13×6 레이아웃)
+- [x] 사용자 직접 카드 선택 기능 구현
+- [x] 카드 선택 애니메이션 (폭발 효과 + 지속적 glow)
+- [x] CARD_REVEAL 화면 카드 비율 조정 (2.5:4 - 실제 타로 비율)
+- [x] 역방향 카드 표현 (180도 회전)
+- [x] 역방향 텍스트 색상 변경 (파란색 #64b5f6)
+- [x] 스프레드별 레이아웃 (1장, 3장, 10장 5×2)
+- [x] 모든 카드 크기 통일
 
 ---
 
@@ -212,4 +227,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-25
+마지막 수정: 2026-05-25 (Phase 6 UI/UX 개선 완료)
