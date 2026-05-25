@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="신비로운 타로 리딩 웹 애플리케이션 - Claude AI가 개인화된 한국어 해석을 제공합니다.">
+  <title>신비로운 타로 리딩</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- 메인 스타일 -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- WELCOME 화면 -->
+    <div id="screen-welcome" class="screen active">
+      <div class="welcome-container">
+        <div class="stars-background"></div>
+
+        <div class="welcome-content">
+          <div class="deck-icon">
+            <div class="card card-back"></div>
+            <div class="card card-middle"></div>
+            <div class="card card-front"></div>
+          </div>
+
+          <h1 class="title">신비로운 타로 리딩</h1>
+          <p class="subtitle">카드가 당신의 길을 안내합니다</p>
+          <p class="description">
+            질문을 입력하고 카드를 뽑으면<br>
+            AI가 개인화된 해석을 제공합니다
+          </p>
+
+          <button class="btn btn-primary" id="btn-start-reading">
+            리딩 시작하기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SELECT_SPREAD 화면 -->
+    <div id="screen-select-spread" class="screen">
+      <div class="spread-container">
+        <h2>어떤 방식으로 리딩을 받으시겠습니까?</h2>
+
+        <div class="spread-grid">
+          <!-- 한 장 -->
+          <div class="spread-card" data-spread="one">
+            <div class="spread-icon">✦</div>
+            <h3>한 장 뽑기</h3>
+            <p class="spread-desc">빠른 통찰</p>
+            <p class="spread-detail">현재 상황과 에너지를 간결하게 읽습니다</p>
+          </div>
+
+          <!-- 3장 -->
+          <div class="spread-card" data-spread="three">
+            <div class="spread-icon">▲</div>
+            <h3>과거·현재·미래</h3>
+            <p class="spread-desc">3장 리딩</p>
+            <p class="spread-detail">시간의 흐름 속 이야기를 봅니다</p>
+          </div>
+
+          <!-- 켈틱 크로스 -->
+          <div class="spread-card" data-spread="celtic">
+            <div class="spread-icon">⊕</div>
+            <h3>켈틱 크로스</h3>
+            <p class="spread-desc">심층 분석</p>
+            <p class="spread-detail">10개 위치로 전체 상황을 깊이 있게 읽습니다</p>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" id="btn-back-welcome">돌아가기</button>
+      </div>
+    </div>
+
+    <!-- INPUT_QUESTION 화면 -->
+    <div id="screen-input-question" class="screen">
+      <div class="question-container">
+        <h2>카드에게 묻고 싶은 질문을 입력하세요</h2>
+        <p class="question-hint">
+          구체적인 질문일수록 더 정확한 해석을 받을 수 있습니다<br>
+          (선택사항, 최대 200자)
+        </p>
+
+        <textarea
+          id="input-question-text"
+          placeholder="예: 나의 미래는 어떻게 될까요? / 현재 상황에서 주의할 점은?"
+          maxlength="200"
+          rows="4"
+        ></textarea>
+
+        <div class="question-info">
+          <span id="char-count">0</span> / 200
+        </div>
+
+        <a href="#" id="btn-skip-question" class="link-secondary">
+          질문 없이 진행하기
+        </a>
+
+        <div class="button-group">
+          <button class="btn btn-secondary" id="btn-back-spread">돌아가기</button>
+          <button class="btn btn-primary" id="btn-next-question">다음</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHUFFLE 화면 -->
+    <div id="screen-shuffle" class="screen">
+      <div class="shuffle-container">
+        <div class="shuffle-animation">
+          <div class="card shuffle-card"></div>
+          <div class="card shuffle-card"></div>
+          <div class="card shuffle-card"></div>
+        </div>
+
+        <p class="shuffle-text">마음을 고요히 하고,<br>카드가 당신을 선택하도록 하세요</p>
+
+        <button class="btn btn-primary" id="btn-reveal-cards">
+          카드 공개
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD_REVEAL 화면 -->
+    <div id="screen-card-reveal" class="screen">
+      <div class="card-reveal-container">
+        <div id="cards-display" class="cards-display"></div>
+
+        <div class="loading-state" id="loading-state">
+          <div class="spinner"></div>
+          <p>타로 마스터가 카드를 읽고 있습니다...</p>
+        </div>
+
+        <button class="btn btn-primary" id="btn-get-reading" style="display: none;">
+          해석 요청
+        </button>
+      </div>
+    </div>
+
+    <!-- READING 화면 -->
+    <div id="screen-reading" class="screen">
+      <div class="reading-container">
+        <div class="cards-summary" id="cards-summary"></div>
+
+        <div class="reading-content">
+          <div id="reading-text" class="reading-text"></div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-secondary" id="btn-new-reading">
+            다시 리딩하기
+          </button>
+          <button class="btn btn-secondary" id="btn-change-spread">
+            다른 스프레드 선택하기
+          </button>
+          <button class="btn btn-primary" id="btn-home">
+            처음으로
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오류 모달 -->
+    <div id="modal-error" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3>오류가 발생했습니다</h3>
+        <p id="error-message"></p>
+        <button class="btn btn-primary" id="btn-close-error">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 스크립트 -->
+  <script src="/js/cardMeta.js"></script>
+  <script src="/js/cards.js"></script>
+  <script src="/js/animation.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

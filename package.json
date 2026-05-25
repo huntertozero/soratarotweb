@@ -1,0 +1,24 @@
+{
+  "name": "tarot-app",
+  "version": "1.0.0",
+  "description": "신비로운 타로 리딩 웹 애플리케이션",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "tarot",
+    "reading",
+    "ai",
+    "claude"
+  ],
+  "author": "Huntertozero",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.37.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.21.0"
+  }
+}
