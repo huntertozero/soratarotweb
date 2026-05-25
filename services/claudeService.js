@@ -180,9 +180,13 @@ async function generateReading(spread, cards, question, cardDatabase) {
 
 ${formattedCards}${questionPart}`;
 
-    // Claude API 호출 (30초 타임아웃)
+    // 스프레드별 타임아웃 설정 (celtic은 응답이 길어 더 여유 있게)
+    const timeoutMs = { one: 30000, three: 45000, celtic: 90000 };
+    const timeout = timeoutMs[spread] || 30000;
+
+    // Claude API 호출
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     const message = await client.messages.create(
       {
@@ -207,7 +211,8 @@ ${formattedCards}${questionPart}`;
     return reading;
   } catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error('Claude API 요청이 타임아웃되었습니다 (30초). 다시 시도해주세요.');
+      const timeoutSec = { one: 30, three: 45, celtic: 90 }[spread] || 30;
+      throw new Error(`Claude API 요청이 타임아웃되었습니다 (${timeoutSec}초). 다시 시도해주세요.`);
     }
     throw error;
   }
