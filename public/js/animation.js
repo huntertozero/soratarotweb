@@ -27,7 +27,7 @@ async function flipCardsSequentially(cardElements, delayBetweenFlips = 500) {
 
 // HTML 요소 생성: 카드 아이템
 function createCardElement(cardId, isReversed, position = null) {
-  const cardInfo = getCardInfo(cardId);
+  const cardInfo = getCardMetaById(cardId);
   if (!cardInfo) {
     console.error(`카드 ID ${cardId}를 찾을 수 없습니다.`);
     return null;
@@ -37,7 +37,8 @@ function createCardElement(cardId, isReversed, position = null) {
   cardElement.className = 'card-item';
   cardElement.dataset.reversed = isReversed;
 
-  const directionText = isReversed ? '역방향' : '정방향';
+  const directionText = isReversed ? 'Reverse' : '';
+  const imageUrl = `/img/cards/${cardInfo.imageFile}`;
 
   cardElement.innerHTML = `
     <div class="card-container">
@@ -48,10 +49,10 @@ function createCardElement(cardId, isReversed, position = null) {
         </div>
 
         <!-- 카드 뒷면 (플립 후, 카드 앞면) -->
-        <div class="card-front">
+        <div class="card-front" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
           <div class="card-info">
-            <div class="card-name">${cardInfo.nameKo}</div>
             <div class="card-direction">${directionText}</div>
+            <div class="card-name">${cardInfo.nameKo}</div>
           </div>
         </div>
       </div>

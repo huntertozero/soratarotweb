@@ -8,7 +8,7 @@ const cards = [
   {
     id: 0,
     name: 'The Fool',
-    nameKo: '광대',
+    nameKo: 'The Fool',
     arcana: 'major',
     keywords: {
       upright: ['새로운 시작', '순수함', '용기', '자유', '모험'],
@@ -22,7 +22,7 @@ const cards = [
   {
     id: 1,
     name: 'The Magician',
-    nameKo: '마술사',
+    nameKo: 'The Magician',
     arcana: 'major',
     keywords: {
       upright: ['창조력', '의지력', '기술', '주도권', '소통'],
@@ -36,7 +36,7 @@ const cards = [
   {
     id: 2,
     name: 'The High Priestess',
-    nameKo: '여사제',
+    nameKo: 'The High Priestess',
     arcana: 'major',
     keywords: {
       upright: ['직관', '신비', '무의식', '지혜', '신비한 지식'],
@@ -50,7 +50,7 @@ const cards = [
   {
     id: 3,
     name: 'The Empress',
-    nameKo: '황후',
+    nameKo: 'The Empress',
     arcana: 'major',
     keywords: {
       upright: ['풍요', '창조성', '여성성', '자연', '풍요로움'],
@@ -64,7 +64,7 @@ const cards = [
   {
     id: 4,
     name: 'The Emperor',
-    nameKo: '황제',
+    nameKo: 'The Emperor',
     arcana: 'major',
     keywords: {
       upright: ['권위', '구조', '리더십', '남성성', '통제'],
@@ -78,7 +78,7 @@ const cards = [
   {
     id: 5,
     name: 'The Hierophant',
-    nameKo: '교황',
+    nameKo: 'The Hierophant',
     arcana: 'major',
     keywords: {
       upright: ['전통', '영적 지혜', '종교', '관례', '교육'],
@@ -92,7 +92,7 @@ const cards = [
   {
     id: 6,
     name: 'The Lovers',
-    nameKo: '연인',
+    nameKo: 'The Lovers',
     arcana: 'major',
     keywords: {
       upright: ['사랑', '선택', '관계', '조화', '가치관'],
@@ -106,7 +106,7 @@ const cards = [
   {
     id: 7,
     name: 'The Chariot',
-    nameKo: '전차',
+    nameKo: 'The Chariot',
     arcana: 'major',
     keywords: {
       upright: ['승리', '결정력', '추진력', '통제', '진행'],
@@ -120,7 +120,7 @@ const cards = [
   {
     id: 8,
     name: 'Strength',
-    nameKo: '힘',
+    nameKo: 'Strength',
     arcana: 'major',
     keywords: {
       upright: ['내적 힘', '인내', '자제', '통제', '용맹'],
@@ -134,7 +134,7 @@ const cards = [
   {
     id: 9,
     name: 'The Hermit',
-    nameKo: '은자',
+    nameKo: 'The Hermit',
     arcana: 'major',
     keywords: {
       upright: ['성찰', '명상', '지혜 추구', '고독', '내향성'],
@@ -148,7 +148,7 @@ const cards = [
   {
     id: 10,
     name: 'Wheel of Fortune',
-    nameKo: '운명의 수레바퀴',
+    nameKo: 'Wheel of Fortune',
     arcana: 'major',
     keywords: {
       upright: ['변화', '운', '순환', '운명', '기회'],
@@ -162,7 +162,7 @@ const cards = [
   {
     id: 11,
     name: 'Justice',
-    nameKo: '정의',
+    nameKo: 'Justice',
     arcana: 'major',
     keywords: {
       upright: ['정의', '균형', '진실', '책임', '결과'],
@@ -176,7 +176,7 @@ const cards = [
   {
     id: 12,
     name: 'The Hanged Man',
-    nameKo: '교수형',
+    nameKo: 'The Hanged Man',
     arcana: 'major',
     keywords: {
       upright: ['관점 변화', '보류', '희생', '성찰', '새로운 관점'],
@@ -190,7 +190,7 @@ const cards = [
   {
     id: 13,
     name: 'Death',
-    nameKo: '죽음',
+    nameKo: 'Death',
     arcana: 'major',
     keywords: {
       upright: ['변환', '끝', '새로운 시작', '변화', '인생 전환'],
@@ -204,7 +204,7 @@ const cards = [
   {
     id: 14,
     name: 'Temperance',
-    nameKo: '절제',
+    nameKo: 'Temperance',
     arcana: 'major',
     keywords: {
       upright: ['조화', '균형', '절제', '인내', '통합'],
@@ -218,7 +218,7 @@ const cards = [
   {
     id: 15,
     name: 'The Devil',
-    nameKo: '악마',
+    nameKo: 'The Devil',
     arcana: 'major',
     keywords: {
       upright: ['욕망', '속박', '물질주의', '강박', '어두운 면'],
@@ -232,7 +232,7 @@ const cards = [
   {
     id: 16,
     name: 'The Tower',
-    nameKo: '탑',
+    nameKo: 'The Tower',
     arcana: 'major',
     keywords: {
       upright: ['파괴', '위기', '큰 변화', '갑작스러움', '진실의 드러남'],
@@ -246,7 +246,7 @@ const cards = [
   {
     id: 17,
     name: 'The Star',
-    nameKo: '별',
+    nameKo: 'The Star',
     arcana: 'major',
     keywords: {
       upright: ['희망', '영감', '안내', '영적 인도', '평온'],
@@ -260,7 +260,7 @@ const cards = [
   {
     id: 18,
     name: 'The Moon',
-    nameKo: '달',
+    nameKo: 'The Moon',
     arcana: 'major',
     keywords: {
       upright: ['환상', '무의식', '속임', '혼란', '두려움'],
@@ -274,7 +274,7 @@ const cards = [
   {
     id: 19,
     name: 'The Sun',
-    nameKo: '태양',
+    nameKo: 'The Sun',
     arcana: 'major',
     keywords: {
       upright: ['성공', '행복', '밝음', '에너지', '승리'],
@@ -288,7 +288,7 @@ const cards = [
   {
     id: 20,
     name: 'Judgement',
-    nameKo: '심판',
+    nameKo: 'Judgement',
     arcana: 'major',
     keywords: {
       upright: ['깨어남', '소명', '재평가', '승리', '회복'],
@@ -302,7 +302,7 @@ const cards = [
   {
     id: 21,
     name: 'The World',
-    nameKo: '세상',
+    nameKo: 'The World',
     arcana: 'major',
     keywords: {
       upright: ['완성', '성취', '통합', '여행', '이동'],
@@ -319,7 +319,7 @@ const cards = [
   {
     id: 22,
     name: 'Ace of Wands',
-    nameKo: '지팡이 에이스',
+    nameKo: 'Ace of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -333,7 +333,7 @@ const cards = [
   {
     id: 23,
     name: 'Two of Wands',
-    nameKo: '지팡이 2',
+    nameKo: 'Two of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -347,7 +347,7 @@ const cards = [
   {
     id: 24,
     name: 'Three of Wands',
-    nameKo: '지팡이 3',
+    nameKo: 'Three of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -361,7 +361,7 @@ const cards = [
   {
     id: 25,
     name: 'Four of Wands',
-    nameKo: '지팡이 4',
+    nameKo: 'Four of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -375,7 +375,7 @@ const cards = [
   {
     id: 26,
     name: 'Five of Wands',
-    nameKo: '지팡이 5',
+    nameKo: 'Five of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -389,7 +389,7 @@ const cards = [
   {
     id: 27,
     name: 'Six of Wands',
-    nameKo: '지팡이 6',
+    nameKo: 'Six of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -403,7 +403,7 @@ const cards = [
   {
     id: 28,
     name: 'Seven of Wands',
-    nameKo: '지팡이 7',
+    nameKo: 'Seven of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -417,7 +417,7 @@ const cards = [
   {
     id: 29,
     name: 'Eight of Wands',
-    nameKo: '지팡이 8',
+    nameKo: 'Eight of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -431,7 +431,7 @@ const cards = [
   {
     id: 30,
     name: 'Nine of Wands',
-    nameKo: '지팡이 9',
+    nameKo: 'Nine of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -445,7 +445,7 @@ const cards = [
   {
     id: 31,
     name: 'Ten of Wands',
-    nameKo: '지팡이 10',
+    nameKo: 'Ten of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -459,7 +459,7 @@ const cards = [
   {
     id: 32,
     name: 'Page of Wands',
-    nameKo: '지팡이 페이지',
+    nameKo: 'Page of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -473,7 +473,7 @@ const cards = [
   {
     id: 33,
     name: 'Knight of Wands',
-    nameKo: '지팡이 기사',
+    nameKo: 'Knight of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -487,7 +487,7 @@ const cards = [
   {
     id: 34,
     name: 'Queen of Wands',
-    nameKo: '지팡이 퀸',
+    nameKo: 'Queen of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -501,7 +501,7 @@ const cards = [
   {
     id: 35,
     name: 'King of Wands',
-    nameKo: '지팡이 킹',
+    nameKo: 'King of Wands',
     arcana: 'minor',
     suit: 'wands',
     keywords: {
@@ -518,7 +518,7 @@ const cards = [
   {
     id: 36,
     name: 'Ace of Cups',
-    nameKo: '잔 에이스',
+    nameKo: 'Ace of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -532,7 +532,7 @@ const cards = [
   {
     id: 37,
     name: 'Two of Cups',
-    nameKo: '잔 2',
+    nameKo: 'Two of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -546,7 +546,7 @@ const cards = [
   {
     id: 38,
     name: 'Three of Cups',
-    nameKo: '잔 3',
+    nameKo: 'Three of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -560,7 +560,7 @@ const cards = [
   {
     id: 39,
     name: 'Four of Cups',
-    nameKo: '잔 4',
+    nameKo: 'Four of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -574,7 +574,7 @@ const cards = [
   {
     id: 40,
     name: 'Five of Cups',
-    nameKo: '잔 5',
+    nameKo: 'Five of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -588,7 +588,7 @@ const cards = [
   {
     id: 41,
     name: 'Six of Cups',
-    nameKo: '잔 6',
+    nameKo: 'Six of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -602,7 +602,7 @@ const cards = [
   {
     id: 42,
     name: 'Seven of Cups',
-    nameKo: '잔 7',
+    nameKo: 'Seven of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -616,7 +616,7 @@ const cards = [
   {
     id: 43,
     name: 'Eight of Cups',
-    nameKo: '잔 8',
+    nameKo: 'Eight of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -630,7 +630,7 @@ const cards = [
   {
     id: 44,
     name: 'Nine of Cups',
-    nameKo: '잔 9',
+    nameKo: 'Nine of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -644,7 +644,7 @@ const cards = [
   {
     id: 45,
     name: 'Ten of Cups',
-    nameKo: '잔 10',
+    nameKo: 'Ten of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -658,7 +658,7 @@ const cards = [
   {
     id: 46,
     name: 'Page of Cups',
-    nameKo: '잔 페이지',
+    nameKo: 'Page of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -672,7 +672,7 @@ const cards = [
   {
     id: 47,
     name: 'Knight of Cups',
-    nameKo: '잔 기사',
+    nameKo: 'Knight of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -686,7 +686,7 @@ const cards = [
   {
     id: 48,
     name: 'Queen of Cups',
-    nameKo: '잔 퀸',
+    nameKo: 'Queen of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -700,7 +700,7 @@ const cards = [
   {
     id: 49,
     name: 'King of Cups',
-    nameKo: '잔 킹',
+    nameKo: 'King of Cups',
     arcana: 'minor',
     suit: 'cups',
     keywords: {
@@ -717,7 +717,7 @@ const cards = [
   {
     id: 50,
     name: 'Ace of Swords',
-    nameKo: '칼 에이스',
+    nameKo: 'Ace of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -731,7 +731,7 @@ const cards = [
   {
     id: 51,
     name: 'Two of Swords',
-    nameKo: '칼 2',
+    nameKo: 'Two of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -745,7 +745,7 @@ const cards = [
   {
     id: 52,
     name: 'Three of Swords',
-    nameKo: '칼 3',
+    nameKo: 'Three of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -759,7 +759,7 @@ const cards = [
   {
     id: 53,
     name: 'Four of Swords',
-    nameKo: '칼 4',
+    nameKo: 'Four of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -773,7 +773,7 @@ const cards = [
   {
     id: 54,
     name: 'Five of Swords',
-    nameKo: '칼 5',
+    nameKo: 'Five of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -787,7 +787,7 @@ const cards = [
   {
     id: 55,
     name: 'Six of Swords',
-    nameKo: '칼 6',
+    nameKo: 'Six of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -801,7 +801,7 @@ const cards = [
   {
     id: 56,
     name: 'Seven of Swords',
-    nameKo: '칼 7',
+    nameKo: 'Seven of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -815,7 +815,7 @@ const cards = [
   {
     id: 57,
     name: 'Eight of Swords',
-    nameKo: '칼 8',
+    nameKo: 'Eight of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -829,7 +829,7 @@ const cards = [
   {
     id: 58,
     name: 'Nine of Swords',
-    nameKo: '칼 9',
+    nameKo: 'Nine of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -843,7 +843,7 @@ const cards = [
   {
     id: 59,
     name: 'Ten of Swords',
-    nameKo: '칼 10',
+    nameKo: 'Ten of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -857,7 +857,7 @@ const cards = [
   {
     id: 60,
     name: 'Page of Swords',
-    nameKo: '칼 페이지',
+    nameKo: 'Page of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -871,7 +871,7 @@ const cards = [
   {
     id: 61,
     name: 'Knight of Swords',
-    nameKo: '칼 기사',
+    nameKo: 'Knight of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -885,7 +885,7 @@ const cards = [
   {
     id: 62,
     name: 'Queen of Swords',
-    nameKo: '칼 퀸',
+    nameKo: 'Queen of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -899,7 +899,7 @@ const cards = [
   {
     id: 63,
     name: 'King of Swords',
-    nameKo: '칼 킹',
+    nameKo: 'King of Swords',
     arcana: 'minor',
     suit: 'swords',
     keywords: {
@@ -916,7 +916,7 @@ const cards = [
   {
     id: 64,
     name: 'Ace of Pentacles',
-    nameKo: '동전 에이스',
+    nameKo: 'Ace of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -930,7 +930,7 @@ const cards = [
   {
     id: 65,
     name: 'Two of Pentacles',
-    nameKo: '동전 2',
+    nameKo: 'Two of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -944,7 +944,7 @@ const cards = [
   {
     id: 66,
     name: 'Three of Pentacles',
-    nameKo: '동전 3',
+    nameKo: 'Three of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -958,7 +958,7 @@ const cards = [
   {
     id: 67,
     name: 'Four of Pentacles',
-    nameKo: '동전 4',
+    nameKo: 'Four of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -972,7 +972,7 @@ const cards = [
   {
     id: 68,
     name: 'Five of Pentacles',
-    nameKo: '동전 5',
+    nameKo: 'Five of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -986,7 +986,7 @@ const cards = [
   {
     id: 69,
     name: 'Six of Pentacles',
-    nameKo: '동전 6',
+    nameKo: 'Six of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1000,7 +1000,7 @@ const cards = [
   {
     id: 70,
     name: 'Seven of Pentacles',
-    nameKo: '동전 7',
+    nameKo: 'Seven of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1014,7 +1014,7 @@ const cards = [
   {
     id: 71,
     name: 'Eight of Pentacles',
-    nameKo: '동전 8',
+    nameKo: 'Eight of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1028,7 +1028,7 @@ const cards = [
   {
     id: 72,
     name: 'Nine of Pentacles',
-    nameKo: '동전 9',
+    nameKo: 'Nine of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1042,7 +1042,7 @@ const cards = [
   {
     id: 73,
     name: 'Ten of Pentacles',
-    nameKo: '동전 10',
+    nameKo: 'Ten of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1056,7 +1056,7 @@ const cards = [
   {
     id: 74,
     name: 'Page of Pentacles',
-    nameKo: '동전 페이지',
+    nameKo: 'Page of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1070,7 +1070,7 @@ const cards = [
   {
     id: 75,
     name: 'Knight of Pentacles',
-    nameKo: '동전 기사',
+    nameKo: 'Knight of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1084,7 +1084,7 @@ const cards = [
   {
     id: 76,
     name: 'Queen of Pentacles',
-    nameKo: '동전 퀸',
+    nameKo: 'Queen of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {
@@ -1098,7 +1098,7 @@ const cards = [
   {
     id: 77,
     name: 'King of Pentacles',
-    nameKo: '동전 킹',
+    nameKo: 'King of Pentacles',
     arcana: 'minor',
     suit: 'pentacles',
     keywords: {

@@ -415,7 +415,7 @@ function displayReading(data) {
     try {
       cardsSummary.innerHTML = data.cards
         .map(card => {
-          const direction = card.isReversed ? '역방향' : '정방향';
+          const direction = card.isReversed ? 'Reverse' : '';
           return `
             <div class="card-summary-item">
               <div class="card-summary-name">${card.nameKo}</div>

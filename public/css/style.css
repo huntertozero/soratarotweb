@@ -184,6 +184,9 @@ body::before {
   padding: 40px 20px;
   max-width: 800px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .spread-container h2 {
@@ -199,6 +202,7 @@ body::before {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 30px;
   margin-bottom: 40px;
+  width: 100%;
 }
 
 .spread-card {
@@ -448,6 +452,11 @@ textarea::placeholder {
 
 .card-reveal-container {
   padding: 40px 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #cards-display {
@@ -458,24 +467,21 @@ textarea::placeholder {
 
 /* 스프레드별 그리드 레이아웃 */
 #cards-display.spread-one {
-  grid-template-columns: repeat(3, minmax(150px, 1fr));
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  grid-template-columns: 200px;
+  width: fit-content;
+  gap: 30px;
 }
 
 #cards-display.spread-three {
-  grid-template-columns: repeat(3, minmax(150px, 1fr));
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  grid-template-columns: repeat(3, 200px);
+  width: fit-content;
+  gap: 5px;
 }
 
 #cards-display.spread-celtic {
-  grid-template-columns: repeat(5, minmax(150px, 1fr));
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  grid-template-columns: repeat(5, 200px);
+  width: fit-content;
+  gap: 5px;
 }
 
 .card-item {
@@ -485,6 +491,7 @@ textarea::placeholder {
   padding: 20px;
   text-align: center;
   perspective: 1000px;
+  width: 200px;
   aspect-ratio: 2.5/4;
   display: flex;
   flex-direction: column;
@@ -530,11 +537,27 @@ textarea::placeholder {
 
 .card-front {
   transform: rotateY(180deg);
-  background: linear-gradient(135deg, var(--color-nebula) 0%, var(--color-card-bg) 100%);
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-card-bg);
   border-radius: 12px;
   color: var(--color-gold);
   font-size: 32px;
   font-weight: bold;
+  /* 이미지 위에 어두운 오버레이 */
+  position: relative;
+}
+
+.card-front::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  pointer-events: none;
 }
 
 .card-back {
@@ -551,13 +574,24 @@ textarea::placeholder {
 .card-info {
   margin-top: auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.card-direction {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .card-name {
   font-size: 18px;
   color: var(--color-starlight);
-  margin-bottom: 8px;
+  margin-bottom: 0;
   font-weight: 600;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .card-direction {
@@ -565,6 +599,7 @@ textarea::placeholder {
   color: var(--color-gold);
   text-transform: uppercase;
   letter-spacing: 1px;
+  margin-bottom: 4px;
 }
 
 /* 역방향 카드 */
@@ -573,7 +608,7 @@ textarea::placeholder {
 }
 
 .card-item.reversed .card-direction {
-  color: #64b5f6;
+  color: var(--color-gold);
   font-weight: 700;
 }
 
