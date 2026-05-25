@@ -964,3 +964,8 @@ textarea::placeholder {
   pointer-events: none;
 }
 
+/* Reverse 카드 이미지 상하반전 */
+.card-item[data-reversed="true"] .card-front {
+  transform: rotateY(180deg) scaleY(-1);
+}
+
