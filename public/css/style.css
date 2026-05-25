@@ -975,3 +975,16 @@ textarea::placeholder {
   z-index: 0;
 }
 
+/* Reverse 카드 이미지 오버레이 (정방향과 동일한 효과) */
+.card-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  pointer-events: none;
+}
+

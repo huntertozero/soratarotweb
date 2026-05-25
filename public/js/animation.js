@@ -88,8 +88,10 @@ function createCardElement(cardId, isReversed, position = null) {
     `;
   }
 
-  // Position 텍스트
-  const positionStyle = `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
+  // Position 텍스트 (Reverse 카드는 counter-rotate로 정상 방향 유지)
+  const positionStyle = isReversed
+    ? `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px; transform: rotateZ(180deg);`
+    : `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
   const frontStyle = !isReversed ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
 
   cardElement.innerHTML = `
