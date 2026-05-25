@@ -56,16 +56,26 @@ function createCardElement(cardId, isReversed, position = null) {
   const directionText = isReversed ? 'Reverse' : '';
   const imageUrl = `/img/cards/${cardInfo.imageFile}`;
 
+  // Reverse 카드는 이미지만 반전
+  const frontStyle = isReversed
+    ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center; transform: scaleY(-1);`
+    : `background-image: url('${imageUrl}'); background-size: cover; background-position: center;`;
+
+  // Position 텍스트도 Reverse 카드일 때 반전
+  const positionStyle = isReversed
+    ? `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px; transform: scaleY(-1);`
+    : `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
+
   cardElement.innerHTML = `
     <div class="card-container">
       <div class="card-inner">
         <!-- 카드 앞면 (초기 상태, 카드 뒷면) -->
         <div class="card-back">
-          ${position ? `<div style="color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;">${position}</div>` : ''}
+          ${position ? `<div style="${positionStyle}">${position}</div>` : ''}
         </div>
 
         <!-- 카드 뒷면 (플립 후, 카드 앞면) -->
-        <div class="card-front" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;">
+        <div class="card-front" style="${frontStyle}">
           <div class="card-info">
             <div class="card-direction">${directionText}</div>
             <div class="card-name">${cardInfo.nameKo}</div>

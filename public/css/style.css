@@ -959,11 +959,7 @@ textarea::placeholder {
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.6);
   z-index: 10;
-  animation: highlightScan 0.25s ease-in-out forwards;
+  animation: highlightScan 0.5s ease-in-out forwards;
   pointer-events: none;
 }
 
-/* Reverse 카드 이미지 반전 */
-.card-item[data-reversed="true"] .card-front {
-  transform: scaleY(-1);
-}
