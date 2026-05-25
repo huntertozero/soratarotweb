@@ -312,20 +312,20 @@ async function proceedToCardReveal() {
 
   // 사용자가 선택한 카드는 이미 appState.selectedCards에 있음
 
-  // 스프레드별 위치 정보
+  // 스프레드별 위치 정보 (claudeService.js 포지션과 동일)
   const spreadPositions = {
     one: ['현재'],
     three: ['과거', '현재', '미래'],
     celtic: [
-      '현재',
-      '도전',
-      '원하는 결과',
-      '심층 근원',
-      '최근 과거',
+      '현재 상황',
+      '장애물',
+      '근본 원인',
+      '가까운 과거',
+      '가능성',
       '가까운 미래',
-      '당신의 입장',
-      '주변 환경',
-      '희망/두려움',
+      '내 태도',
+      '외부 환경',
+      '희망 또는 두려움',
       '최종 결과',
     ],
   };
@@ -380,7 +380,13 @@ async function fetchReading() {
     }
 
     const data = await response.json();
-    console.log('✅ 응답 데이터 수신:', data.cards.length, '장 카드');
+    console.log('✅ 응답 데이터 수신:', data);
+
+    if (!data.cards || !Array.isArray(data.cards)) {
+      throw new Error('서버 응답에 cards 배열이 없습니다: ' + JSON.stringify(data));
+    }
+
+    console.log('✅ cards 수:', data.cards.length, '장');
     appState.reading = data.reading;
 
     // 로딩 상태 숨기기
@@ -406,32 +412,35 @@ async function fetchReading() {
 function displayReading(data) {
   console.log('🎨 displayReading 시작');
 
-  // 스프레드별 위치 레이블 (CARD_REVEAL 화면과 동일)
+  // 스프레드별 위치 레이블 (claudeService.js 포지션과 동일)
   const spreadPositions = {
     one: ['현재'],
     three: ['과거', '현재', '미래'],
     celtic: [
-      '현재',
-      '도전',
-      '원하는 결과',
-      '심층 근원',
-      '최근 과거',
+      '현재 상황',
+      '장애물',
+      '근본 원인',
+      '가까운 과거',
+      '가능성',
       '가까운 미래',
-      '당신의 입장',
-      '주변 환경',
-      '희망/두려움',
+      '내 태도',
+      '외부 환경',
+      '희망 또는 두려움',
       '최종 결과',
     ],
   };
   const positions = spreadPositions[appState.selectedSpread] || [];
+  console.log('✅ 포지션 레이블:', positions);
 
   // ---- 카드 HTML 렌더링 ----
   const cardsSummaryLeft = document.getElementById('cards-summary-left');
   const cardsSummaryRight = document.getElementById('cards-summary-right');
+  console.log('🔍 카드 컨테이너:', cardsSummaryLeft, cardsSummaryRight);
 
   if (cardsSummaryLeft && cardsSummaryRight) {
     const leftCards = data.cards.slice(0, 5);
     const rightCards = data.cards.slice(5, 10);
+    console.log('📋 leftCards:', leftCards.length, 'rightCards:', rightCards.length);
 
     // 단일 카드 렌더 함수
     // positionIndex: data.cards 전체 기준 인덱스 (positions[] 조회용)
@@ -460,19 +469,32 @@ function displayReading(data) {
       `;
     };
 
-    cardsSummaryLeft.innerHTML = leftCards.map((c, i) => renderCard(c, i)).join('');
-    cardsSummaryRight.innerHTML = rightCards.map((c, i) => renderCard(c, i + 5)).join('');
-    console.log('✅ 카드 렌더링 완료');
+    try {
+      cardsSummaryLeft.innerHTML = leftCards.map((c, i) => renderCard(c, i)).join('');
+      cardsSummaryRight.innerHTML = rightCards.map((c, i) => renderCard(c, i + 5)).join('');
+      console.log('✅ 카드 렌더링 완료');
+    } catch (renderErr) {
+      console.error('❌ 카드 렌더링 오류:', renderErr);
+    }
+  } else {
+    console.warn('⚠️ 카드 컨테이너를 찾지 못함 - 계속 진행');
   }
 
   // ---- 해석 텍스트 렌더링 ----
   const readingText = document.getElementById('reading-text');
+  console.log('🔍 reading-text 요소:', readingText);
   if (readingText) {
-    readingText.innerHTML = simpleMarkdownToHtml(data.reading);
-    console.log('✅ 해석 텍스트 표시 완료');
+    try {
+      readingText.innerHTML = simpleMarkdownToHtml(data.reading);
+      console.log('✅ 해석 텍스트 표시 완료');
+    } catch (textErr) {
+      console.error('❌ 텍스트 렌더링 오류:', textErr);
+      readingText.textContent = data.reading || '';
+    }
   }
 
   // ---- 화면 전환 (position: fixed 요소 계산은 이후에 해야 함) ----
+  console.log('🔄 showScreen(reading) 호출 직전');
   showScreen('reading');
   console.log('✅ READING 화면 전환 완료');
 
