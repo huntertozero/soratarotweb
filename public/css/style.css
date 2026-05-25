@@ -714,6 +714,33 @@ textarea::placeholder {
   min-width: 0;
 }
 
+/* 질문 표시 박스 */
+.reading-question {
+  display: none; /* JS가 질문 있을 때만 block으로 전환 */
+  background: rgba(100, 181, 246, 0.08);
+  border: 1px solid rgba(100, 181, 246, 0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+
+.reading-question-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #64b5f6;
+  margin-bottom: 6px;
+}
+
+.reading-question p {
+  margin: 0;
+  color: var(--color-silver);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
 .card-summary-item {
   aspect-ratio: 2.5/4;
   width: 120px;

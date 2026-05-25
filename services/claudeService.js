@@ -188,10 +188,14 @@ ${formattedCards}${questionPart}`;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
+    // 스프레드별 최대 토큰 설정
+    const maxTokensMap = { one: 1024, three: 1500, celtic: 4000 };
+    const maxTokens = maxTokensMap[spread] || 1024;
+
     const message = await client.messages.create(
       {
         model: 'claude-sonnet-4-6',
-        max_tokens: 2000,
+        max_tokens: maxTokens,
         system: SYSTEM_PROMPT,
         messages: [
           {

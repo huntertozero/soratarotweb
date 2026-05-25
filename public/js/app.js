@@ -490,6 +490,19 @@ function displayReading(data) {
     console.warn('⚠️ 카드 컨테이너를 찾지 못함 - 계속 진행');
   }
 
+  // ---- 질문 표시 ----
+  const readingQuestion = document.getElementById('reading-question');
+  const readingQuestionText = document.getElementById('reading-question-text');
+  if (readingQuestion && readingQuestionText) {
+    const question = appState.question && appState.question.trim();
+    if (question) {
+      readingQuestionText.textContent = question;
+      readingQuestion.style.display = 'block';
+    } else {
+      readingQuestion.style.display = 'none';
+    }
+  }
+
   // ---- 해석 텍스트 렌더링 ----
   const readingText = document.getElementById('reading-text');
   console.log('🔍 reading-text 요소:', readingText);
