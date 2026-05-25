@@ -7,22 +7,35 @@ function flipCard(cardElement, delayMs = 0) {
       const cardInner = cardElement.querySelector('.card-inner');
       const cardFront = cardElement.querySelector('.card-front');
 
-      if (cardInner) {
+      if (cardInner && cardFront) {
         // 하이라이트 바 애니메이션 추가
         const highlight = document.createElement('div');
         highlight.className = 'card-highlight';
         cardElement.appendChild(highlight);
 
-        // 하이라이트 애니메이션 끝난 후 이미지 표시
-        highlight.addEventListener('animationend', () => {
-          console.log('🔆 하이라이트 애니메이션 종료, Reverse:', cardElement.dataset.reversed);
-          if (cardFront) {
-            cardFront.style.visibility = 'visible';
-            console.log('✅ visibility 설정:', cardFront.style.visibility);
-          }
+        console.log('🎬 카드 플립 시작, Reverse:', cardElement.dataset.reversed, 'Front:', cardFront);
+
+        // 하이라이트 애니메이션 완료 핸들러
+        const showImage = () => {
+          console.log('✨ 이미지 표시 중, Reverse:', cardElement.dataset.reversed);
+          cardFront.style.visibility = 'visible';
           highlight.remove();
           resolve();
-        }, { once: true });
+        };
+
+        // 하이라이트 애니메이션 끝난 후 이미지 표시
+        highlight.addEventListener('animationend', showImage, { once: true });
+
+        // 타임아웃 폴백 (0.6초 = 애니메이션 0.5초 + 여유)
+        const timeoutId = setTimeout(() => {
+          console.log('⏱️ 타임아웃으로 이미지 표시');
+          cardFront.style.visibility = 'visible';
+          highlight.remove();
+          resolve();
+        }, 600);
+
+        // 애니메이션 이벤트 발생하면 타임아웃 취소
+        highlight.addEventListener('animationend', () => clearTimeout(timeoutId), { once: true });
 
         // 카드 플립 애니메이션 시작
         cardInner.classList.add('flipped');
