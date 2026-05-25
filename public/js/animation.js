@@ -69,11 +69,28 @@ function createCardElement(cardId, isReversed, position = null) {
   const directionText = isReversed ? 'Reverse' : '';
   const imageUrl = `/img/cards/${cardInfo.imageFile}`;
 
-  // 임시: Reverse 카드도 일단 정상 이미지로 표시 (나중에 반전 처리)
-  const frontStyle = `background-image: url('${imageUrl}'); background-size: cover; background-position: center;`;
+  // Reverse 카드: 이미지만 반전, 텍스트는 정상
+  let frontHTML;
+  if (isReversed) {
+    frontHTML = `
+      <div class="card-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center; transform: scaleY(-1);"></div>
+      <div class="card-info">
+        <div class="card-direction">${directionText}</div>
+        <div class="card-name">${cardInfo.nameKo}</div>
+      </div>
+    `;
+  } else {
+    frontHTML = `
+      <div class="card-info">
+        <div class="card-direction">${directionText}</div>
+        <div class="card-name">${cardInfo.nameKo}</div>
+      </div>
+    `;
+  }
 
   // Position 텍스트
   const positionStyle = `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
+  const frontStyle = !isReversed ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
 
   cardElement.innerHTML = `
     <div class="card-container">
@@ -85,10 +102,7 @@ function createCardElement(cardId, isReversed, position = null) {
 
         <!-- 카드 뒷면 (플립 후, 카드 앞면) -->
         <div class="card-front" style="${frontStyle}">
-          <div class="card-info">
-            <div class="card-direction">${directionText}</div>
-            <div class="card-name">${cardInfo.nameKo}</div>
-          </div>
+          ${frontHTML}
         </div>
       </div>
     </div>
