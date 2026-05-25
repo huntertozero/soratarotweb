@@ -15,8 +15,10 @@ function flipCard(cardElement, delayMs = 0) {
 
         // 하이라이트 애니메이션 끝난 후 이미지 표시
         highlight.addEventListener('animationend', () => {
+          console.log('🔆 하이라이트 애니메이션 종료, Reverse:', cardElement.dataset.reversed);
           if (cardFront) {
-            cardFront.style.opacity = '1';
+            cardFront.style.visibility = 'visible';
+            console.log('✅ visibility 설정:', cardFront.style.visibility);
           }
           highlight.remove();
           resolve();
@@ -56,9 +58,9 @@ function createCardElement(cardId, isReversed, position = null) {
   const directionText = isReversed ? 'Reverse' : '';
   const imageUrl = `/img/cards/${cardInfo.imageFile}`;
 
-  // Reverse 카드는 이미지만 반전
+  // Reverse 카드는 이미지만 반전 (z-index와 opacity 명시)
   const frontStyle = isReversed
-    ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center; transform: scaleY(-1);`
+    ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center; transform: scaleY(-1); position: relative; z-index: 2;`
     : `background-image: url('${imageUrl}'); background-size: cover; background-position: center;`;
 
   // Position 텍스트도 Reverse 카드일 때 반전
