@@ -162,6 +162,24 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - `isolation: isolate`로 스태킹 컨텍스트 격리
   - 스크롤바 숨김 처리 (overflow: auto는 유지)
 
+### Phase 10: Claude 프롬프트 개선 (일반인 친화적 해석) ✅ 완료
+- [x] `SYSTEM_PROMPT` 재구성: 따뜻한 타로 상담사 페르소나
+  - 공통 역할: 친한 친구처럼 대화, 실질적 인사이트 집중
+  - 공통 규칙: 전문 용어 금지, 질문 연결 해석
+- [x] `one` 스프레드 instruction 재구성 (4단계 구조)
+  - 오늘의 카드 한 줄 요약 → 나온 이유 → 오늘 하루 적용 방법 → 오늘의 한마디
+  - 최대 500자, '오늘'/'지금'에 집중
+- [x] `three` 스프레드 instruction 재구성 (4단계 구조)
+  - 과거 해석 → 현재 해석 → 미래 해석 → 전체 흐름 요약
+  - 최대 1000자, "~될 것입니다" 단정 표현 금지
+- [x] `celtic` 스프레드 instruction 재구성 (4단계 구조)
+  - 전체 판 한 줄 요약 → 포지션별 해석(1~10번) → 핵심 3개 집중분석 → 스토리 요약
+  - 최대 1500자, 부정 카드 공포감 없이 대처법 포함
+- [x] `celtic` positions 명칭 업데이트
+  - ['현재 상황', '장애물', '근본 원인', '가까운 과거', '가능성', '가까운 미래', '내 태도', '외부 환경', '희망 또는 두려움', '최종 결과']
+- [x] `max_tokens` 1024 → 2000 (켈틱 크로스 1500자 + 여유분)
+- [x] `userPrompt` 중복 해석 요청문 제거 (구조가 instruction에 통합됨)
+
 ---
 
 ## 파일별 책임
@@ -187,8 +205,10 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 
 ### `services/claudeService.js`
 - Anthropic SDK 래핑
-- 프롬프트 생성 (spread별)
-- Claude 응답 반환
+- `SYSTEM_PROMPT`: 공통 타로 상담사 페르소나 및 규칙
+- `spreadInfo`: 스프레드별 포지션 정보 + 상세 해석 구조 instruction
+- `formatCardsForPrompt()`: 카드 정보 텍스트 포맷팅
+- `generateReading()`: Claude API 호출 (30초 타임아웃, max_tokens: 2000)
 
 ### `public/js/app.js`
 - 상태 관리 (현재 화면, 선택된 spread, 질문, 뽑힌 카드 등)
@@ -278,4 +298,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-25 (Phase 9 READING 화면 카드 버그 수정 및 개선 완성)
+마지막 수정: 2026-05-25 (Phase 10 Claude 프롬프트 개선 완성)
