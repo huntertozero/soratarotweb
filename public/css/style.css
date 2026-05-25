@@ -546,6 +546,7 @@ textarea::placeholder {
   font-weight: bold;
   /* 이미지 위에 어두운 오버레이 */
   position: relative;
+  opacity: 0;
 }
 
 .card-front::before {
@@ -934,4 +935,33 @@ textarea::placeholder {
     padding: 10px 16px;
     font-size: 12px;
   }
+}
+
+/* ========== 카드 플립 하이라이트 애니메이션 ========== */
+
+@keyframes highlightScan {
+  from {
+    top: -10px;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+.card-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.6);
+  z-index: 10;
+  animation: highlightScan 0.25s ease-in-out forwards;
+  pointer-events: none;
+}
+
+/* Reverse 카드 이미지 반전 */
+.card-item[data-reversed="true"] .card-front {
+  transform: scaleY(-1);
 }

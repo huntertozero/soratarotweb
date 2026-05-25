@@ -5,7 +5,24 @@ function flipCard(cardElement, delayMs = 0) {
   return new Promise(resolve => {
     setTimeout(() => {
       const cardInner = cardElement.querySelector('.card-inner');
+      const cardFront = cardElement.querySelector('.card-front');
+
       if (cardInner) {
+        // 하이라이트 바 애니메이션 추가
+        const highlight = document.createElement('div');
+        highlight.className = 'card-highlight';
+        cardElement.appendChild(highlight);
+
+        // 하이라이트 애니메이션 끝난 후 이미지 표시
+        highlight.addEventListener('animationend', () => {
+          if (cardFront) {
+            cardFront.style.opacity = '1';
+          }
+          highlight.remove();
+          resolve();
+        }, { once: true });
+
+        // 카드 플립 애니메이션 시작
         cardInner.classList.add('flipped');
 
         // 역방향 여부 확인 (data-reversed 속성 사용)
@@ -13,7 +30,6 @@ function flipCard(cardElement, delayMs = 0) {
           cardInner.classList.add('reversed');
         }
       }
-      resolve();
     }, delayMs);
   });
 }
