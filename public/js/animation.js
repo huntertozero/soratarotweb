@@ -69,15 +69,11 @@ function createCardElement(cardId, isReversed, position = null) {
   const directionText = isReversed ? 'Reverse' : '';
   const imageUrl = `/img/cards/${cardInfo.imageFile}`;
 
-  // Reverse 카드는 이미지만 반전 (z-index와 opacity 명시)
-  const frontStyle = isReversed
-    ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center; transform: scaleY(-1); position: relative; z-index: 2;`
-    : `background-image: url('${imageUrl}'); background-size: cover; background-position: center;`;
+  // 임시: Reverse 카드도 일단 정상 이미지로 표시 (나중에 반전 처리)
+  const frontStyle = `background-image: url('${imageUrl}'); background-size: cover; background-position: center;`;
 
-  // Position 텍스트도 Reverse 카드일 때 반전
-  const positionStyle = isReversed
-    ? `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px; transform: scaleY(-1);`
-    : `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
+  // Position 텍스트
+  const positionStyle = `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
 
   cardElement.innerHTML = `
     <div class="card-container">
