@@ -145,24 +145,28 @@
 
     <!-- READING 화면 -->
     <div id="screen-reading" class="screen">
-      <div class="reading-container">
-        <div class="cards-summary" id="cards-summary"></div>
+      <div class="reading-container reading-layout">
+        <div class="cards-summary-left" id="cards-summary-left"></div>
 
-        <div class="reading-content">
-          <div id="reading-text" class="reading-text"></div>
+        <div class="reading-content-wrapper">
+          <div class="reading-content">
+            <div id="reading-text" class="reading-text"></div>
+          </div>
+
+          <div class="button-group">
+            <button class="btn btn-secondary" id="btn-new-reading">
+              다시 리딩하기
+            </button>
+            <button class="btn btn-secondary" id="btn-change-spread">
+              다른 스프레드 선택하기
+            </button>
+            <button class="btn btn-primary" id="btn-home">
+              처음으로
+            </button>
+          </div>
         </div>
 
-        <div class="button-group">
-          <button class="btn btn-secondary" id="btn-new-reading">
-            다시 리딩하기
-          </button>
-          <button class="btn btn-secondary" id="btn-change-spread">
-            다른 스프레드 선택하기
-          </button>
-          <button class="btn btn-primary" id="btn-home">
-            처음으로
-          </button>
-        </div>
+        <div class="cards-summary-right" id="cards-summary-right"></div>
       </div>
     </div>
 

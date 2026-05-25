@@ -80,9 +80,13 @@ router.post('/reading', async (req, res) => {
       id: rc.id,
       nameKo: rc.cardData.nameKo,
       isReversed: rc.isReversed,
+      imageFile: rc.cardData.imageFile,
       keywords: rc.isReversed
         ? rc.cardData.keywords.reversed
         : rc.cardData.keywords.upright,
+      meaning: rc.isReversed
+        ? rc.cardData.reversedMeaning
+        : rc.cardData.uprightMeaning,
     }));
 
     return res.status(200).json({

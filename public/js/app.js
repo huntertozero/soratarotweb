@@ -224,7 +224,6 @@ function createCardGrid() {
     const cardElement = document.createElement('div');
     cardElement.className = 'card-back-item';
     cardElement.dataset.cardId = i;
-    cardElement.textContent = '✦';
     cardsGrid.appendChild(cardElement);
   }
 }
@@ -407,24 +406,83 @@ async function fetchReading() {
 function displayReading(data) {
   console.log('🎨 displayReading 시작');
 
-  // 카드 요약 표시
-  const cardsSummary = document.getElementById('cards-summary');
-  console.log('🔍 cardsSummary 요소:', cardsSummary);
+  // 카드 요약 표시 (좌우 분리)
+  const cardsSummaryLeft = document.getElementById('cards-summary-left');
+  const cardsSummaryRight = document.getElementById('cards-summary-right');
+  const readingContentWrapper = document.querySelector('.reading-content-wrapper');
+  console.log('🔍 cardsSummaryLeft, cardsSummaryRight 요소:', cardsSummaryLeft, cardsSummaryRight);
 
-  if (cardsSummary) {
+  if (cardsSummaryLeft && cardsSummaryRight) {
     try {
-      cardsSummary.innerHTML = data.cards
-        .map(card => {
-          const direction = card.isReversed ? 'Reverse' : '';
-          return `
-            <div class="card-summary-item">
-              <div class="card-summary-name">${card.nameKo}</div>
-              <div class="card-summary-direction">${direction}</div>
-            </div>
-          `;
-        })
-        .join('');
+      const leftCards = data.cards.slice(0, 5);
+      const rightCards = data.cards.slice(5, 10);
+
+      const renderCard = (card) => {
+        const imageUrl = `/img/cards/${card.imageFile}`;
+        const direction = card.isReversed ? 'REVERSE' : '';
+        const meaning = card.meaning || '';
+
+        // 이미지 HTML (오버레이 포함)
+        const imageHTML = `
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${imageUrl}'); background-size: cover; background-position: center; ${card.isReversed ? 'transform: scaleY(-1);' : ''}"></div>
+          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 1;"></div>
+        `;
+
+        // 텍스트 HTML
+        const textHTML = `
+          <div style="position: absolute; top: 10px; left: 0; right: 0; text-align: center; z-index: 2; color: var(--color-starlight); font-size: 11px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);">
+            ${meaning}
+          </div>
+          <div class="card-info" style="position: relative; z-index: 2;">
+            <div class="card-direction">${direction}</div>
+            <div class="card-name">${card.nameKo}</div>
+          </div>
+        `;
+
+        return `
+          <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
+            ${imageHTML}
+            ${textHTML}
+          </div>
+        `;
+      };
+
+      cardsSummaryLeft.innerHTML = leftCards.map(renderCard).join('');
+      cardsSummaryRight.innerHTML = rightCards.map(renderCard).join('');
       console.log('✅ 카드 요약 표시 완료');
+
+      // 카드 위치를 읽기 영역과 동기화
+      if (readingContentWrapper) {
+        const syncCardPositions = () => {
+          const wrapperRect = readingContentWrapper.getBoundingClientRect();
+          const gap = 15; // 카드와 텍스트 사이의 간격
+
+          // Top 위치: 읽기 영역 맨 위
+          const topOffset = wrapperRect.top + window.scrollY;
+          cardsSummaryLeft.style.top = topOffset + 'px';
+          cardsSummaryRight.style.top = topOffset + 'px';
+
+          // Left/Right 위치: 실제 컨테이너 너비 기반으로 계산
+          const leftContainerWidth = cardsSummaryLeft.offsetWidth;
+          const rightContainerWidth = cardsSummaryRight.offsetWidth;
+
+          // 좌측: 해석 영역 왼쪽 - 카드 컨테이너 너비 - gap
+          const leftPos = wrapperRect.left - leftContainerWidth - gap;
+          cardsSummaryLeft.style.left = leftPos + 'px';
+
+          // 우측: 해석 영역 오른쪽 + gap (left 속성 사용)
+          const rightPos = wrapperRect.right + gap;
+          cardsSummaryRight.style.left = rightPos + 'px';
+          cardsSummaryRight.style.right = 'auto';
+        };
+
+        // 초기 로드 및 DOM 렌더링 후 재계산
+        syncCardPositions();
+        setTimeout(syncCardPositions, 50);
+        window.addEventListener('load', syncCardPositions);
+        window.addEventListener('scroll', syncCardPositions);
+        window.addEventListener('resize', syncCardPositions);
+      }
     } catch (e) {
       console.error('❌ 카드 요약 오류:', e);
     }
