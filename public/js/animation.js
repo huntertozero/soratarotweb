@@ -13,34 +13,32 @@ function flipCard(cardElement, delayMs = 0) {
         highlight.className = 'card-highlight';
         cardElement.appendChild(highlight);
 
-        console.log('🎬 카드 플립 시작, Reverse:', cardElement.dataset.reversed, 'Front:', cardFront);
+        console.log('🎬 카드 플립 시작, Reverse:', cardElement.dataset.reversed);
 
-        // 하이라이트 애니메이션 완료 핸들러
+        // 하이라이트 애니메이션 완료 후 이미지 표시
         const showImage = () => {
-          console.log('✨ 이미지 표시 중, Reverse:', cardElement.dataset.reversed);
-          cardFront.style.visibility = 'visible';
+          console.log('✨ 이미지 표시 - animationend 발생');
+          cardFront.style.opacity = '1';
           highlight.remove();
-          resolve();
         };
 
-        // 하이라이트 애니메이션 끝난 후 이미지 표시
+        // 하이라이트 애니메이션 이벤트
         highlight.addEventListener('animationend', showImage, { once: true });
 
-        // 타임아웃 폴백 (0.6초 = 애니메이션 0.5초 + 여유)
-        const timeoutId = setTimeout(() => {
-          console.log('⏱️ 타임아웃으로 이미지 표시');
-          cardFront.style.visibility = 'visible';
-          highlight.remove();
+        // 타임아웃 폴백 (0.6초)
+        setTimeout(() => {
+          if (highlight.parentElement) {
+            console.log('⏱️ 타임아웃 - 강제 이미지 표시');
+            cardFront.style.opacity = '1';
+            if (highlight.parentElement) highlight.remove();
+          }
           resolve();
         }, 600);
-
-        // 애니메이션 이벤트 발생하면 타임아웃 취소
-        highlight.addEventListener('animationend', () => clearTimeout(timeoutId), { once: true });
 
         // 카드 플립 애니메이션 시작
         cardInner.classList.add('flipped');
 
-        // 역방향 여부 확인 (data-reversed 속성 사용)
+        // 역방향 여부 확인
         if (cardElement.dataset.reversed === 'true') {
           cardInner.classList.add('reversed');
         }

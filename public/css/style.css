@@ -548,7 +548,8 @@ textarea::placeholder {
   font-weight: bold;
   /* 이미지 위에 어두운 오버레이 */
   position: relative;
-  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
 }
 
 .card-front::before {
@@ -958,7 +959,7 @@ textarea::placeholder {
   height: 8px;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.6);
-  z-index: 10;
+  z-index: 0;
   animation: highlightScan 0.5s ease-in-out forwards;
   pointer-events: none;
 }
