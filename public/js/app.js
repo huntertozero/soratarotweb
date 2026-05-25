@@ -352,6 +352,16 @@ async function fetchReading() {
     console.log('🔄 해석 요청 시작...');
     const loadingState = document.getElementById('loading-state');
     if (loadingState) {
+      // 스프레드별 로딩 메시지 설정
+      const loadingMessages = {
+        one:    '타로 마스터가 카드를 읽고 있어요. 최대 30초 정도 걸려요.',
+        three:  '타로 마스터가 카드를 읽고 있어요. 최대 45초 정도 걸려요.',
+        celtic: '타로 마스터가 카드를 읽고 있어요. 최대 1분 정도 걸려요.',
+      };
+      const msgEl = loadingState.querySelector('p');
+      if (msgEl) {
+        msgEl.textContent = loadingMessages[appState.selectedSpread] || loadingMessages.one;
+      }
       loadingState.classList.add('active');
       console.log('✅ 로딩 상태 활성화');
     }
