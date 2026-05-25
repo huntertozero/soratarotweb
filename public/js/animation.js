@@ -88,18 +88,20 @@ function createCardElement(cardId, isReversed, position = null) {
     `;
   }
 
-  // Position 텍스트 (Reverse 카드는 bottom으로 설정, 회전 후 상단에 위치)
+  // Position 텍스트 (플립 전후 항상 표시, z-index로 최상단)
   const positionStyle = isReversed
-    ? `color: var(--color-silver); font-size: 12px; position: absolute; bottom: 10px; top: auto; transform: rotateZ(180deg);`
-    : `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px;`;
+    ? `color: var(--color-silver); font-size: 12px; position: absolute; bottom: 10px; top: auto; transform: rotateZ(180deg); z-index: 10;`
+    : `color: var(--color-silver); font-size: 12px; position: absolute; top: 10px; z-index: 10;`;
   const frontStyle = !isReversed ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
 
   cardElement.innerHTML = `
     <div class="card-container">
+      <!-- 카드 의미 텍스트 (플립 전후 항상 표시) -->
+      ${position ? `<div style="${positionStyle}">${position}</div>` : ''}
+
       <div class="card-inner">
         <!-- 카드 앞면 (초기 상태, 카드 뒷면) -->
         <div class="card-back">
-          ${position ? `<div style="${positionStyle}">${position}</div>` : ''}
         </div>
 
         <!-- 카드 뒷면 (플립 후, 카드 앞면) -->
