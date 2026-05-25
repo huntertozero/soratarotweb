@@ -145,6 +145,23 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 - [x] 좌우 카드 높이를 해석 영역 높이와 동기화
 - [x] 백엔드에서 카드 의미(meaning) 필드 응답에 추가
 
+### Phase 9: READING 화면 카드 버그 수정 및 개선 ✅ 완료
+- [x] `data/cardImages.js` 신규 생성: 78장 카드 ID → 이미지 파일명 매핑
+  - data/cards.js에 imageFile 필드가 없어 이미지 URL이 `/img/cards/undefined`로 로딩 실패하던 근본 원인 해결
+- [x] `routes/reading.js`: cardImages 모듈로 imageFile 필드 정상 응답
+- [x] READING 화면 카드 이미지 정상 표시 (배경 이미지 + 반투명 오버레이)
+- [x] Reverse 카드 이미지 scaleY(-1) 상하반전 처리
+- [x] 카드 상단 위치 레이블 추가 (과거/현재/미래, 켈틱 크로스 10위치)
+  - 색상: `var(--color-starlight)` (카드 이름과 동일)
+  - 크기: 11px (REVERSE 텍스트와 동일)
+- [x] 높이 동기화 타이밍 버그 수정
+  - 기존: showScreen() 전에 getBoundingClientRect() 호출 → display:none 상태라 모든 좌표 0 반환
+  - 수정: showScreen() 먼저 호출 후 requestAnimationFrame으로 위치·높이 계산
+- [x] CSS 카드 클래스 재정의 (csm-* 네이밍)
+  - `csm-bg-image` (z-index:0) / `csm-overlay` (z-index:1) / `csm-position-label` (z-index:2) / `csm-card-info` (z-index:2)
+  - `isolation: isolate`로 스태킹 컨텍스트 격리
+  - 스크롤바 숨김 처리 (overflow: auto는 유지)
+
 ---
 
 ## 파일별 책임
@@ -157,6 +174,11 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 ### `data/cards.js`
 - 78장 카드 객체 배열
 - 각 카드: id, nameKo, keywords (정방향/역방향), 의미, 수트, 요소 등
+
+### `data/cardImages.js`
+- 카드 ID(0~77) → 이미지 파일명 매핑 객체
+- `public/js/cardMeta.js`의 imageFile과 동기화
+- `routes/reading.js`에서 API 응답 시 사용
 
 ### `routes/reading.js`
 - `POST /api/reading` 핸들러
@@ -231,6 +253,11 @@ Invoke-RestMethod `
 → 질문이 너무 길지 않은지 확인 (200자 이상 거부)
 → API rate limit 확인
 
+### READING 화면 카드에 이미지가 안 보임
+→ **서버 재시작 필요**: `routes/reading.js` 등 백엔드 파일 변경은 서버 재시작(`npm start`) 후 적용됨
+→ `data/cardImages.js`가 존재하는지 확인
+→ 브라우저 DevTools → Network 탭에서 이미지 URL 응답 코드 확인
+
 ---
 
 ## 나중에 할 것
@@ -251,4 +278,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-25 (Phase 8 해석 결과 화면 최적화 완성)
+마지막 수정: 2026-05-25 (Phase 9 READING 화면 카드 버그 수정 및 개선 완성)
