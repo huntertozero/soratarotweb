@@ -1,5 +1,6 @@
 const express = require('express');
 const cards = require('../data/cards');
+const cardImages = require('../data/cardImages');
 const { generateReading } = require('../services/claudeService');
 
 const router = express.Router();
@@ -80,7 +81,7 @@ router.post('/reading', async (req, res) => {
       id: rc.id,
       nameKo: rc.cardData.nameKo,
       isReversed: rc.isReversed,
-      imageFile: rc.cardData.imageFile,
+      imageFile: cardImages[rc.id] || '',
       keywords: rc.isReversed
         ? rc.cardData.keywords.reversed
         : rc.cardData.keywords.upright,

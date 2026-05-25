@@ -406,107 +406,114 @@ async function fetchReading() {
 function displayReading(data) {
   console.log('🎨 displayReading 시작');
 
-  // 카드 요약 표시 (좌우 분리)
+  // 스프레드별 위치 레이블 (CARD_REVEAL 화면과 동일)
+  const spreadPositions = {
+    one: ['현재'],
+    three: ['과거', '현재', '미래'],
+    celtic: [
+      '현재',
+      '도전',
+      '원하는 결과',
+      '심층 근원',
+      '최근 과거',
+      '가까운 미래',
+      '당신의 입장',
+      '주변 환경',
+      '희망/두려움',
+      '최종 결과',
+    ],
+  };
+  const positions = spreadPositions[appState.selectedSpread] || [];
+
+  // ---- 카드 HTML 렌더링 ----
   const cardsSummaryLeft = document.getElementById('cards-summary-left');
   const cardsSummaryRight = document.getElementById('cards-summary-right');
-  const readingContentWrapper = document.querySelector('.reading-content-wrapper');
-  console.log('🔍 cardsSummaryLeft, cardsSummaryRight 요소:', cardsSummaryLeft, cardsSummaryRight);
 
   if (cardsSummaryLeft && cardsSummaryRight) {
-    try {
-      const leftCards = data.cards.slice(0, 5);
-      const rightCards = data.cards.slice(5, 10);
+    const leftCards = data.cards.slice(0, 5);
+    const rightCards = data.cards.slice(5, 10);
 
-      const renderCard = (card) => {
-        const imageUrl = `/img/cards/${card.imageFile}`;
-        const direction = card.isReversed ? 'REVERSE' : '';
-        const meaning = card.meaning || '';
+    // 단일 카드 렌더 함수
+    // positionIndex: data.cards 전체 기준 인덱스 (positions[] 조회용)
+    const renderCard = (card, positionIndex) => {
+      const imageUrl = `/img/cards/${card.imageFile}`;
+      const direction = card.isReversed ? 'REVERSE' : '';
+      const posLabel = positions[positionIndex] || '';
 
-        // 이미지 HTML (오버레이 포함)
-        const imageHTML = `
-          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('${imageUrl}'); background-size: cover; background-position: center; ${card.isReversed ? 'transform: scaleY(-1);' : ''}"></div>
-          <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 1;"></div>
-        `;
+      // 역방향: 이미지만 상하반전 (텍스트는 정상)
+      const imgTransform = card.isReversed ? 'transform: scaleY(-1);' : '';
 
-        // 텍스트 HTML
-        const textHTML = `
-          <div style="position: absolute; top: 10px; left: 0; right: 0; text-align: center; z-index: 2; color: var(--color-starlight); font-size: 11px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);">
-            ${meaning}
+      return `
+        <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
+          <!-- 카드 이미지 (배경) -->
+          <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
+          <!-- 어두운 오버레이 -->
+          <div class="csm-overlay"></div>
+          <!-- 위치 레이블 (상단 중앙) -->
+          ${posLabel ? `<div class="csm-position-label">${posLabel}</div>` : ''}
+          <!-- 카드 이름 / REVERSE (하단) -->
+          <div class="csm-card-info">
+            <div class="csm-direction">${direction}</div>
+            <div class="csm-name">${card.nameKo}</div>
           </div>
-          <div class="card-info" style="position: relative; z-index: 2;">
-            <div class="card-direction">${direction}</div>
-            <div class="card-name">${card.nameKo}</div>
-          </div>
-        `;
+        </div>
+      `;
+    };
 
-        return `
-          <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
-            ${imageHTML}
-            ${textHTML}
-          </div>
-        `;
-      };
-
-      cardsSummaryLeft.innerHTML = leftCards.map(renderCard).join('');
-      cardsSummaryRight.innerHTML = rightCards.map(renderCard).join('');
-      console.log('✅ 카드 요약 표시 완료');
-
-      // 카드 위치를 읽기 영역과 동기화
-      if (readingContentWrapper) {
-        const syncCardPositions = () => {
-          const wrapperRect = readingContentWrapper.getBoundingClientRect();
-          const gap = 15; // 카드와 텍스트 사이의 간격
-
-          // Top 위치: 읽기 영역 맨 위
-          const topOffset = wrapperRect.top + window.scrollY;
-          cardsSummaryLeft.style.top = topOffset + 'px';
-          cardsSummaryRight.style.top = topOffset + 'px';
-
-          // Left/Right 위치: 실제 컨테이너 너비 기반으로 계산
-          const leftContainerWidth = cardsSummaryLeft.offsetWidth;
-          const rightContainerWidth = cardsSummaryRight.offsetWidth;
-
-          // 좌측: 해석 영역 왼쪽 - 카드 컨테이너 너비 - gap
-          const leftPos = wrapperRect.left - leftContainerWidth - gap;
-          cardsSummaryLeft.style.left = leftPos + 'px';
-
-          // 우측: 해석 영역 오른쪽 + gap (left 속성 사용)
-          const rightPos = wrapperRect.right + gap;
-          cardsSummaryRight.style.left = rightPos + 'px';
-          cardsSummaryRight.style.right = 'auto';
-        };
-
-        // 초기 로드 및 DOM 렌더링 후 재계산
-        syncCardPositions();
-        setTimeout(syncCardPositions, 50);
-        window.addEventListener('load', syncCardPositions);
-        window.addEventListener('scroll', syncCardPositions);
-        window.addEventListener('resize', syncCardPositions);
-      }
-    } catch (e) {
-      console.error('❌ 카드 요약 오류:', e);
-    }
+    cardsSummaryLeft.innerHTML = leftCards.map((c, i) => renderCard(c, i)).join('');
+    cardsSummaryRight.innerHTML = rightCards.map((c, i) => renderCard(c, i + 5)).join('');
+    console.log('✅ 카드 렌더링 완료');
   }
 
-  // 해석 텍스트 표시
+  // ---- 해석 텍스트 렌더링 ----
   const readingText = document.getElementById('reading-text');
-  console.log('🔍 readingText 요소:', readingText);
-
   if (readingText) {
-    try {
-      // 마크다운 변환 및 HTML 표시
-      const htmlContent = simpleMarkdownToHtml(data.reading);
-      readingText.innerHTML = htmlContent;
-      console.log('✅ 해석 텍스트 표시 완료');
-    } catch (e) {
-      console.error('❌ 해석 텍스트 오류:', e);
-    }
+    readingText.innerHTML = simpleMarkdownToHtml(data.reading);
+    console.log('✅ 해석 텍스트 표시 완료');
   }
 
-  // READING 화면으로 이동
-  console.log('🔄 READING 화면으로 이동');
+  // ---- 화면 전환 (position: fixed 요소 계산은 이후에 해야 함) ----
   showScreen('reading');
-  console.log('✅ 화면 전환 완료');
+  console.log('✅ READING 화면 전환 완료');
+
+  // ---- 위치·높이 동기화 (showScreen 이후에만 BoundingClientRect 값이 유효) ----
+  const readingContentWrapper = document.querySelector('.reading-content-wrapper');
+
+  const syncLayout = () => {
+    if (!cardsSummaryLeft || !cardsSummaryRight || !readingContentWrapper) return;
+
+    const rect = readingContentWrapper.getBoundingClientRect();
+    if (rect.width === 0) return; // 아직 렌더링 안 됨
+
+    const gap = 15;
+
+    // 상단 위치
+    const topOffset = rect.top + window.scrollY;
+    cardsSummaryLeft.style.top = topOffset + 'px';
+    cardsSummaryRight.style.top = topOffset + 'px';
+
+    // 좌우 위치
+    const leftW = cardsSummaryLeft.offsetWidth;
+    cardsSummaryLeft.style.left = (rect.left - leftW - gap) + 'px';
+    cardsSummaryRight.style.left = (rect.right + gap) + 'px';
+    cardsSummaryRight.style.right = 'auto';
+
+    // 높이 동기화: 해석 영역과 동일한 높이로 맞춤
+    const contentH = readingContentWrapper.offsetHeight;
+    cardsSummaryLeft.style.height = contentH + 'px';
+    cardsSummaryRight.style.height = contentH + 'px';
+  };
+
+  // requestAnimationFrame: 브라우저가 레이아웃을 계산한 직후 실행
+  requestAnimationFrame(() => {
+    syncLayout();
+    // 폰트·이미지 로딩 완료 후 재조정
+    setTimeout(syncLayout, 150);
+    setTimeout(syncLayout, 400);
+  });
+
+  window.addEventListener('scroll', syncLayout);
+  window.addEventListener('resize', syncLayout);
 }
 
 // ========== 초기화 ==========
