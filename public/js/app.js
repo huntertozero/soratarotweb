@@ -250,9 +250,11 @@ async function proceedToCardReveal() {
 
 async function fetchReading() {
   try {
+    console.log('🔄 해석 요청 시작...');
     const loadingState = document.getElementById('loading-state');
     if (loadingState) {
       loadingState.classList.add('active');
+      console.log('✅ 로딩 상태 활성화');
     }
 
     const requestBody = {
@@ -260,6 +262,8 @@ async function fetchReading() {
       question: appState.question,
       cards: appState.selectedCards,
     };
+
+    console.log('📤 API 요청:', requestBody);
 
     const response = await fetch('/api/reading', {
       method: 'POST',
@@ -269,20 +273,25 @@ async function fetchReading() {
       body: JSON.stringify(requestBody),
     });
 
+    console.log('📥 API 응답 상태:', response.status);
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || '타로 해석 요청 실패');
     }
 
     const data = await response.json();
+    console.log('✅ 응답 데이터 수신:', data.cards.length, '장 카드');
     appState.reading = data.reading;
 
     // 로딩 상태 숨기기
     if (loadingState) {
       loadingState.classList.remove('active');
+      console.log('✅ 로딩 상태 비활성화');
     }
 
     // READING 화면으로 이동
+    console.log('🔄 displayReading 호출');
     displayReading(data);
   } catch (error) {
     console.error('❌ 해석 요청 오류:', error);
@@ -296,32 +305,50 @@ async function fetchReading() {
 }
 
 function displayReading(data) {
+  console.log('🎨 displayReading 시작');
+
   // 카드 요약 표시
   const cardsSummary = document.getElementById('cards-summary');
+  console.log('🔍 cardsSummary 요소:', cardsSummary);
+
   if (cardsSummary) {
-    cardsSummary.innerHTML = data.cards
-      .map(card => {
-        const direction = card.isReversed ? '역방향' : '정방향';
-        return `
-          <div class="card-summary-item">
-            <div class="card-summary-name">${card.nameKo}</div>
-            <div class="card-summary-direction">${direction}</div>
-          </div>
-        `;
-      })
-      .join('');
+    try {
+      cardsSummary.innerHTML = data.cards
+        .map(card => {
+          const direction = card.isReversed ? '역방향' : '정방향';
+          return `
+            <div class="card-summary-item">
+              <div class="card-summary-name">${card.nameKo}</div>
+              <div class="card-summary-direction">${direction}</div>
+            </div>
+          `;
+        })
+        .join('');
+      console.log('✅ 카드 요약 표시 완료');
+    } catch (e) {
+      console.error('❌ 카드 요약 오류:', e);
+    }
   }
 
   // 해석 텍스트 표시
   const readingText = document.getElementById('reading-text');
+  console.log('🔍 readingText 요소:', readingText);
+
   if (readingText) {
-    // 마크다운 변환 및 HTML 표시
-    const htmlContent = simpleMarkdownToHtml(data.reading);
-    readingText.innerHTML = htmlContent;
+    try {
+      // 마크다운 변환 및 HTML 표시
+      const htmlContent = simpleMarkdownToHtml(data.reading);
+      readingText.innerHTML = htmlContent;
+      console.log('✅ 해석 텍스트 표시 완료');
+    } catch (e) {
+      console.error('❌ 해석 텍스트 오류:', e);
+    }
   }
 
   // READING 화면으로 이동
+  console.log('🔄 READING 화면으로 이동');
   showScreen('reading');
+  console.log('✅ 화면 전환 완료');
 }
 
 // ========== 초기화 ==========

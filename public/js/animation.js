@@ -63,11 +63,19 @@ function createCardElement(cardId, isReversed, position = null) {
 
 // 여러 카드를 화면에 표시하고 플립
 async function displayAndFlipCards(cardsData, positions = null) {
+  console.log('🃏 displayAndFlipCards 시작:', cardsData.length, '장');
+
   const cardsDisplay = document.getElementById('cards-display');
-  if (!cardsDisplay) return;
+  console.log('🔍 cardsDisplay 요소:', cardsDisplay);
+
+  if (!cardsDisplay) {
+    console.error('❌ cards-display 요소를 찾을 수 없습니다');
+    return;
+  }
 
   // 기존 카드 제거
   cardsDisplay.innerHTML = '';
+  console.log('✅ 기존 카드 제거');
 
   // 카드 요소 생성
   const cardElements = [];
@@ -79,7 +87,10 @@ async function displayAndFlipCards(cardsData, positions = null) {
       cardElements.push(cardElement);
     }
   });
+  console.log('✅ 카드 요소 생성 및 추가:', cardElements.length, '개');
 
   // 순차 플립 (500ms 간격)
+  console.log('🔄 카드 플립 시작...');
   await flipCardsSequentially(cardElements, 500);
+  console.log('✅ 카드 플립 완료');
 }
