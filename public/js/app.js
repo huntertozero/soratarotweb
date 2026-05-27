@@ -375,7 +375,10 @@ async function proceedToCardReveal() {
     ],
   };
 
-  const positions = spreadPositions[appState.selectedSpread];
+  // 원 카드는 위치 레이블 미표시 (3장, 10장만 과거/현재/미래 등 표시)
+  const positions = appState.selectedSpread === 'one'
+    ? null
+    : spreadPositions[appState.selectedSpread];
 
   // 카드 표시 및 플립
   await displayAndFlipCards(appState.selectedCards, positions);
