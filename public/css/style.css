@@ -354,6 +354,7 @@ textarea::placeholder {
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;           /* 부모 flex 컨테이너 전체 폭 채우기 */
   /* 스크롤 시 배경이 투명하면 카드 그리드가 비쳐 보이므로 배경 처리 */
   background: linear-gradient(
     to bottom,
@@ -1092,15 +1093,26 @@ textarea::placeholder {
     flex-direction: column;
   }
 
-  /* SHUFFLE 화면 버튼 그룹은 항상 가로 배치 (오선택 방지) */
-  #screen-shuffle .button-group {
+  /* SHUFFLE / 질문입력 화면 버튼 그룹: 항상 가로 배치, 전체 폭 */
+  #screen-shuffle .button-group,
+  #screen-input-question .button-group {
     flex-direction: row;
     flex-wrap: nowrap;
+    width: 100%;
   }
 
-  #screen-shuffle .button-group .btn {
-    width: auto;
+  #screen-shuffle .button-group .btn,
+  #screen-input-question .button-group .btn {
     flex: 1;
+    width: auto;
+    white-space: nowrap; /* 텍스트 2줄 방지 */
+  }
+
+  /* 스프레드 선택 화면: 단독 이전으로 버튼 — 내용 너비만큼만, 가운데 정렬 */
+  #screen-select-spread .button-group .btn {
+    width: auto;
+    min-width: 160px;    /* 질문입력 버튼과 비슷한 최소 너비 */
+    white-space: nowrap;
   }
 
   .btn {
