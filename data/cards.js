@@ -17,7 +17,7 @@ const cards = [
     uprightMeaning: '새로운 여정의 시작. 순수한 마음으로 모험을 떠나는 시기. 현재의 상황을 받아들이고 미지의 길로 나아가야 할 때입니다.',
     reversedMeaning: '성급한 결정이나 무모한 행동. 신중함이 부족하고 위험을 간과하고 있습니다. 조심스러운 계획 수립이 필요합니다.',
     element: '공기',
-    description: '모든 여정의 시작을 상징합니다.',
+    imageSymbols: '절벽 끝에 선 청년, 흰 장미, 작은 보따리, 작은 개',
   },
   {
     id: 1,
@@ -31,7 +31,7 @@ const cards = [
     uprightMeaning: '개인의 능력과 재능을 활용할 시기. 창의적인 아이디어를 실현하기 위한 의지와 기술이 있습니다. 리더십을 발휘하세요.',
     reversedMeaning: '능력을 제대로 활용하지 못하고 있습니다. 거짓이나 조작의 위험이 있거나 자신감이 부족한 상태입니다.',
     element: '수은',
-    description: '개인의 능력과 의지력의 상징입니다.',
+    imageSymbols: '테이블 위의 4원소 도구, 한 손은 위로 한 손은 아래로, 머리 위 무한대 기호',
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ const cards = [
     uprightMeaning: '내면의 목소리와 직관을 신뢰하세요. 숨겨진 진실이나 비밀스러운 정보가 있습니다. 명상과 성찰의 시간이 필요합니다.',
     reversedMeaning: '직관을 무시하고 혼란에 빠져 있습니다. 억압된 감정이나 숨겨진 두려움이 영향을 미치고 있습니다.',
     element: '달',
-    description: '무의식과 직관의 세계를 나타냅니다.',
+    imageSymbols: '두 기둥 사이의 여성, 달 관, 베일, 신비로운 분위기',
   },
   {
     id: 3,
@@ -59,7 +59,7 @@ const cards = [
     uprightMeaning: '풍요와 번영의 시기. 창조적인 프로젝트가 꽃을 피울 것입니다. 자신의 여성성을 수용하고 자연스러운 흐름을 따르세요.',
     reversedMeaning: '창조적 에너지가 부족하거나 낭비하고 있습니다. 의존성이나 자존감 문제가 있을 수 있습니다.',
     element: '금성',
-    description: '풍요로움과 창조성의 여신입니다.',
+    imageSymbols: '왕좌의 임산부, 풍성한 곡식과 포도, 하트 방패',
   },
   {
     id: 4,
@@ -73,7 +73,7 @@ const cards = [
     uprightMeaning: '강한 리더십과 통제력이 필요한 시기. 권위와 책임감을 가지고 상황을 주도하세요. 구조와 질서를 확립하는 것이 중요합니다.',
     reversedMeaning: '권위에 대한 저항이나 약한 리더십. 독재적이거나 완고한 태도가 문제가 될 수 있습니다.',
     element: '화성',
-    description: '권위와 지배력의 상징입니다.',
+    imageSymbols: '왕좌의 황제, 4원소 기호, 염소 머리 팔걸이',
   },
   {
     id: 5,
@@ -87,7 +87,7 @@ const cards = [
     uprightMeaning: '전통과 영적 지혜를 구하는 시기. 기존의 방법과 관례를 따르는 것이 현명합니다. 스승이나 멘토를 찾는 것이 좋습니다.',
     reversedMeaning: '전통에 대한 반항이나 규칙을 무시하고 있습니다. 비정통적인 길을 가고 있으나 그것이 혼란을 야기할 수 있습니다.',
     element: '황소',
-    description: '영적 지혜와 전통의 수호자입니다.',
+    imageSymbols: '제단 앞의 종교 지도자, 두 제자, 십자 지팡이',
   },
   {
     id: 6,
@@ -101,7 +101,7 @@ const cards = [
     uprightMeaning: '중요한 선택의 시기입니다. 사랑과 관계, 가치관에 관련된 결정이 필요합니다. 진정한 감정과 가치관을 따르세요.',
     reversedMeaning: '관계의 불화나 선택에 대한 후회. 신뢰 문제나 가치관의 불일치가 있습니다.',
     element: '쌍둥이',
-    description: '선택과 관계의 카드입니다.',
+    imageSymbols: '두 나체의 인물, 천사, 산 배경, 사랑의 감정',
   },
   {
     id: 7,
@@ -115,7 +115,7 @@ const cards = [
     uprightMeaning: '목표를 향한 강한 의지와 추진력이 있습니다. 현재 진행 중인 일이 승리에 가까워지고 있습니다. 계속 전진하세요.',
     reversedMeaning: '진행이 지연되거나 통제를 잃고 있습니다. 방향성이 불명확하고 내적 갈등이 있습니다.',
     element: '암',
-    description: '의지력과 승리의 상징입니다.',
+    imageSymbols: '전차 위의 기사, 검은 말과 흰 말, 별 관',
   },
   {
     id: 8,
@@ -129,7 +129,7 @@ const cards = [
     uprightMeaning: '내적인 힘과 인내심이 필요합니다. 물리적 힘보다 정신적 강함이 중요합니다. 자신의 내면의 힘을 믿으세요.',
     reversedMeaning: '자제력이 부족하고 약함을 느끼고 있습니다. 외부 압력에 취약하고 내적 불안감이 있습니다.',
     element: '사자',
-    description: '정신적 힘과 용맹함을 나타냅니다.',
+    imageSymbols: '여성이 사자의 입을 벌림, 무한대 기호 모자, 부드러운 표정',
   },
   {
     id: 9,
@@ -143,7 +143,7 @@ const cards = [
     uprightMeaning: '혼자만의 시간이 필요합니다. 내면을 들여다보고 성찰하세요. 고독 속에서 진정한 지혜를 찾을 수 있습니다.',
     reversedMeaning: '과도한 고립이나 우울감. 타인과의 단절과 외로움이 깊어지고 있습니다.',
     element: '처녀',
-    description: '내향적 성찰과 정신적 탐색을 상징합니다.',
+    imageSymbols: '동굴의 노인, 손에 들린 등, 산 정상',
   },
   {
     id: 10,
@@ -157,7 +157,7 @@ const cards = [
     uprightMeaning: '운명의 흐름이 변하고 있습니다. 이 시기는 기회와 변화로 가득합니다. 자연스러운 순환을 받아들이세요.',
     reversedMeaning: '나쁜 운이 계속되거나 변화에 저항하고 있습니다. 통제 불가능한 상황 속에 답답함을 느끼고 있습니다.',
     element: '목성',
-    description: '삶의 순환과 운명의 변화를 나타냅니다.',
+    imageSymbols: '회전하는 수레바퀴, 신비로운 동물들, 지표',
   },
   {
     id: 11,
@@ -171,7 +171,7 @@ const cards = [
     uprightMeaning: '정의가 실현될 것입니다. 자신의 행동에 대한 책임이 따릅니다. 진실과 균형이 중요한 시기입니다.',
     reversedMeaning: '불공정함이나 편견이 작용하고 있습니다. 거짓된 판단이나 불균형한 결과가 초래됩니다.',
     element: '천칭',
-    description: '균형과 정의의 심판자입니다.',
+    imageSymbols: '정의의 여성, 저울, 칼, 왕좌',
   },
   {
     id: 12,
@@ -185,7 +185,7 @@ const cards = [
     uprightMeaning: '현재의 관점을 바꿔야 합니다. 일시적인 보류나 잠시의 희생이 필요합니다. 다른 각도에서 상황을 바라보세요.',
     reversedMeaning: '변화를 거부하고 기존 관점에 집착합니다. 지연이 지속되고 상황이 답답합니다.',
     element: '물',
-    description: '관점의 변화와 영적 깨달음을 상징합니다.',
+    imageSymbols: '나무에 매달린 남자, 한 발은 구부러짐, 후광',
   },
   {
     id: 13,
@@ -199,7 +199,7 @@ const cards = [
     uprightMeaning: '종료와 변환의 시기입니다. 낡은 것이 사라지고 새로운 것이 시작됩니다. 이 변화는 긍정적인 성장을 가져옵니다.',
     reversedMeaning: '변화에 저항하고 정체되어 있습니다. 과거를 놓지 못하고 새로운 시작을 거부하고 있습니다.',
     element: '전갈',
-    description: '인생의 큰 변환과 재탄생을 나타냅니다.',
+    imageSymbols: '갑옷 입은 해골 기수, 흰 말, 태양 떠오름',
   },
   {
     id: 14,
@@ -213,7 +213,7 @@ const cards = [
     uprightMeaning: '균형을 유지하는 것이 중요합니다. 절제와 조화로운 삶이 현재 필요합니다. 극단을 피하고 중도를 택하세요.',
     reversedMeaning: '과도함이나 불균형 상태입니다. 자제력이 부족하고 갈등이 증가합니다.',
     element: '궁수',
-    description: '조화와 균형의 가치를 상징합니다.',
+    imageSymbols: '두 컵 사이의 천사, 물과 불의 흐름, 산과 무지개',
   },
   {
     id: 15,
@@ -227,7 +227,7 @@ const cards = [
     uprightMeaning: '물질적 욕망이나 부정적 습관에 묶여 있습니다. 자신이 만든 속박에서 벗어나야 합니다. 자신의 어두운 면과 마주하세요.',
     reversedMeaning: '속박에서 벗어나고 해방됩니다. 부정적 패턴을 끊고 자유를 찾습니다.',
     element: '염소',
-    description: '욕망과 속박의 상징입니다.',
+    imageSymbols: '악마와 두 사슬에 묶인 인물, 불타는 횃불, 뿔',
   },
   {
     id: 16,
@@ -241,7 +241,7 @@ const cards = [
     uprightMeaning: '예상 밖의 큰 변화가 일어납니다. 기존의 구조가 무너질 것입니다. 이는 고통스럽지만 새로운 기초 위에 다시 세워질 것입니다.',
     reversedMeaning: '피할 수 없는 변화가 지연되고 있습니다. 내적으로 붕괴하고 있으며 회피하려 합니다.',
     element: '화성',
-    description: '예상 밖의 파괴와 극적 변화를 상징합니다.',
+    imageSymbols: '번개 맞은 탑, 사람들이 떨어짐, 왕관 날아감',
   },
   {
     id: 17,
@@ -255,7 +255,7 @@ const cards = [
     uprightMeaning: '희망과 긍정의 빛이 비치고 있습니다. 올바른 길로 인도될 것이며 영적 위안을 받을 수 있습니다. 꿈을 믿으세요.',
     reversedMeaning: '절망감과 방향 상실. 희망을 잃고 있으며 영감이 부족합니다.',
     element: '물병',
-    description: '희망과 영적 인도의 빛입니다.',
+    imageSymbols: '별 위의 여성, 나뭇가지, 물, 8개의 별',
   },
   {
     id: 18,
@@ -269,7 +269,7 @@ const cards = [
     uprightMeaning: '착각과 환상의 영역입니다. 무의식의 두려움과 혼란이 있습니다. 직관을 믿되 현실을 놓치지 마세요.',
     reversedMeaning: '혼란이 걷혀지고 진실이 드러납니다. 불안감이 완화되고 현실이 명확해집니다.',
     element: '물고기',
-    description: '무의식과 환상의 세계를 나타냅니다.',
+    imageSymbols: '달, 개와 늑대, 물과 소금기둥, 초승달 얼굴',
   },
   {
     id: 19,
@@ -283,7 +283,7 @@ const cards = [
     uprightMeaning: '밝은 성공과 행복이 찾아옵니다. 모든 것이 긍정적인 방향으로 흘러갑니다. 자신감을 가지고 앞으로 나아가세요.',
     reversedMeaning: '성공이 지연되거나 우울감을 느끼고 있습니다. 에너지 부족으로 진행이 더뎌집니다.',
     element: '태양',
-    description: '긍정과 성공의 최고 에너지입니다.',
+    imageSymbols: '말 위의 아이, 해와 해바라기, 벽',
   },
   {
     id: 20,
@@ -297,7 +297,7 @@ const cards = [
     uprightMeaning: '영적 깨어남과 변화의 소명을 받습니다. 자신을 재평가하고 새로운 인생 단계로 나아갈 때입니다. 승리가 다가오고 있습니다.',
     reversedMeaning: '중요한 결정을 미루고 있습니다. 자기 의심으로 깨어남을 거부하고 있습니다.',
     element: '명왕성',
-    description: '영적 깨어남과 인생의 소명을 상징합니다.',
+    imageSymbols: '천사의 나팔, 무덤에서 일어나는 사람들, 산',
   },
   {
     id: 21,
@@ -311,7 +311,7 @@ const cards = [
     uprightMeaning: '여정이 완성되고 있습니다. 한 사이클의 끝이며 성취감을 느낄 것입니다. 새로운 시작으로 나아갈 준비가 되었습니다.',
     reversedMeaning: '완성이 지연되고 있습니다. 무언가가 미완성 상태이고 전체상이 보이지 않습니다.',
     element: '토성',
-    description: '완성과 통합, 새로운 순환의 시작을 상징합니다.',
+    imageSymbols: '춤추는 나체 인물, 화환, 4원소 동물',
   },
 
   // ========== 마이너 아르카나: 지팡이 (Wands, 22~35) ==========
@@ -329,6 +329,7 @@ const cards = [
     uprightMeaning: '새로운 창조적 기회가 나타납니다. 영감과 활력이 넘칩니다. 새 프로젝트를 시작하기에 좋은 시기입니다.',
     reversedMeaning: '기회가 지연되거나 약한 시작입니다. 창의력이 막혀 있고 에너지가 부족합니다.',
     element: '불',
+    imageSymbols: '손에서 나오는 지팡이, 불꽃, 성의 배경',
   },
   {
     id: 23,
@@ -343,6 +344,7 @@ const cards = [
     uprightMeaning: '미래를 계획하고 있습니다. 두 가지 선택지 중에서 결정해야 합니다. 잠재력이 있으며 신중한 계획이 필요합니다.',
     reversedMeaning: '계획이 불명확하고 불안감이 있습니다. 선택에 우유부단하고 두려움이 앞섭니다.',
     element: '불',
+    imageSymbols: '지팡이를 든 남자, 세계 구, 성 위의 망원경',
   },
   {
     id: 24,
@@ -357,6 +359,7 @@ const cards = [
     uprightMeaning: '진행이 확인되고 있습니다. 계획이 결실을 맺기 시작합니다. 협력과 성장의 기회가 있습니다.',
     reversedMeaning: '진행이 정체되고 제약이 있습니다. 협력 부족으로 성공이 어렵습니다.',
     element: '불',
+    imageSymbols: '지팡이 3개, 망원경을 든 남자, 배와 땅',
   },
   {
     id: 25,
@@ -371,6 +374,7 @@ const cards = [
     uprightMeaning: '성취를 축하할 시간입니다. 조화와 행복이 함께합니다. 축제적 분위기로 결과를 즐기세요.',
     reversedMeaning: '축하할 일이 없거나 분열과 갈등이 있습니다. 불만족이 남아 있습니다.',
     element: '불',
+    imageSymbols: '4개의 지팡이, 포도넝쿨, 축하 분위기',
   },
   {
     id: 26,
@@ -385,6 +389,7 @@ const cards = [
     uprightMeaning: '갈등과 경쟁이 일어나고 있습니다. 여러 방향의 힘이 충돌합니다. 조정과 타협이 필요합니다.',
     reversedMeaning: '갈등이 해결되고 화해가 일어납니다. 긴장이 풀리고 협력의 길이 열립니다.',
     element: '불',
+    imageSymbols: '5개의 지팡이, 싸우는 5명의 남자',
   },
   {
     id: 27,
@@ -399,6 +404,7 @@ const cards = [
     uprightMeaning: '승리와 인정이 찾아옵니다. 자신의 능력이 증명됩니다. 명성과 자신감으로 나아가세요.',
     reversedMeaning: '승리가 거부되고 인정받지 못합니다. 자존감이 상하고 수치심을 느끼고 있습니다.',
     element: '불',
+    imageSymbols: '6개의 지팡이, 승리한 남자, 군중',
   },
   {
     id: 28,
@@ -413,6 +419,7 @@ const cards = [
     uprightMeaning: '어려움 속에서 강인한 의지로 저항합니다. 자신의 입장을 지키기 위해 싸우세요. 용기와 결단력이 필요합니다.',
     reversedMeaning: '저항을 포기하고 약해 보입니다. 패배감을 느끼고 방어력이 떨어집니다.',
     element: '불',
+    imageSymbols: '7개의 지팡이, 방어하는 남자, 높은 지점',
   },
   {
     id: 29,
@@ -427,6 +434,7 @@ const cards = [
     uprightMeaning: '사건이 빠르게 진행됩니다. 속도와 효율이 중요합니다. 의사소통이 활발하고 변화가 빠릅니다.',
     reversedMeaning: '진행이 지연되고 속도가 떨어집니다. 의사소통에 장애가 있고 정체 상태입니다.',
     element: '불',
+    imageSymbols: '8개의 빠르게 날아가는 지팡이, 시골 배경',
   },
   {
     id: 30,
@@ -441,6 +449,7 @@ const cards = [
     uprightMeaning: '거의 다 왔습니다. 회복력과 인내심으로 마지막까지 견디세요. 약간의 조심과 경계가 필요합니다.',
     reversedMeaning: '피로가 쌓이고 항복하고 싶습니다. 과도한 경계로 지쳐 있습니다.',
     element: '불',
+    imageSymbols: '9개의 지팡이, 부상당한 남자, 방어 태세',
   },
   {
     id: 31,
@@ -455,6 +464,7 @@ const cards = [
     uprightMeaning: '무거운 책임을 지고 있습니다. 완성을 위해 열심히 하고 있으나 지쳐 있습니다. 짐을 덜기 위해 도움을 청하세요.',
     reversedMeaning: '짐이 줄어들고 해방감을 느낍니다. 완성이 다가오고 위임으로 부담이 경해집니다.',
     element: '불',
+    imageSymbols: '무거운 10개의 지팡이, 짐진 남자',
   },
   {
     id: 32,
@@ -469,6 +479,7 @@ const cards = [
     uprightMeaning: '젊은 에너지와 창의성이 넘칩니다. 새로운 것에 도전하고 탐험하세요. 열정이 있으나 경험이 부족할 수 있습니다.',
     reversedMeaning: '미숙함과 무모함이 드러납니다. 집중력이 부족하고 싫증을 느끼고 있습니다.',
     element: '불',
+    imageSymbols: '젊은 남자, 지팡이, 사막 같은 배경',
   },
   {
     id: 33,
@@ -483,6 +494,7 @@ const cards = [
     uprightMeaning: '강력한 행동력과 모험 정신이 있습니다. 열정적으로 목표를 추구합니다. 에너지가 넘치고 변화를 주도합니다.',
     reversedMeaning: '성급한 행동으로 실패합니다. 무모함과 산만함이 문제입니다. 지쳐 있고 집중력이 부족합니다.',
     element: '불',
+    imageSymbols: '말 위의 기사, 지팡이, 활동적인 움직임',
   },
   {
     id: 34,
@@ -497,6 +509,7 @@ const cards = [
     uprightMeaning: '열정적이고 독립적인 성격입니다. 창의력과 매력이 넘칩니다. 자신감을 가지고 앞으로 나아가세요.',
     reversedMeaning: '인내심이 부족하고 불안정합니다. 창의성이 막혀 있고 냉담해 보입니다.',
     element: '불',
+    imageSymbols: '왕좌의 여왕, 해바라기, 검은 고양이',
   },
   {
     id: 35,
@@ -511,6 +524,7 @@ const cards = [
     uprightMeaning: '강한 지도력과 열정으로 사람들을 영감으로 이끕니다. 자신감 있게 리더십을 발휘하세요. 에너지와 권위가 있습니다.',
     reversedMeaning: '독재적 태도로 문제를 일으킵니다. 조급함으로 실패하고 지쳐 있습니다.',
     element: '불',
+    imageSymbols: '왕좌의 왕, 지팡이, 불타는 듯한 표현',
   },
 
   // ========== 마이너 아르카나: 잔 (Cups, 36~49) ==========
@@ -528,6 +542,7 @@ const cards = [
     uprightMeaning: '새로운 사랑이나 깊은 감정의 시작입니다. 행복과 기쁨이 넘칩니다. 감정적 만족과 영적 체험이 있습니다.',
     reversedMeaning: '감정이 막혀 있고 외로움을 느낍니다. 사랑이나 기쁨이 거부되고 있습니다.',
     element: '물',
+    imageSymbols: '손에서 나오는 성배, 물 떨어짐, 비둘기',
   },
   {
     id: 37,
@@ -542,6 +557,7 @@ const cards = [
     uprightMeaning: '깊은 연결과 상호 존중의 관계입니다. 사랑과 조화가 있습니다. 감정적 유대가 강해집니다.',
     reversedMeaning: '관계가 멀어지고 불화가 생깁니다. 감정적 단절이 일어나고 있습니다.',
     element: '물',
+    imageSymbols: '남녀가 잔을 나누는 모습, 천사, 포도',
   },
   {
     id: 38,
@@ -556,6 +572,7 @@ const cards = [
     uprightMeaning: '기쁨과 축하의 시간입니다. 우정과 공동체 의식이 강합니다. 함께하는 시간이 소중합니다.',
     reversedMeaning: '고립감을 느끼고 혼자 있고 싶습니다. 사교에서 물러나고 거리감이 생깁니다.',
     element: '물',
+    imageSymbols: '3명의 여자가 축하, 포도 수확, 풍요',
   },
   {
     id: 39,
@@ -570,6 +587,7 @@ const cards = [
     uprightMeaning: '내면을 들여다보고 명상할 시간입니다. 제시된 것을 일단 거절하고 있습니다. 더 깊은 것을 찾고 있습니다.',
     reversedMeaning: '새로운 기회를 수용하고 있습니다. 거절의 시간에서 벗어나 진전이 일어납니다.',
     element: '물',
+    imageSymbols: '앉은 남자, 3개의 잔, 떨어지는 잔',
   },
   {
     id: 40,
@@ -584,6 +602,7 @@ const cards = [
     uprightMeaning: '슬픔과 손실을 경험하고 있습니다. 감정적 고통이 깊습니다. 이 감정을 인정하고 처리해야 합니다.',
     reversedMeaning: '슬픔에서 벗어나고 있습니다. 회복과 치유가 시작되며 앞으로 나아갑니다.',
     element: '물',
+    imageSymbols: '우는 남자, 엎어진 잔, 다리 위로 지나가는 사람',
   },
   {
     id: 41,
@@ -598,6 +617,7 @@ const cards = [
     uprightMeaning: '순수한 기쁨과 행복한 기억이 돌아옵니다. 과거의 좋은 것들이 현재를 밝힙니다. 아이 같은 신뢰가 필요합니다.',
     reversedMeaning: '과거에 집착하고 성장을 거부합니다. 어린 해동과 책임감 부족이 문제입니다.',
     element: '물',
+    imageSymbols: '어린 소년과 소녀, 장미가 가득한 잔',
   },
   {
     id: 42,
@@ -612,6 +632,7 @@ const cards = [
     uprightMeaning: '많은 선택이 있지만 환상일 수 있습니다. 유혹과 착각에 조심하세요. 진정한 것을 구분해야 합니다.',
     reversedMeaning: '혼란이 걷혀지고 현실이 명확합니다. 진정한 선택이 보이고 깨어납니다.',
     element: '물',
+    imageSymbols: '앉은 남자, 구름 속의 7개의 잔과 유혹',
   },
   {
     id: 43,
@@ -626,6 +647,7 @@ const cards = [
     uprightMeaning: '이제 떠나야 할 시간입니다. 더 이상 이 상황이 아니라는 것을 깨닫습니다. 새로운 여정을 시작할 성숙함이 있습니다.',
     reversedMeaning: '떠나지 못하고 미련을 가지고 있습니다. 정체된 상황에 머물고 있습니다.',
     element: '물',
+    imageSymbols: '남자가 떠남, 엎어진 잔 8개, 달',
   },
   {
     id: 44,
@@ -640,6 +662,7 @@ const cards = [
     uprightMeaning: '모든 소원이 이루어집니다. 행복과 만족의 상태입니다. 축복 받은 시간을 즐기세요.',
     reversedMeaning: '불만족이 남아 있고 욕심이 있습니다. 축복을 받지 못한 것 같은 불행감이 있습니다.',
     element: '물',
+    imageSymbols: '앉은 남자 앞의 9개 잔, 행복한 표정',
   },
   {
     id: 45,
@@ -654,6 +677,7 @@ const cards = [
     uprightMeaning: '가족과 조화로운 행복입니다. 사랑과 만족이 깊습니다. 집이 편안한 안식처입니다.',
     reversedMeaning: '가족 간에 불화가 있습니다. 조화가 깨져 있고 행복이 부족합니다.',
     element: '물',
+    imageSymbols: '가족과 무지개, 10개의 잔',
   },
   {
     id: 46,
@@ -668,6 +692,7 @@ const cards = [
     uprightMeaning: '감정적이고 창의적인 표현이 풍부합니다. 상상력과 예술적 감수성이 있습니다. 감정을 신뢰하세요.',
     reversedMeaning: '감정이 억압되고 표현이 부족합니다. 창의성이 막혀 있고 부주의한 상태입니다.',
     element: '물',
+    imageSymbols: '젊은 남자, 잔, 물고기',
   },
   {
     id: 47,
@@ -682,6 +707,7 @@ const cards = [
     uprightMeaning: '낭만적이고 감정 표현에 능합니다. 사랑과 창의성으로 다가옵니다. 제안이나 초대가 있습니다.',
     reversedMeaning: '거짓된 감정이나 속임수가 있습니다. 낭만이 부족하고 냉담해 보입니다.',
     element: '물',
+    imageSymbols: '말 위의 기사, 잔, 낭만적 움직임',
   },
   {
     id: 48,
@@ -696,6 +722,7 @@ const cards = [
     uprightMeaning: '감정적으로 지혜롭고 직관이 뛰어납니다. 공감 능력과 양육 본능이 있습니다. 창의적 표현이 풍부합니다.',
     reversedMeaning: '감정이 과잉되고 불안정합니다. 의존성이 있거나 냉담해 보입니다.',
     element: '물',
+    imageSymbols: '왕좌의 여왕, 잔, 바다',
   },
   {
     id: 49,
@@ -710,6 +737,7 @@ const cards = [
     uprightMeaning: '감정을 잘 통제하면서도 공감 능력이 뛰어납니다. 영적 지혜와 진정성이 있습니다. 사람들을 인도할 수 있습니다.',
     reversedMeaning: '감정적으로 불안정하고 속임이 있을 수 있습니다. 통제력을 잃거나 억압하고 있습니다.',
     element: '물',
+    imageSymbols: '왕좌의 왕, 잔, 돌고래와 배',
   },
 
   // ========== 마이너 아르카나: 칼 (Swords, 50~63) ==========
@@ -727,6 +755,7 @@ const cards = [
     uprightMeaning: '진실이 명확해집니다. 새로운 이해와 명확한 통찰이 있습니다. 의사소통이 효과적이고 승리가 있습니다.',
     reversedMeaning: '혼란과 혼동이 있습니다. 진실이 불명확하고 의사소통에 장애가 있습니다.',
     element: '공기',
+    imageSymbols: '손에서 나오는 칼, 구름 속의 화관, 빛',
   },
   {
     id: 51,
@@ -741,6 +770,7 @@ const cards = [
     uprightMeaning: '중요한 결정 앞에 있습니다. 두 가지 선택지 사이에서 균형을 맞추고 있습니다. 신중한 판단이 필요합니다.',
     reversedMeaning: '결정이 이루어지고 교착 상태가 풀립니다. 명확한 선택이 나타납니다.',
     element: '공기',
+    imageSymbols: '눈먼 여자, 두 칼, 사람과 달',
   },
   {
     id: 52,
@@ -755,6 +785,7 @@ const cards = [
     uprightMeaning: '고통과 슬픔을 겪고 있습니다. 분리와 갈등이 있습니다. 어려운 시기이지만 이를 견뎌내야 합니다.',
     reversedMeaning: '고통이 줄어들고 회복이 시작됩니다. 갈등이 해결되고 치유가 일어납니다.',
     element: '공기',
+    imageSymbols: '심장에 꽂힌 3개의 칼, 빗, 어두운 구름',
   },
   {
     id: 53,
@@ -769,6 +800,7 @@ const cards = [
     uprightMeaning: '휴식과 회복의 시간이 필요합니다. 명상과 조용함 속에서 치유하세요. 평온을 찾아야 합니다.',
     reversedMeaning: '불안감으로 인해 휴식을 취할 수 없습니다. 불면과 초조함이 있습니다.',
     element: '공기',
+    imageSymbols: '누워있는 남자, 칼 4개, 평화로운 모습',
   },
   {
     id: 54,
@@ -783,6 +815,7 @@ const cards = [
     uprightMeaning: '갈등에서 패배하거나 손실을 겪고 있습니다. 이별의 고통이 있습니다. 이 상황을 받아들여야 합니다.',
     reversedMeaning: '갈등이 해결되고 화해가 이루어집니다. 손실을 받아들이고 앞으로 나아갑니다.',
     element: '공기',
+    imageSymbols: '칼을 든 남자, 떨어진 칼들, 울고 있는 사람들',
   },
   {
     id: 55,
@@ -797,6 +830,7 @@ const cards = [
     uprightMeaning: '어려운 상황에서 벗어나고 있습니다. 새로운 장소나 상태로 이동합니다. 나아갈 길이 보입니다.',
     reversedMeaning: '움직임이 지연되고 정체되어 있습니다. 과거로 돌아가려 하거나 진행이 막혀 있습니다.',
     element: '공기',
+    imageSymbols: '배에 탄 사람, 칼 6개, 물을 건너감',
   },
   {
     id: 56,
@@ -811,6 +845,7 @@ const cards = [
     uprightMeaning: '거짓이나 속임이 있습니다. 신뢰할 수 없는 상황이거나 누군가 당신을 속이고 있습니다. 조심하세요.',
     reversedMeaning: '거짓이 폭로되고 진실이 드러납니다. 고백이나 회개가 일어납니다.',
     element: '공기',
+    imageSymbols: '칼을 든 남자, 한 손에 칼 7개, 도적같은 모습',
   },
   {
     id: 57,
@@ -825,6 +860,7 @@ const cards = [
     uprightMeaning: '속박과 제약을 느끼고 있습니다. 무력감과 희망 부족으로 갇혀 있습니다. 하지만 탈출구가 있습니다.',
     reversedMeaning: '속박에서 벗어나고 있습니다. 자유와 새로운 관점이 생깁니다.',
     element: '공기',
+    imageSymbols: '묶인 여자, 칼 8개, 불가능해 보이는 상황',
   },
   {
     id: 58,
@@ -839,6 +875,7 @@ const cards = [
     uprightMeaning: '깊은 불안과 걱정으로 고민하고 있습니다. 악몽과 절망감이 있습니다. 도움을 청하세요.',
     reversedMeaning: '불안이 줄어들고 명확한 답이 보입니다. 걱정이 완화되고 안심합니다.',
     element: '공기',
+    imageSymbols: '침대의 남자, 칼 9개, 악몽, 손으로 머리를 잡음',
   },
   {
     id: 59,
@@ -853,6 +890,7 @@ const cards = [
     uprightMeaning: '극심한 고통과 패배를 겪고 있습니다. 가장 낮은 상태입니다. 하지만 이것이 끝이며 회복이 시작될 것입니다.',
     reversedMeaning: '고통의 끝이 보이고 회복이 시작됩니다. 새로운 시작의 희망이 있습니다.',
     element: '공기',
+    imageSymbols: '누운 남자, 칼 10개가 등에 꽂혀있음, 검은 하늘',
   },
   {
     id: 60,
@@ -867,6 +905,7 @@ const cards = [
     uprightMeaning: '호기심이 많고 진실을 찾으려 합니다. 지식 추구와 의사소통이 활발합니다. 질문을 던지고 배우세요.',
     reversedMeaning: '악의적 의도나 기만이 있습니다. 부주의하고 산만한 상태입니다.',
     element: '공기',
+    imageSymbols: '젊은 남자, 칼, 바람 부는 환경',
   },
   {
     id: 61,
@@ -881,6 +920,7 @@ const cards = [
     uprightMeaning: '지성과 명확한 의사소통이 특징입니다. 진실을 추구하고 용감하게 행동합니다. 분석적이고 합리적입니다.',
     reversedMeaning: '무분별한 행동과 기만이 있습니다. 혼란과 성급함으로 실수를 합니다.',
     element: '공기',
+    imageSymbols: '말 위의 기사, 칼, 빠른 움직임',
   },
   {
     id: 62,
@@ -895,6 +935,7 @@ const cards = [
     uprightMeaning: '지혜롭고 명확한 판단력이 있습니다. 진실을 꿰뚫어 보고 독립적입니다. 분석력이 뛰어납니다.',
     reversedMeaning: '과도하게 냉정하고 냉담해 보입니다. 의심이 많고 고독감을 느끼고 있습니다.',
     element: '공기',
+    imageSymbols: '왕좌의 여왕, 칼, 날개, 물가',
   },
   {
     id: 63,
@@ -909,6 +950,7 @@ const cards = [
     uprightMeaning: '강한 권위와 명확한 정의감이 있습니다. 지혜롭고 정직하게 결정합니다. 리더십과 명확한 판단력이 있습니다.',
     reversedMeaning: '권력을 남용하고 독재적입니다. 불정의와 폭력이 있을 수 있습니다.',
     element: '공기',
+    imageSymbols: '왕좌의 왕, 칼, 권력있는 표정',
   },
 
   // ========== 마이너 아르카나: 동전 (Pentacles, 64~77) ==========
@@ -926,6 +968,7 @@ const cards = [
     uprightMeaning: '물질적 기회와 풍요가 찾아옵니다. 번영과 성공의 신호입니다. 이 기회를 붙잡으세요.',
     reversedMeaning: '기회를 놓치고 있습니다. 물질적 손실이나 부족이 있습니다.',
     element: '흙',
+    imageSymbols: '손에서 나오는 동전, 정원, 선물같은 에너지',
   },
   {
     id: 65,
@@ -940,6 +983,7 @@ const cards = [
     uprightMeaning: '여러 일을 능숙하게 균형 있게 관리하고 있습니다. 적응 능력과 유연성이 있습니다. 계속 진행하세요.',
     reversedMeaning: '균형이 무너지고 과부하 상태입니다. 실수가 늘거나 낭비가 있습니다.',
     element: '흙',
+    imageSymbols: '저글링하는 남자, 동전 2개, 배와 파도',
   },
   {
     id: 66,
@@ -954,6 +998,7 @@ const cards = [
     uprightMeaning: '팀워크와 협력이 성공을 이룹니다. 기술이 인정받고 성장합니다. 함께 일하는 것이 효과적입니다.',
     reversedMeaning: '협력 부족으로 진행이 안 됩니다. 기술 부족이나 갈등이 있습니다.',
     element: '흙',
+    imageSymbols: '석공 3명, 대성당, 함께 만드는 모습',
   },
   {
     id: 67,
@@ -968,6 +1013,7 @@ const cards = [
     uprightMeaning: '자신이 가진 것을 꽉 잡고 있습니다. 보안과 안정을 추구합니다. 하지만 조금 더 느슨한 태도가 필요할 수도 있습니다.',
     reversedMeaning: '집착에서 벗어나고 나누려는 마음이 생깁니다. 관대함과 자유로운 흐름이 시작됩니다.',
     element: '흙',
+    imageSymbols: '남자가 동전을 쥔 모습, 왕좌, 보수적',
   },
   {
     id: 68,
@@ -982,6 +1028,7 @@ const cards = [
     uprightMeaning: '물질적 어려움과 손실을 겪고 있습니다. 외로움과 고립감이 있습니다. 하지만 도움을 청할 수 있습니다.',
     reversedMeaning: '어려움이 개선되고 회복이 시작됩니다. 도움과 희망이 나타납니다.',
     element: '흙',
+    imageSymbols: '걸인 2명, 동전 5개, 추위와 어둠',
   },
   {
     id: 69,
@@ -996,6 +1043,7 @@ const cards = [
     uprightMeaning: '나누고 관대한 마음으로 도움을 줍니다. 공정하고 균형 잡힌 배분이 있습니다. 좋은 보상이 옵니다.',
     reversedMeaning: '불공정하고 이기적입니다. 나눔을 거부하고 불균형이 있습니다.',
     element: '흙',
+    imageSymbols: '상인이 저울로 동전을 달아주는 모습, 공정함',
   },
   {
     id: 70,
@@ -1010,6 +1058,7 @@ const cards = [
     uprightMeaning: '지금까지의 노력을 평가하고 있습니다. 더 나은 결과를 위해 인내하세요. 성장의 신호가 보입니다.',
     reversedMeaning: '노력이 낭비되거나 부실합니다. 결과가 실망스럽고 포기하고 싶은 마음이 있습니다.',
     element: '흙',
+    imageSymbols: '남자가 동전 나무를 보는 모습, 기다림, 평가',
   },
   {
     id: 71,
@@ -1024,6 +1073,7 @@ const cards = [
     uprightMeaning: '기술을 배우고 숙련되고 있습니다. 노력과 경험이 쌓이고 있습니다. 계속 수련하세요.',
     reversedMeaning: '학습 의욕이 부족하고 노력이 부족합니다. 완성도가 낮습니다.',
     element: '흙',
+    imageSymbols: '장인이 동전을 새기는 모습, 학습, 숙련',
   },
   {
     id: 72,
@@ -1038,6 +1088,7 @@ const cards = [
     uprightMeaning: '부와 성공을 누리고 있습니다. 독립적이고 자유로우며 안락합니다. 노력의 결과를 즐기세요.',
     reversedMeaning: '부가 부족하거나 의존적입니다. 자존감이 낮고 불안정한 상태입니다.',
     element: '흙',
+    imageSymbols: '여자가 포도원에서 만족해하는 모습, 부유함, 새',
   },
   {
     id: 73,
@@ -1052,6 +1103,7 @@ const cards = [
     uprightMeaning: '부가 축적되고 세대를 넘어 번영합니다. 안정과 유산이 있습니다. 가족의 번영이 이어집니다.',
     reversedMeaning: '부의 손실이나 불안정이 있습니다. 유산 문제나 가족 갈등이 있습니다.',
     element: '흙',
+    imageSymbols: '가족과 10개의 동전, 유산, 정착지',
   },
   {
     id: 74,
@@ -1066,6 +1118,7 @@ const cards = [
     uprightMeaning: '신중하게 배우고 있습니다. 새로운 기회에 집중하고 있습니다. 학생의 자세로 배우세요.',
     reversedMeaning: '산만하고 미숙합니다. 게으름이나 집중력 부족이 있습니다.',
     element: '흙',
+    imageSymbols: '젊은 남자, 동전, 학생처럼 집중',
   },
   {
     id: 75,
@@ -1080,6 +1133,7 @@ const cards = [
     uprightMeaning: '근면하고 신중하게 일합니다. 절약하면서도 성실합니다. 느리지만 확실한 진행이 있습니다.',
     reversedMeaning: '게으르고 낭비합니다. 부주의하고 미숙한 태도가 있습니다.',
     element: '흙',
+    imageSymbols: '말 위의 기사, 동전, 신중함',
   },
   {
     id: 76,
@@ -1094,6 +1148,7 @@ const cards = [
     uprightMeaning: '실용적이고 양육하는 성격입니다. 풍요로움과 자립심이 있습니다. 안정된 기반을 만듭니다.',
     reversedMeaning: '낭비하고 의존적입니다. 실용성이 부족하고 무관심해 보입니다.',
     element: '흙',
+    imageSymbols: '왕좌의 여왕, 동전, 풍요, 토끼',
   },
   {
     id: 77,
@@ -1108,6 +1163,7 @@ const cards = [
     uprightMeaning: '부와 성공을 이룬 리더입니다. 안정과 번영을 이끌고 있습니다. 자신의 영향력을 발휘하세요.',
     reversedMeaning: '성공이 실패로 바뀌고 있습니다. 탐욕이나 낭비로 불안정해집니다.',
     element: '흙',
+    imageSymbols: '왕좌의 왕, 동전, 번영, 호랑이',
   },
 ];
 
