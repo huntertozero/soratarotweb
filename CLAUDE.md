@@ -298,6 +298,51 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - 사용법: 프롬프트에 `/sync` 입력
   - 참고: `.gitignore`로 인해 로컬 전용 (깃허브에는 추적되지 않음)
 
+### Phase 19: 모바일 최적화 — 반응형 레이아웃 전면 개선 ✅ 완료
+- [x] SHUFFLE 화면 카드 그리드 반응형 전환
+  - `style.css`: `repeat(13, 1fr)` 고정 → breakpoint별 열 수 조정
+    - `@media (max-width: 768px)`: 9열, gap 5px
+    - `@media (max-width: 600px)` 신규: 7열, gap 4px
+    - `@media (max-width: 480px)`: 6열, gap 4px
+  - `.card-back-item::before` 아이콘 크기 단계적 축소 (40px → 24px → 18px)
+  - `.card-back-item`, `.btn`: `touch-action: manipulation` 추가 (더블탭 줌 방지)
+  - `.btn`: `min-height: 48px` (터치 타겟 최소 기준 보장)
+- [x] READING 화면 모바일 레이아웃 전환
+  - `style.css` 768px 이하: `grid-template-columns: 1fr` (3열 → 1열 세로 스택)
+  - `.cards-summary-left`, `.cards-summary-right`: `position: static` + 가로 스크롤 바
+    - `flex-direction: row`, `overflow-x: auto`, 카드 아이템 `flex-shrink: 0`
+    - 768px: 카드 너비 80px / 480px: 65px
+  - `app.js`: `syncLayout()` 내 `window.innerWidth <= 768` 분기 추가
+    - 모바일에서 JS 인라인 스타일 초기화 후 CSS 미디어쿼리에 위임
+  - `app.js`: `_syncLayoutHandler` 모듈 레벨 변수로 scroll/resize 리스너 누적 메모리 누수 수정
+    - `displayReading()` 재호출 시 기존 리스너 제거 후 재등록
+- [x] CARD_REVEAL 화면: `.card-item` 고정 `width: 200px` → `max-width: 200px`
+  - 768px 이하에서 그리드 셀 크기에 맞게 유연하게 조정
+  - `#cards-display.spread-celtic/three/one`에 `width: 100%` 추가
+- [x] `body`: 768px 이하 `align-items: flex-start` (센터링 해제, 스크롤 허용)
+- [x] READING 화면 `reading-container` 패딩 축소 (768px: 20px 15px)
+
+### Phase 20: 카드 선택 화면 UX 개선 및 버그 수정 ✅ 완료
+- [x] 선택 카드 글로우 애니메이션 속도 개선 (`style.css`)
+  - `cardGlow 2s → 0.6s` (렉 걸린 착각 유발하던 느린 속도 해소)
+- [x] `shuffle-info` 상단 sticky 고정 (`style.css`)
+  - `position: sticky; top: 0; z-index: 100; width: 100%`
+  - 78장 그리드 스크롤 중에도 선택 카운트(N/N) 항상 상단 표시
+  - 배경 투명(`transparent`) + 텍스트에 `text-shadow(--color-void 글로우)`로 가독성 유지
+- [x] SHUFFLE 화면 버튼 수평 배치 고정 (`style.css`)
+  - 768px 이하에서도 `flex-direction: row; width: 100%` 유지
+  - 버튼 `flex: 1; white-space: nowrap` (텍스트 2줄 방지, 균등 폭)
+- [x] 질문입력 화면 버튼 배치 SHUFFLE과 통일 (`style.css`)
+  - `#screen-input-question .button-group`도 동일 규칙 적용
+- [x] 스프레드 선택 화면 "이전으로" 버튼 개선 (`index.html`, `style.css`)
+  - HTML: 단독 `<button>` → `<div class="button-group">` 감싸기 (가운데 정렬 자동 적용)
+  - 모바일: `min-width: 160px` (전체 폭 늘어남 방지)
+- [x] 카드 선택 취소 시 hover 고착 버그 수정 (`app.js`, `style.css`)
+  - 원인: `.selected` 제거 순간 `:hover:not(.selected)` 조건 즉시 충족 → `translateY(-8px)` 고정
+  - 수정: 해제 완료 시 `.no-hover` 클래스 250ms 부착 → hover 효과 차단
+  - CSS: `.card-back-item.no-hover { transform: none !important }`
+  - hover 선택자: `:not(.no-hover)` 조건 추가
+
 ### Phase 18: 프론트엔드 애니메이션 강화 + UI 세부 조정 ✅ 완료
 
 #### 18-1. 동적 배경 파티클 시스템 (Canvas 기반)
@@ -497,46 +542,6 @@ Invoke-RestMethod `
   - `public/js/app.js`: `displayReading()` 함수에서 켈틱 크로스인 경우에만 번호 뱃지 추가
   - `public/css/style.css`: `.card-number-badge` 클래스 신규 추가
 
-- **모바일 최적화**: PC 중심 UI → 모바일 반응형 구성
-  
-  **현재 상태:**
-  - WELCOME, SHUFFLE, CARD_REVEAL: 반응형 기본 양호
-  - READING: 좌우 3열(좌측 카드 | 중앙 해석 | 우측 카드) 고정 PC 레이아웃
-  - 모바일에서: 카드가 너무 작고, 해석 영역이 좁음
-  
-  **대상:**
-  - 모바일 (스마트폰): 화면 폭 480px 이하
-  - 태블릿: 480px ~ 1024px (기본 레이아웃 유지 가능)
-  - PC: 1024px 이상 (기존 3열 유지)
-  
-  **구현 전략:**
-  
-  **1) 미디어 쿼리 (css/style.css):**
-  - `@media (max-width: 480px)` 추가
-    - READING 화면:
-      - 좌우 고정 위치 제거 (position: fixed → static 또는 relative)
-      - 레이아웃: 세로 스택 (카드 → 해석 → 카드 순서 또는 카드 위/아래 통합)
-      - 카드 크기: 화면 폭의 80% 또는 최대 150px (읽을 수 있는 크기 유지)
-      - 해석: 풀 폭, 폰트 크기 16px 이상 (모바일 가독성)
-      - 마진/패딩: 축소 (예: 기존 15px → 8px)
-  
-  - `@media (max-width: 1024px)` 추가:
-    - 모든 화면: 좌우 마진 축소, 폰트 크기 조정
-    - 버튼: 크기 확대 (터치 타겟 최소 44px)
-  
-  **2) HTML 구조 (public/index.html):**
-  - 현재: 변경 없음 (CSS만으로 해결)
-  - 모바일에서 카드 순서: CSS flex-order 또는 CSS Grid로 재배치
-  
-  **3) JavaScript (public/js/app.js):**
-  - 윈도우 리사이즈 이벤트: 모바일 진입/탈출 시 해석 영역 높이 동기화 다시 실행
-  - 터치 스와이프 (선택사항): 카드 전환 기능은 나중에 추가
-  
-  **4) 추가 개선:**
-  - 질문 입력 필드: 모바일에서 더 커 보이기 (font-size 16px↑ 자동 줌 방지)
-  - 모달: 전체 화면 대응
-  - 네비게이션: 버튼 간격 확대
-
 ### ⭐ 우선순위 낮음
 
 - **프리셋 질문**: UI에 추천 질문 버튼 추가 가능
@@ -554,4 +559,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-27 (Phase 18 프론트엔드 애니메이션 강화 + UI 세부 조정)
+마지막 수정: 2026-05-28 (Phase 19 모바일 최적화 + Phase 20 카드 선택 화면 UX 개선)
