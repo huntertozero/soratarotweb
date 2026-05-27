@@ -414,14 +414,18 @@ textarea::placeholder {
   transform: translate(-50%, -50%);
 }
 
-.card-back-item:hover:not(.selected):not(.disabled):not(.no-hover) {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(249, 158, 11, 0.3);
-}
+/* hover 효과: 실제 마우스가 있는 기기(데스크탑)에서만 적용
+   모바일 터치 기기는 hover: none 이므로 이 블록이 무시됨 → 터치 후 hover 고착 현상 원천 차단 */
+@media (hover: hover) {
+  .card-back-item:hover:not(.selected):not(.disabled):not(.no-hover) {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(249, 158, 11, 0.3);
+  }
 
-/* 선택 해제 직후 hover 잠금 (카드가 올라간 채 멈추는 현상 방지) */
-.card-back-item.no-hover {
-  transform: none !important;
+  /* 선택 해제 직후 hover 잠금 (데스크탑 전용, 카드가 올라간 채 멈추는 현상 방지) */
+  .card-back-item.no-hover {
+    transform: none !important;
+  }
 }
 
 /* 카드 선택 시 폭발 애니메이션 */
