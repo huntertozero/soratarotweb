@@ -151,7 +151,7 @@ router.post('/reading', async (req, res) => {
     // 리딩 성공 → 24시간 제한 쿠키 설정
     if (!isDevBypass(req)) {
       res.cookie(getLimitCookieName(spread), Date.now().toString(), {
-        maxAge: 86400,          // 초 단위 24시간
+        maxAge: 86400 * 1000,   // 밀리초 단위 24시간 (Express res.cookie의 maxAge는 ms 단위)
         httpOnly: true,
         secure: IS_PRODUCTION,  // Railway(HTTPS)에서만 secure
         sameSite: 'Lax',
