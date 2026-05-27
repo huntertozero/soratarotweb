@@ -290,7 +290,7 @@ async function proceedToCardReveal() {
 
   // 스프레드별 위치 정보 (claudeService.js 포지션과 동일)
   const spreadPositions = {
-    one: ['현재'],
+    one: ['지금 이 순간'],
     three: ['과거', '현재', '미래'],
     celtic: [
       '현재 상황',
@@ -400,7 +400,7 @@ function displayReading(data) {
 
   // 스프레드별 위치 레이블 (claudeService.js 포지션과 동일)
   const spreadPositions = {
-    one: ['현재'],
+    one: ['지금 이 순간'],
     three: ['과거', '현재', '미래'],
     celtic: [
       '현재 상황',

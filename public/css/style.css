@@ -776,13 +776,13 @@ textarea::placeholder {
   z-index: 1;
 }
 
-/* 위치 레이블 (상단 중앙) — 카드 이름과 동일한 색상·그림자 */
+/* 위치 레이블 (상단 우측) — 카드 이름과 동일한 색상·그림자 */
 .csm-position-label {
   position: absolute;
   top: 8px;
   left: 4px;
   right: 4px;
-  text-align: center;
+  text-align: right;
   z-index: 2;
   color: var(--color-starlight);
   font-size: 11px;
