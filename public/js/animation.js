@@ -38,6 +38,12 @@ function flipCard(cardElement, delayMs = 0) {
         // 카드 플립 애니메이션 시작
         cardInner.classList.add('flipped');
 
+        // 플립 Flash 효과: 켈틱 크로스(10장)는 강도 낮춤 (눈 피로 방지)
+        if (window.Effects) {
+          const totalCards = document.querySelectorAll('.card-element').length;
+          window.Effects.triggerFlipFlash(totalCards > 3 ? 0.22 : 0.55);
+        }
+
         // 역방향 여부 확인
         if (cardElement.dataset.reversed === 'true') {
           cardInner.classList.add('reversed');

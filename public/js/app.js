@@ -117,6 +117,11 @@ function showScreen(screenId) {
 
   appState.currentScreen = screenId;
 
+  // 화면 전환 시 배경 파티클 폭발 효과
+  if (window.ParticleSystem) {
+    window.ParticleSystem.triggerScreenTransition(screenId);
+  }
+
   // select-spread 화면 진입 시마다 잠금 상태 최신화
   if (screenId === 'select-spread') {
     fetchSpreadLimits();
@@ -286,14 +291,22 @@ function setupCardSelectionListeners() {
       if (isSelected) {
         // 선택 해제 애니메이션
         item.classList.add('deselecting');
+        // 선택 해제 시 지속 파티클 중지
+        if (window.Effects) {
+          window.Effects.stopSelectedCardParticles(item);
+        }
         setTimeout(() => {
           item.classList.remove('deselecting');
           item.classList.remove('selected');
         }, 400);
         appState.selectedCards = appState.selectedCards.filter(c => c.id !== cardId);
       } else if (appState.selectedCards.length < requiredCount) {
-        // 선택 추가 애니메이션
+        // 선택 추가 애니메이션 + 스파크 효과
         item.classList.add('selecting');
+        if (window.Effects) {
+          window.Effects.triggerCardSpark(item);
+          window.Effects.startSelectedCardParticles(item);
+        }
         setTimeout(() => {
           item.classList.remove('selecting');
           item.classList.add('selected');
@@ -383,10 +396,11 @@ async function proceedToCardReveal() {
   // 카드 표시 및 플립
   await displayAndFlipCards(appState.selectedCards, positions);
 
-  // 로딩 상태 표시
+  // 로딩 상태 표시 + 오라클 구체 시작
   const loadingState = document.getElementById('loading-state');
   if (loadingState) {
     loadingState.classList.add('active');
+    if (window.Effects) window.Effects.startOracleAnimation();
   }
 
   // 자동으로 해석 요청
@@ -411,6 +425,7 @@ async function fetchReading() {
         msgEl.textContent = loadingMessages[appState.selectedSpread] || loadingMessages.one;
       }
       loadingState.classList.add('active');
+      if (window.Effects) window.Effects.startOracleAnimation();
       console.log('✅ 로딩 상태 활성화');
     }
 
@@ -441,7 +456,10 @@ async function fetchReading() {
         showError(errorData.error || '24시간 사용 제한에 걸렸습니다.');
         fetchSpreadLimits(); // 잠금 UI 즉시 갱신
         const loadingState = document.getElementById('loading-state');
-        if (loadingState) loadingState.classList.remove('active');
+        if (loadingState) {
+          loadingState.classList.remove('active');
+          if (window.Effects) window.Effects.stopOracleAnimation();
+        }
         return;
       }
       throw new Error(errorData.error || '타로 해석 요청 실패');
@@ -457,9 +475,10 @@ async function fetchReading() {
     console.log('✅ cards 수:', data.cards.length, '장');
     appState.reading = data.reading;
 
-    // 로딩 상태 숨기기
+    // 로딩 상태 숨기기 + 오라클 구체 정지
     if (loadingState) {
       loadingState.classList.remove('active');
+      if (window.Effects) window.Effects.stopOracleAnimation();
       console.log('✅ 로딩 상태 비활성화');
     }
 
@@ -473,6 +492,7 @@ async function fetchReading() {
     const loadingState = document.getElementById('loading-state');
     if (loadingState) {
       loadingState.classList.remove('active');
+      if (window.Effects) window.Effects.stopOracleAnimation();
     }
   }
 }
