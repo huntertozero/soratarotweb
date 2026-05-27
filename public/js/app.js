@@ -19,6 +19,10 @@ let spreadLimitData = {};
 // displayReading() 재호출 시 리스너 누적 방지용
 let _syncLayoutHandler = null;
 
+// ========== 카드 선택 화면 버튼 핀 옵저버 ==========
+// 모바일에서 마지막 카드가 뷰포트에 들어오면 버튼 고정, 나가면 해제
+let _shuffleBtnObserver = null;
+
 // ========== 스프레드 사용 제한 함수 ==========
 
 function formatCountdown(ms) {
@@ -255,6 +259,44 @@ function proceedToShuffle() {
   createCardGrid();
   setupCardSelectionListeners();
   updateCardSelectionUI();
+  setupShuffleButtonPin(); // 모바일: 마지막 카드 도달 시 버튼 고정
+}
+
+// 모바일 전용: 마지막 카드가 뷰포트에 들어오면 버튼 하단 고정, 나가면 해제
+function setupShuffleButtonPin() {
+  // 데스크탑(769px 이상)에서는 동작하지 않음
+  if (window.innerWidth > 768) return;
+
+  const cardsGrid = document.getElementById('cards-grid');
+  const buttonGroup = document.querySelector('#screen-shuffle .button-group');
+  if (!cardsGrid || !buttonGroup) return;
+
+  // 이전 옵저버 정리
+  if (_shuffleBtnObserver) {
+    _shuffleBtnObserver.disconnect();
+    _shuffleBtnObserver = null;
+  }
+
+  // 마지막 카드(78번째)를 감지 대상으로 설정
+  const lastCard = cardsGrid.lastElementChild;
+  if (!lastCard) return;
+
+  _shuffleBtnObserver = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        // 마지막 카드가 화면에 보임 → 버튼 고정, 카드 그리드 하단 여백 추가
+        buttonGroup.classList.add('is-pinned');
+        cardsGrid.style.paddingBottom = 'calc(88px + env(safe-area-inset-bottom, 0px))';
+      } else {
+        // 마지막 카드가 화면 밖 → 버튼 해제, 여백 제거
+        buttonGroup.classList.remove('is-pinned');
+        cardsGrid.style.paddingBottom = '';
+      }
+    },
+    { threshold: 0.1 } // 마지막 카드의 10%만 보여도 감지
+  );
+
+  _shuffleBtnObserver.observe(lastCard);
 }
 
 // SHUFFLE 화면: 78장 카드 그리드 생성
