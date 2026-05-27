@@ -438,12 +438,19 @@ function displayReading(data) {
       // 역방향: 이미지만 상하반전 (텍스트는 정상)
       const imgTransform = card.isReversed ? 'transform: scaleY(-1);' : '';
 
+      // 켈틱 크로스일 때만 번호 뱃지 (1-based 표시)
+      const isCeltic = appState.selectedSpread === 'celtic';
+      const badgeHtml = isCeltic
+        ? `<div class="card-number-badge">${positionIndex + 1}</div>`
+        : '';
+
       return `
         <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
           <!-- 카드 이미지 (배경) -->
           <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
           <!-- 어두운 오버레이 -->
           <div class="csm-overlay"></div>
+          ${badgeHtml}
           <!-- 위치 레이블 (상단 중앙) -->
           ${posLabel ? `<div class="csm-position-label">${posLabel}</div>` : ''}
           <!-- 카드 이름 / REVERSE (하단) -->

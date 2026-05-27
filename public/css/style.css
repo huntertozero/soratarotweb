@@ -820,6 +820,24 @@ textarea::placeholder {
   word-break: break-word;
 }
 
+/* 켈틱 크로스 카드 순번 뱃지 (좌상단 원형) */
+.card-number-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;                          /* csm-overlay(1), csm-position-label(2)보다 위 */
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-gold);       /* #f59e0b — 앱 기본 금색 */
+  color: var(--color-void);            /* #0a0a1a — 짙은 배경색, 높은 대비 */
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
 .reading-content {
   background: linear-gradient(135deg, rgba(26, 16, 64, 0.8) 0%, rgba(45, 27, 78, 0.8) 100%);
   border: 2px solid var(--color-border);
