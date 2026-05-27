@@ -834,42 +834,76 @@ textarea::placeholder {
   font-size: 15px;
 }
 
-/* 마크다운 스타일 */
+/* 마크다운 스타일 (marked.js 렌더링 기준) */
 .reading-text h1,
 .reading-text h2,
 .reading-text h3 {
   color: var(--color-starlight);
-  margin: 20px 0 10px 0;
   font-family: var(--font-serif);
+  margin: 22px 0 8px 0;
+  line-height: 1.4;
 }
 
-.reading-text h1 {
-  font-size: 24px;
-}
+.reading-text h1 { font-size: 22px; }
+.reading-text h2 { font-size: 18px; }
+.reading-text h3 { font-size: 15px; }
 
-.reading-text h2 {
-  font-size: 20px;
-}
-
-.reading-text h3 {
-  font-size: 16px;
+/* 첫 번째 제목은 위 여백 제거 */
+.reading-text > h1:first-child,
+.reading-text > h2:first-child,
+.reading-text > h3:first-child {
+  margin-top: 0;
 }
 
 .reading-text strong {
   color: var(--color-gold);
+  font-weight: 700;
+}
+
+.reading-text em {
+  color: #c4b5fd;
+  font-style: italic;
 }
 
 .reading-text p {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
+/* 리스트: 들여쓰기 및 중첩 */
 .reading-text ul,
 .reading-text ol {
-  margin: 15px 0 15px 20px;
+  margin: 8px 0 12px 22px;
+  padding: 0;
 }
 
+.reading-text ul { list-style-type: disc; }
+.reading-text ol { list-style-type: decimal; }
+
+/* 중첩 리스트 */
+.reading-text ul ul,
+.reading-text ol ol,
+.reading-text ul ol,
+.reading-text ol ul {
+  margin: 4px 0 4px 20px;
+}
+
+.reading-text ul ul { list-style-type: circle; }
+
 .reading-text li {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  line-height: 1.7;
+}
+
+/* 리스트 내부 단락 간격 축소 */
+.reading-text li > p {
+  margin-bottom: 4px;
+}
+
+/* 구분선 */
+.reading-text hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 20px 0;
 }
 
 /* ========== 버튼 스타일 ========== */

@@ -10,35 +10,11 @@ const appState = {
   reading: null,
 };
 
-// 간단한 마크다운을 HTML로 변환
-function simpleMarkdownToHtml(text) {
+// 마크다운을 HTML로 변환 (marked.js 사용)
+function renderMarkdown(text) {
   if (!text) return '';
-
-  return text
-    .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/__(.*?)__/g, '<strong>$1</strong>')
-    .replace(/_(.*?)_/g, '<em>$1</em>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/\n\n+/g, '</p><p>')
-    .replace(/^(.+)$/gm, (match, line) => {
-      if (
-        line.startsWith('<h') ||
-        line.startsWith('<p>') ||
-        line.startsWith('<ul') ||
-        line.startsWith('<ol') ||
-        line.startsWith('</p>')
-      ) {
-        return match;
-      }
-      return '<p>' + line + '</p>';
-    })
-    .replace(/<\/p><p>/g, '</p><p>')
-    .replace(/- (.*?)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-    .replace(/(<\/li>)<li>/g, '$1<li>');
+  // breaks: true → 단일 줄바꿈도 <br>로 처리 (한국어 프롬프트 출력에 적합)
+  return marked.parse(text, { breaks: true });
 }
 
 // ========== 화면 관리 ==========
@@ -508,7 +484,7 @@ function displayReading(data) {
   console.log('🔍 reading-text 요소:', readingText);
   if (readingText) {
     try {
-      readingText.innerHTML = simpleMarkdownToHtml(data.reading);
+      readingText.innerHTML = renderMarkdown(data.reading);
       console.log('✅ 해석 텍스트 표시 완료');
     } catch (textErr) {
       console.error('❌ 텍스트 렌더링 오류:', textErr);
