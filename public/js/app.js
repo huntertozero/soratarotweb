@@ -293,6 +293,9 @@ function setupCardSelectionListeners() {
         setTimeout(() => {
           item.classList.remove('deselecting');
           item.classList.remove('selected');
+          // 해제 직후 hover 효과가 즉시 적용되어 카드가 올라간 채 멈추는 현상 방지
+          item.classList.add('no-hover');
+          setTimeout(() => item.classList.remove('no-hover'), 250);
         }, 400);
         appState.selectedCards = appState.selectedCards.filter(c => c.id !== cardId);
       } else if (appState.selectedCards.length < requiredCount) {
