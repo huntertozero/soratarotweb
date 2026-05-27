@@ -354,13 +354,8 @@ textarea::placeholder {
   position: sticky;
   top: 0;
   z-index: 100;
-  width: 100%;           /* 부모 flex 컨테이너 전체 폭 채우기 */
-  /* 스크롤 시 배경이 투명하면 카드 그리드가 비쳐 보이므로 배경 처리 */
-  background: linear-gradient(
-    to bottom,
-    var(--color-void) 80%,
-    transparent
-  );
+  width: 100%;
+  background: transparent;
   text-align: center;
   padding: 16px 0 24px;
   margin-bottom: 10px;
@@ -370,12 +365,15 @@ textarea::placeholder {
   font-size: 18px;
   color: var(--color-silver);
   margin-bottom: 10px;
+  /* 투명 배경에서 스크롤 시 카드 위 텍스트 가독성 확보 */
+  text-shadow: 0 0 12px var(--color-void), 0 0 24px var(--color-void);
 }
 
 .shuffle-count {
   font-size: 16px;
   color: var(--color-gold);
   font-weight: 600;
+  text-shadow: 0 0 12px var(--color-void), 0 0 24px var(--color-void);
 }
 
 /* 카드 그리드 (13×6, 약간 겹침) */
