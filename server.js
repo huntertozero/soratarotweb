@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const cookieParser = require('cookie-parser');
 
 // API 키 조기 검증
 if (!process.env.ANTHROPIC_API_KEY) {
@@ -17,10 +19,22 @@ const PORT = process.env.PORT || 3000;
 
 // 미들웨어
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // API 라우트
 app.use('/api', readingRouter);
+
+// GET /dev → 개발용 진입점 (index.html에 dev 플래그 주입)
+app.get('/dev', (req, res) => {
+  const htmlPath = path.join(__dirname, 'public', 'index.html');
+  let html = fs.readFileSync(htmlPath, 'utf-8');
+  html = html.replace(
+    '</head>',
+    '  <script>window.TAROT_APP_MODE = "dev";</script>\n</head>'
+  );
+  res.type('html').send(html);
+});
 
 // SPA fallback: 모든 비-API 경로를 index.html로 리다이렉트
 app.get('*', (req, res) => {

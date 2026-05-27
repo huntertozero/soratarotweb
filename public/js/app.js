@@ -10,6 +10,90 @@ const appState = {
   reading: null,
 };
 
+// ========== 스프레드 사용 제한 ==========
+const IS_DEV_MODE = window.TAROT_APP_MODE === 'dev';
+let spreadLimitIntervalId = null;
+let spreadLimitData = {};
+
+// ========== 스프레드 사용 제한 함수 ==========
+
+function formatCountdown(ms) {
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h >= 1) return `🔒 ${h}시간 ${m}분 후 사용 가능`;
+  if (m >= 1) return `🔒 ${m}분 ${sec}초 후 사용 가능`;
+  return `🔒 ${sec}초 후 사용 가능`;
+}
+
+async function fetchSpreadLimits() {
+  if (IS_DEV_MODE) return; // 개발 모드: 제한 UI 완전 스킵
+  try {
+    const res = await fetch('/api/limits');
+    if (!res.ok) return;
+    spreadLimitData = await res.json();
+    renderSpreadLimitUI();
+  } catch (e) {
+    console.warn('⚠️ 사용 제한 상태 조회 실패:', e);
+  }
+}
+
+function renderSpreadLimitUI() {
+  if (IS_DEV_MODE) return;
+  const cards = document.querySelectorAll('.spread-card');
+  let hasLocked = false;
+
+  cards.forEach(card => {
+    const spread = card.dataset.spread;
+    if (!spread || !spreadLimitData[spread]) return;
+
+    const { locked, remainingMs } = spreadLimitData[spread];
+
+    if (locked && remainingMs > 0) {
+      hasLocked = true;
+      card.classList.add('locked');
+
+      // 카운트다운 텍스트 요소: 없으면 생성, 있으면 갱신
+      let el = card.querySelector('.spread-countdown');
+      if (!el) {
+        el = document.createElement('p');
+        el.className = 'spread-countdown';
+        card.appendChild(el);
+      }
+      el.textContent = formatCountdown(remainingMs);
+      // 로컬 카운트다운: 1초씩 차감
+      spreadLimitData[spread].remainingMs = Math.max(0, remainingMs - 1000);
+    } else {
+      card.classList.remove('locked');
+      card.querySelector('.spread-countdown')?.remove();
+      if (spreadLimitData[spread]) {
+        spreadLimitData[spread] = { locked: false, remainingMs: 0 };
+      }
+    }
+  });
+
+  if (hasLocked) {
+    // 잠긴 카드가 있을 때만 interval 실행 (중복 방지)
+    if (!spreadLimitIntervalId) {
+      spreadLimitIntervalId = setInterval(() => {
+        const anyExpired = Object.values(spreadLimitData)
+          .some(d => d.locked && d.remainingMs <= 0);
+        if (anyExpired) {
+          fetchSpreadLimits(); // 만료 시 서버 재조회로 정확성 보장
+        } else {
+          renderSpreadLimitUI();
+        }
+      }, 1000);
+    }
+  } else {
+    if (spreadLimitIntervalId) {
+      clearInterval(spreadLimitIntervalId);
+      spreadLimitIntervalId = null;
+    }
+  }
+}
+
 // 마크다운을 HTML로 변환 (marked.js 사용)
 function renderMarkdown(text) {
   if (!text) return '';
@@ -32,6 +116,11 @@ function showScreen(screenId) {
   }
 
   appState.currentScreen = screenId;
+
+  // select-spread 화면 진입 시마다 잠금 상태 최신화
+  if (screenId === 'select-spread') {
+    fetchSpreadLimits();
+  }
 }
 
 function showError(message) {
@@ -65,6 +154,8 @@ function setupEventListeners() {
   const spreadCards = document.querySelectorAll('.spread-card');
   spreadCards.forEach(card => {
     card.addEventListener('click', () => {
+      // CSS pointer-events:none 외 이중 방어
+      if (card.classList.contains('locked')) return;
       const spread = card.dataset.spread;
       appState.selectedSpread = spread;
       showScreen('input-question');
@@ -332,6 +423,8 @@ async function fetchReading() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        // 개발 모드일 때 서버 우회 헤더 추가
+        ...(IS_DEV_MODE ? { 'X-Tarot-Dev': '1' } : {}),
       },
       body: JSON.stringify(requestBody),
     });
@@ -340,6 +433,14 @@ async function fetchReading() {
 
     if (!response.ok) {
       const errorData = await response.json();
+      // 429: 24시간 사용 제한 초과
+      if (response.status === 429) {
+        showError(errorData.error || '24시간 사용 제한에 걸렸습니다.');
+        fetchSpreadLimits(); // 잠금 UI 즉시 갱신
+        const loadingState = document.getElementById('loading-state');
+        if (loadingState) loadingState.classList.remove('active');
+        return;
+      }
       throw new Error(errorData.error || '타로 해석 요청 실패');
     }
 
@@ -528,5 +629,6 @@ function displayReading(data) {
 
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
+  fetchSpreadLimits(); // 초기 잠금 상태 조회 (IS_DEV_MODE면 즉시 return)
   showScreen('welcome');
 });

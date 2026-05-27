@@ -5,6 +5,53 @@ const { generateReading } = require('../services/claudeService');
 
 const router = express.Router();
 
+// ========== 24시간 사용 제한 헬퍼 ==========
+
+const LIMIT_DURATION_MS = 24 * 60 * 60 * 1000;
+const LIMIT_SPREADS = ['one', 'three', 'celtic'];
+const SPREAD_NAMES = { one: '원 카드', three: '쓰리 카드', celtic: '켈틱 크로스' };
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+function getLimitCookieName(spread) {
+  return `tarot_limit_${spread}`;
+}
+
+function getRemainingMs(cookieValue) {
+  if (!cookieValue) return 0;
+  const timestamp = parseInt(cookieValue, 10);
+  if (isNaN(timestamp) || timestamp <= 0) return 0;
+  const remaining = LIMIT_DURATION_MS - (Date.now() - timestamp);
+  return remaining > 0 ? remaining : 0;
+}
+
+// 개발 우회 헤더 검증 (프로덕션에서는 항상 false)
+function isDevBypass(req) {
+  return !IS_PRODUCTION && req.headers['x-tarot-dev'] === '1';
+}
+
+// GET /api/limits - 스프레드별 잠금 상태 반환
+router.get('/limits', (req, res) => {
+  const result = {};
+  LIMIT_SPREADS.forEach(spread => {
+    if (isDevBypass(req)) {
+      result[spread] = { locked: false, remainingMs: 0 };
+      return;
+    }
+    const remaining = getRemainingMs(req.cookies[getLimitCookieName(spread)]);
+    result[spread] = { locked: remaining > 0, remainingMs: remaining };
+  });
+  return res.status(200).json(result);
+});
+
+// DELETE /api/limits - 모든 제한 쿠키 초기화 (개발 전용)
+router.delete('/limits', (req, res) => {
+  if (IS_PRODUCTION) {
+    return res.status(403).json({ error: '프로덕션 환경에서는 사용할 수 없습니다.' });
+  }
+  LIMIT_SPREADS.forEach(spread => res.clearCookie(getLimitCookieName(spread)));
+  return res.status(200).json({ message: '모든 제한이 초기화되었습니다.' });
+});
+
 // POST /api/reading - 타로 해석 요청
 router.post('/reading', async (req, res) => {
   try {
@@ -15,6 +62,17 @@ router.post('/reading', async (req, res) => {
       return res.status(400).json({
         error: '잘못된 spread 타입입니다. "one", "three", "celtic" 중 하나여야 합니다.',
       });
+    }
+
+    // 1-b. 24시간 사용 제한 체크
+    if (!isDevBypass(req)) {
+      const remaining = getRemainingMs(req.cookies[getLimitCookieName(spread)]);
+      if (remaining > 0) {
+        return res.status(429).json({
+          error: `${SPREAD_NAMES[spread]}는 24시간에 1회만 사용할 수 있습니다.`,
+          remainingMs: remaining,
+        });
+      }
     }
 
     // 2. 카드 수 검증
@@ -89,6 +147,16 @@ router.post('/reading', async (req, res) => {
         ? rc.cardData.reversedMeaning
         : rc.cardData.uprightMeaning,
     }));
+
+    // 리딩 성공 → 24시간 제한 쿠키 설정
+    if (!isDevBypass(req)) {
+      res.cookie(getLimitCookieName(spread), Date.now().toString(), {
+        maxAge: 86400,          // 초 단위 24시간
+        httpOnly: true,
+        secure: IS_PRODUCTION,  // Railway(HTTPS)에서만 secure
+        sameSite: 'Lax',
+      });
+    }
 
     return res.status(200).json({
       reading,
