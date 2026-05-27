@@ -298,6 +298,61 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - 사용법: 프롬프트에 `/sync` 입력
   - 참고: `.gitignore`로 인해 로컬 전용 (깃허브에는 추적되지 않음)
 
+### Phase 18: 프론트엔드 애니메이션 강화 + UI 세부 조정 ✅ 완료
+
+#### 18-1. 동적 배경 파티클 시스템 (Canvas 기반)
+- [x] `public/js/particles.js` 신규 생성
+  - 기존 `body::before` CSS 정적 별 배경 제거 → Canvas 동적 파티클로 교체
+  - 150개 별 파티클: 반짝임(opacity 펄싱), 흐름(vx/vy 이동), 마우스 120px 반응 (끌림 효과)
+  - 오로라 blob 3개: 보라/파랑 radial-gradient, sin 파형 색상 펄싱
+  - 화면 전환 시 파티클 폭발 후 lerp 복귀 (`triggerScreenTransition()`)
+  - 모션 블러: `clearRect` 대신 반투명 fill로 잔상 효과 (`rgba(10,10,26,0.18)`)
+  - 성능 안전망: `prefers-reduced-motion` / `hardwareConcurrency ≤ 2` 시 파티클 수 절반
+
+#### 18-2. 카드 이펙트 + 오라클 구체 로딩 UI
+- [x] `public/js/effects.js` 신규 생성
+  - **카드 선택 스파크** (`triggerCardSpark()`): 클릭 시 28개 물리 기반 파티클 폭발
+    - gold / arcane / celestial / starlight 색상 믹스
+    - 중력(vy += 0.06), 공기저항(vx *= 0.985), 서서히 사라짐(opacity -= 0.015)
+    - `MAX_SPARKS = 200` 전역 카운터로 DOM 누적 방지
+  - **선택 카드 지속 파티클** (`startSelectedCardParticles()` / `stopSelectedCardParticles()`):
+    - 선택 중인 카드에서 매 180ms 소형 파티클 1~2개 위로 흘러올라가며 페이드아웃
+    - `data-particle-interval`로 interval ID 관리
+  - **카드 플립 Flash** (`triggerFlipFlash(cardElement, intensity)`):
+    - 전체 화면 → **카드 개별** `position:absolute` 오버레이로 변경
+    - `.card-item`의 `overflow:hidden`으로 카드 경계 자동 클리핑
+    - 기본 강도 0.28 (1·3장) / 0.11 (10장), 0.65s ease-out
+  - **오라클 수정구슬 로딩 UI** (`startOracleAnimation()` / `stopOracleAnimation()`):
+    - Canvas 2D: 외부 글로우 + 구체 본체 입체감 + 내부 안개 + 룬 기호 궤도 공전
+    - 룬 기호 8개 타원 궤도, sin(angle) depth로 원근감 (앞쪽: 크고 밝게, 뒤쪽: 작고 희미하게)
+    - 캔버스 320×320px (중심 160,160): 글로우(r*2.2=121px)가 경계 전 완전 페이드 → 네모 클리핑 해소
+- [x] `public/index.html`: `particles.js` / `effects.js` 스크립트 추가, `<div class="spinner">` → `<canvas class="oracle-canvas">` 교체
+- [x] `public/css/style.css`:
+  - `body::before` 정적 별 + `@keyframes twinkle` 제거
+  - `.oracle-canvas` 320×320px, `@keyframes flashFade`, `.card-spark` 추가
+  - `.spinner { display: none }` 처리
+- [x] `public/js/app.js`:
+  - `showScreen()`: `window.ParticleSystem.triggerScreenTransition()` 훅 추가
+  - `setupCardSelectionListeners()`: 카드 선택/해제 시 스파크·지속파티클 연결
+  - `fetchReading()`: 로딩 상태 활성화/비활성화 시 오라클 애니메이션 시작/정지 (3곳)
+- [x] `public/js/animation.js`: `flipCard()` 내 `triggerFlipFlash(cardElement, intensity)` 연결
+
+#### 18-3. UI 세부 조정
+- [x] 카드 선택 스파크 속도 조정: 빠른 폭발 → 느리게 퍼지도록
+  - 초기 속도: `3~10 px/f → 1~3.5 px/f`
+  - 중력: `0.22 → 0.06`, 공기저항: `0.97 → 0.985`, 투명도 감소: `0.033 → 0.015`
+- [x] 카드 플립 빛 효과: 전체 화면 → 카드 개별 적용, 밝기 50% 감소
+- [x] 오라클 구체 글로우 네모 클리핑 버그 수정
+  - 원인: 캔버스 200×200, 글로우 반지름 121px > 중심~끝 100px → 직사각형 경계 노출
+  - 수정: 캔버스 320×320, 중심점 (160,160) → 여유 39px 확보
+- [x] 질문 입력 화면 `0/200` 텍스트 textarea에 근접 배치
+  - `textarea { margin-bottom: 12px → 4px }`로 8px 위로 이동 (버튼도 동일하게 상승)
+- [x] 질문 입력 화면 '질문 없이 진행하기' 링크 제거
+  - `index.html`: `<a id="btn-skip-question">` 태그 삭제
+  - `app.js`: `btn-skip-question` 이벤트 리스너 삭제
+- [x] 질문 입력 화면 '선택사항' 텍스트 주황색(`--color-gold`) 적용
+  - `index.html`: `<span style="color: var(--color-gold);">선택사항</span>` 처리
+
 ---
 
 ## 파일별 책임
@@ -499,4 +554,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-27 (Phase 17 /sync 커스텀 슬래시 커맨드 추가)
+마지막 수정: 2026-05-27 (Phase 18 프론트엔드 애니메이션 강화 + UI 세부 조정)
