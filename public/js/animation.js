@@ -25,7 +25,7 @@ function flipCard(cardElement, delayMs = 0) {
         // 하이라이트 애니메이션 이벤트
         highlight.addEventListener('animationend', showImage, { once: true });
 
-        // 타임아웃 폴백 (0.6초)
+        // 타임아웃 폴백 (CSS transition 0.7s + 여유 50ms)
         setTimeout(() => {
           if (highlight.parentElement) {
             console.log('⏱️ 타임아웃 - 강제 이미지 표시');
@@ -33,7 +33,7 @@ function flipCard(cardElement, delayMs = 0) {
             if (highlight.parentElement) highlight.remove();
           }
           resolve();
-        }, 600);
+        }, 750);
 
         // 카드 플립 애니메이션 시작
         cardInner.classList.add('flipped');
@@ -47,11 +47,13 @@ function flipCard(cardElement, delayMs = 0) {
   });
 }
 
-// 순차 카드 플립 (여러 카드를 순서대로)
-async function flipCardsSequentially(cardElements, delayBetweenFlips = 500) {
-  for (let i = 0; i < cardElements.length; i++) {
-    await flipCard(cardElements[i], delayBetweenFlips * i);
-  }
+// 순차 카드 플립 (모든 카드 동시에 타이머 시작, 각자 stagger 딜레이로 순차 플립)
+async function flipCardsSequentially(cardElements, delayBetweenFlips = 300) {
+  // Promise.all로 병렬 실행: 누적 await 대기 없이 각 카드가 delayBetweenFlips * i 후 독립 플립
+  const promises = cardElements.map((el, i) =>
+    flipCard(el, delayBetweenFlips * i)
+  );
+  await Promise.all(promises);
 }
 
 // HTML 요소 생성: 카드 아이템
