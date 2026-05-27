@@ -718,7 +718,7 @@ textarea::placeholder {
 .reading-question {
   display: none; /* JS가 질문 있을 때만 block으로 전환 */
   background: rgba(100, 181, 246, 0.08);
-  border: 1px solid rgba(100, 181, 246, 0.3);
+  border: 2px solid rgba(100, 181, 246, 0.3);
   border-radius: 10px;
   padding: 14px 18px;
   margin-bottom: 24px;
