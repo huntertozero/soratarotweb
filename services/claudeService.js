@@ -66,11 +66,17 @@ function formatCardsForPrompt(cards, cardDatabase, spread) {
       const meaning = card.isReversed
         ? cardData.reversedMeaning
         : cardData.uprightMeaning;
+      // imageSymbols가 있을 때만 줄 추가 (마이너 카드 중 미작성분도 깔끔하게 처리)
+      const imageSymbols = cardData.imageSymbols
+        ? `\n- 이미지 묘사: ${cardData.imageSymbols}` : '';
+      // 마이너 카드는 수트 정보 추가
+      const suitInfo = cardData.suit ? ` / ${cardData.suit}` : '';
 
       return `
 **위치 ${index + 1}: ${positions[index] || `위치 ${index + 1}`}**
 - 카드: ${cardData.nameKo} (${direction})
-- 키워드: ${keywords}
+- 원소: ${cardData.element}${suitInfo}
+- 핵심 키워드: ${keywords}${imageSymbols}
 - 의미: ${meaning}`;
     })
     .join('\n');
