@@ -286,6 +286,12 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - `app.js` `proceedToCardReveal()`: `one` 스프레드에서 `positions = null` 전달
   - 쓰리 카드·켈틱 크로스의 위치 레이블은 그대로 유지
 
+### Phase 16: 24시간 제한 쿠키 만료 버그 수정 ✅ 완료
+- [x] `routes/reading.js` 쿠키 `maxAge` 단위 오류 수정
+  - 원인: Express `res.cookie()`의 `maxAge`는 **밀리초** 단위인데 `86400`(초)으로 설정 → 실제 만료 86.4초
+  - 증상: 해석 완료 후 약 86초가 지나면 쿠키 자동 만료 → '처음으로' 버튼 후 잠금이 풀린 것처럼 보임
+  - 수정: `maxAge: 86400` → `maxAge: 86400 * 1000` (86,400,000ms = 24시간)
+
 ---
 
 ## 파일별 책임
@@ -487,4 +493,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-27 (Phase 15 24시간 사용 제한 + Railway 배포 준비 완성)
+마지막 수정: 2026-05-27 (Phase 16 24시간 제한 쿠키 만료 버그 수정)
