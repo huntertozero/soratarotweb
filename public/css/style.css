@@ -791,6 +791,11 @@ textarea::placeholder {
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
+/* 3장 스프레드 위치 레이블: 가운데 정렬 */
+.csm-position-label--center {
+  text-align: center;
+}
+
 /* 카드 이름 + REVERSE 묶음 (하단) */
 .csm-card-info {
   position: relative;
