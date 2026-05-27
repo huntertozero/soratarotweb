@@ -259,6 +259,33 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - `app.js`: `displayReading()`에 질문 렌더링 로직 추가 (질문 없으면 자동 숨김)
   - `style.css`: `.reading-question` 파란 테두리 박스 스타일 추가
 
+### Phase 15: 24시간 사용 제한 + Railway 배포 준비 ✅ 완료
+- [x] 스프레드별 24시간 1회 사용 제한 구현 (Railway 다중 사용자 대응)
+  - `cookie-parser` 패키지 추가
+  - `server.js`: cookieParser 미들웨어 등록, `/dev` 개발용 진입점 추가
+    - `/dev` 접속 시 `index.html`에 `window.TAROT_APP_MODE = "dev"` 플래그 주입
+  - `routes/reading.js`: 24시간 제한 헬퍼 함수 추가
+    - `GET /api/limits`: 스프레드별 잠금 상태 반환
+    - `DELETE /api/limits`: 모든 제한 쿠키 초기화 (개발 전용, 프로덕션에서 403)
+    - `POST /api/reading`: spread 검증 후 쿠키 체크 → 제한 중이면 429 + remainingMs 반환
+    - 성공 시 `tarot_limit_{spread}` httpOnly 쿠키 발급 (maxAge: 86400초)
+  - `app.js`: 제한 UI 로직 추가
+    - `IS_DEV_MODE`: `window.TAROT_APP_MODE === 'dev'` 감지 → 제한 UI 전체 스킵
+    - `fetchSpreadLimits()`: `GET /api/limits` 조회 → `renderSpreadLimitUI()` 호출
+    - `renderSpreadLimitUI()`: 잠금 카드에 `.locked` + `.spread-countdown` 카운트다운 삽입
+    - 만료 감지 시 서버 재조회, 잠긴 카드 없으면 `clearInterval`로 메모리 누수 방지
+    - `fetchReading()`: 429 응답 처리 + `X-Tarot-Dev: 1` 헤더 (개발 모드)
+  - `style.css`: `.spread-card.locked` 잠금 스타일 추가
+    - `::after` 반투명 오버레이로 카드 내용 어둡게 처리
+    - `.spread-countdown` `z-index: 2`로 오버레이 위에 선명하게 표시
+- [x] 개발/유저 진입점 분리
+  - `http://localhost:3000/dev` → 개발 전용 (제한 없음, 서버도 우회)
+  - `http://localhost:3000/` → 유저용 / Railway 배포 (제한 적용)
+  - Railway 보안: `IS_PRODUCTION=true`이면 `X-Tarot-Dev` 헤더 무시
+- [x] 원 카드 카드리빌 화면 위치 레이블 제거
+  - `app.js` `proceedToCardReveal()`: `one` 스프레드에서 `positions = null` 전달
+  - 쓰리 카드·켈틱 크로스의 위치 레이블은 그대로 유지
+
 ---
 
 ## 파일별 책임
@@ -266,6 +293,8 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 ### `server.js`
 - Express 설정 (정적 파일, 라우터)
 - API 키 검증
+- cookieParser 미들웨어 등록
+- `GET /dev`: `index.html`에 `window.TAROT_APP_MODE = "dev"` 주입 → 개발용 진입점
 - 글로벌 에러 핸들러
 
 ### `data/cards.js`
@@ -278,9 +307,13 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 - `routes/reading.js`에서 API 응답 시 사용
 
 ### `routes/reading.js`
+- `GET /api/limits`: 스프레드별 잠금 상태 반환 (쿠키 기반)
+- `DELETE /api/limits`: 모든 제한 쿠키 초기화 (개발 전용)
 - `POST /api/reading` 핸들러
-- 요청 검증 (spread 타입, 카드 수, id 범위, 질문 길이)
-- 카드 데이터 조회 후 `claudeService.generateReading()` 호출
+  - 24시간 사용 제한 체크 (httpOnly 쿠키, 프로덕션만 적용)
+  - 요청 검증 (spread 타입, 카드 수, id 범위, 질문 길이)
+  - 카드 데이터 조회 후 `claudeService.generateReading()` 호출
+  - 성공 시 `tarot_limit_{spread}` 쿠키 발급
 
 ### `prompts/` (프롬프트 파일 — 직접 수정 가능)
 - `system.md`: 공통 페르소나·규칙 + 이미지 해석·정역방향·카드 연관성 원칙
@@ -376,35 +409,6 @@ Invoke-RestMethod `
 
 ### 🔴 우선순위 높음
 
-- **24시간 사용 제한**: 각 스프레드 옵션마다 24시간마다 1회 사용 제한 (IP + 쿠키 기반)
-  
-  **구현 방식:**
-  - 백엔드: IP 주소 + 쿠키로 클라이언트 식별 (localStorage 제약 회피용)
-  - 프론트엔드: localStorage에 스프레드별 마지막 사용 시간 저장
-  - 쿠키: 서버에서 응답 시 `tarot_{spread}_used` 쿠키에 타임스탬프 설정 (24시간 유효)
-  
-  **백엔드 (routes/reading.js, server.js):**
-  - server.js: `cookie-parser` 미들웨어 추가, IP 추출 미들웨어 추가
-    - IP: X-Forwarded-For, X-Real-IP, socket.remoteAddress 순서로 추출
-  - routes/reading.js: POST /api/reading 전에 `checkSpreadLimit` 미들웨어 실행
-    - 요청 쿠키의 `tarot_{spread}_used` 확인
-    - 존재하면: 타임스탬프와 현재 시간 비교
-    - 24시간 미경과면: 429 상태코드 + hoursLeft, nextAvailableAt 응답
-  - 성공 응답 시: res.cookie('tarot_{spread}_used', Date.now(), { maxAge: 24*60*60*1000, httpOnly: true })
-  
-  **프론트엔드 (public/js/app.js):**
-  - 스프레드 선택 버튼: 버튼 disabled 상태 + 남은 시간 표시
-  - localStorage: `tarot_{spread}_nextAvailable` 키로 다음 사용 가능 시간 저장
-  - 페이지 로드 시: 저장된 시간과 현재 시간 비교 → 카운트다운 타이머 표시
-  - 타이머: setInterval로 매초 업데이트, 시간 도달 시 버튼 활성화
-  - 실패 응답 (429): 에러 모달에 "X시간 Y분 후 사용 가능" 표시
-  
-  **UI 표시:**
-  - 사용 가능: 스프레드 선택 버튼 활성화
-  - 제한 중: 버튼 disabled + 아래에 텍스트 표시
-    - 예: "🔒 One Card는 23시간 45분 후 사용 가능"
-  - 카운트다운: 실시간 업데이트 (MM:SS 형식)
-
 - **켈틱 크로스 카드 시인성 개선**: READING 화면에서 카드 순번 명확화
   
   **현재 문제:**
@@ -483,4 +487,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-27 (Phase 14 카드 데이터 최적화 완성)
+마지막 수정: 2026-05-27 (Phase 15 24시간 사용 제한 + Railway 배포 준비 완성)
