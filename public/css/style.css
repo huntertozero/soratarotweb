@@ -351,8 +351,18 @@ textarea::placeholder {
 }
 
 .shuffle-info {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* 스크롤 시 배경이 투명하면 카드 그리드가 비쳐 보이므로 배경 처리 */
+  background: linear-gradient(
+    to bottom,
+    var(--color-void) 80%,
+    transparent
+  );
   text-align: center;
-  margin-bottom: 30px;
+  padding: 16px 0 24px;
+  margin-bottom: 10px;
 }
 
 #shuffle-message {
@@ -432,7 +442,7 @@ textarea::placeholder {
 .card-back-item.selected {
   border-color: var(--color-starlight);
   background: linear-gradient(135deg, var(--color-arcane) 0%, var(--color-gold) 100%);
-  animation: cardGlow 2s ease-in-out infinite;
+  animation: cardGlow 0.6s ease-in-out infinite;
 }
 
 @keyframes cardGlow {
@@ -1080,6 +1090,17 @@ textarea::placeholder {
 
   .button-group {
     flex-direction: column;
+  }
+
+  /* SHUFFLE 화면 버튼 그룹은 항상 가로 배치 (오선택 방지) */
+  #screen-shuffle .button-group {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  #screen-shuffle .button-group .btn {
+    width: auto;
+    flex: 1;
   }
 
   .btn {
