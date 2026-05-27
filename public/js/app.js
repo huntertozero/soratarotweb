@@ -429,8 +429,8 @@ function displayReading(data) {
           <!-- 어두운 오버레이 -->
           <div class="csm-overlay"></div>
           ${badgeHtml}
-          <!-- 위치 레이블 (상단 중앙) -->
-          ${posLabel ? `<div class="csm-position-label">${posLabel}</div>` : ''}
+          <!-- 위치 레이블 (1카드 스프레드 제외, 상단 우측) -->
+          ${posLabel && appState.selectedSpread !== 'one' ? `<div class="csm-position-label">${posLabel}</div>` : ''}
           <!-- 카드 이름 / REVERSE (하단) -->
           <div class="csm-card-info">
             <div class="csm-direction">${direction}</div>
