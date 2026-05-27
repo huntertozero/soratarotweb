@@ -20,8 +20,8 @@
   --color-border: #4c1d95;
 
   /* 폰트 */
-  --font-serif: 'Noto Serif KR', serif;
-  --font-sans: 'Noto Sans KR', sans-serif;
+  --font-serif: 'Noto Serif KR', serif;       /* 메인 제목 전용 유지 */
+  --font-sans: 'Pretendard', sans-serif;       /* 본문·UI 전체 Pretendard */
 }
 
 /* ========== 기본 스타일 ========== */
@@ -862,7 +862,7 @@ textarea::placeholder {
 .reading-text h2,
 .reading-text h3 {
   color: var(--color-starlight);
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   margin: 22px 0 8px 0;
   line-height: 1.4;
 }
