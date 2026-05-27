@@ -15,6 +15,10 @@ const IS_DEV_MODE = window.TAROT_APP_MODE === 'dev';
 let spreadLimitIntervalId = null;
 let spreadLimitData = {};
 
+// ========== READING 화면 레이아웃 동기화 핸들러 ==========
+// displayReading() 재호출 시 리스너 누적 방지용
+let _syncLayoutHandler = null;
+
 // ========== 스프레드 사용 제한 함수 ==========
 
 function formatCountdown(ms) {
@@ -182,15 +186,6 @@ function setupEventListeners() {
     inputQuestionText.addEventListener('input', () => {
       charCount.textContent = inputQuestionText.value.length;
       appState.question = inputQuestionText.value;
-    });
-  }
-
-  const btnSkipQuestion = document.getElementById('btn-skip-question');
-  if (btnSkipQuestion) {
-    btnSkipQuestion.addEventListener('click', e => {
-      e.preventDefault();
-      appState.question = '';
-      proceedToShuffle();
     });
   }
 
@@ -611,7 +606,26 @@ function displayReading(data) {
   // ---- 위치·높이 동기화 (showScreen 이후에만 BoundingClientRect 값이 유효) ----
   const readingContentWrapper = document.querySelector('.reading-content-wrapper');
 
+  // 기존 리스너 제거 (displayReading 재호출 시 누적 방지)
+  if (_syncLayoutHandler) {
+    window.removeEventListener('scroll', _syncLayoutHandler);
+    window.removeEventListener('resize', _syncLayoutHandler);
+    _syncLayoutHandler = null;
+  }
+
   const syncLayout = () => {
+    // 모바일(768px 이하): 인라인 스타일 초기화 후 CSS 미디어쿼리에 위임
+    if (window.innerWidth <= 768) {
+      [cardsSummaryLeft, cardsSummaryRight].forEach(el => {
+        if (!el) return;
+        el.style.top = '';
+        el.style.left = '';
+        el.style.right = '';
+        el.style.height = '';
+      });
+      return;
+    }
+
     if (!cardsSummaryLeft || !cardsSummaryRight || !readingContentWrapper) return;
 
     const rect = readingContentWrapper.getBoundingClientRect();
@@ -635,6 +649,9 @@ function displayReading(data) {
     cardsSummaryLeft.style.height = contentH + 'px';
     cardsSummaryRight.style.height = contentH + 'px';
   };
+
+  // 핸들러 저장 (다음 호출 시 제거 가능하도록)
+  _syncLayoutHandler = syncLayout;
 
   // requestAnimationFrame: 브라우저가 레이아웃을 계산한 직후 실행
   requestAnimationFrame(() => {

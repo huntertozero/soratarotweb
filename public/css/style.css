@@ -303,7 +303,7 @@ textarea {
   font-family: var(--font-sans);
   font-size: 16px;
   resize: vertical;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   transition: border-color 0.3s ease;
 }
 
@@ -392,6 +392,7 @@ textarea::placeholder {
   transition: all 0.2s ease;
   position: relative;
   user-select: none;
+  touch-action: manipulation; /* 모바일: 더블탭 줌 방지, 빠른 터치 반응 */
 }
 
 .card-back-item::before {
@@ -513,7 +514,8 @@ textarea::placeholder {
   padding: 20px;
   text-align: center;
   perspective: 1000px;
-  width: 200px;
+  width: auto;           /* 모바일: 그리드 셀 크기에 맞게 유연하게 */
+  max-width: 200px;      /* 데스크탑: 최대 200px 유지 */
   aspect-ratio: 2.5/4;
   display: flex;
   flex-direction: column;
@@ -666,12 +668,12 @@ textarea::placeholder {
   100% { transform: rotate(360deg); }
 }
 
-/* 오라클 수정구슬 Canvas */
+/* 오라클 수정구슬 Canvas — 글로우가 경계에 닿지 않도록 320px로 확장 */
 .oracle-canvas {
   display: block;
   margin: 0 auto 20px;
-  width: 200px;
-  height: 200px;
+  width: 320px;
+  height: 320px;
 }
 
 /* 카드 플립 Flash 효과 */
@@ -976,6 +978,8 @@ textarea::placeholder {
   font-family: var(--font-sans);
   text-transform: uppercase;
   letter-spacing: 1px;
+  min-height: 48px;           /* 모바일 터치 타겟 최소 보장 */
+  touch-action: manipulation; /* 더블탭 줌 방지 */
 }
 
 .btn-primary {
@@ -1088,19 +1092,92 @@ textarea::placeholder {
     margin-bottom: 30px;
   }
 
+  /* CARD_REVEAL: 카드 width를 그리드 셀에 맞게 */
   #cards-display.spread-one {
     grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 200px;
   }
 
   #cards-display.spread-three {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
   }
 
   #cards-display.spread-celtic {
     grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+  }
+
+  /* SHUFFLE 화면: 13열 → 9열 (카드 터치 가능 크기 확보) */
+  .cards-grid {
+    grid-template-columns: repeat(9, 1fr);
+    gap: 5px;
+  }
+
+  .card-back-item::before {
+    font-size: 24px;
+  }
+
+  /* body: 센터링 해제 → 상단부터 시작 (스크롤 허용) */
+  body {
+    align-items: flex-start;
+  }
+
+  /* READING 화면: 3열 고정 → 1열 세로 스택 */
+  .reading-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-container {
+    padding: 20px 15px;
+  }
+
+  /* READING 좌우 카드 패널: position fixed 해제 → 가로 스크롤 바 */
+  .cards-summary-left,
+  .cards-summary-right {
+    position: static;
+    max-height: none;
+    height: auto !important; /* JS 인라인 스타일 무력화 */
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 10px;
+    padding: 0 0 8px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /* 카드 패널 내 아이템: 가로 스크롤 중 고정 너비 */
+  .cards-summary-left .card-summary-item,
+  .cards-summary-right .card-summary-item {
+    width: 80px;
+    flex-shrink: 0;
   }
 }
 
+/* 중간 모바일: 7열 그리드 */
+@media (max-width: 600px) {
+  .cards-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 0 5px;
+  }
+
+  .card-back-item::before {
+    font-size: 18px;
+  }
+
+  /* 쓰리카드: 세로 스택으로 전환 */
+  #cards-display.spread-three {
+    grid-template-columns: 1fr;
+    max-width: 200px;
+  }
+}
+
+/* 소형 스마트폰: 6열 그리드 */
 @media (max-width: 480px) {
   body {
     padding: 0;
@@ -1111,7 +1188,7 @@ textarea::placeholder {
   }
 
   .welcome-container {
-    padding: 40px 10px;
+    padding: 30px 15px; /* 균형 있는 패딩 */
   }
 
   .title {
@@ -1124,6 +1201,7 @@ textarea::placeholder {
 
   .description {
     font-size: 14px;
+    margin-bottom: 24px; /* 기존 40px → 축소 */
   }
 
   .spread-container {
@@ -1155,6 +1233,22 @@ textarea::placeholder {
   .btn {
     padding: 10px 16px;
     font-size: 12px;
+  }
+
+  /* SHUFFLE: 6열 (480px에서 카드 1개 ≈ 76px, 터치 가능) */
+  .cards-grid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+  }
+
+  .shuffle-container {
+    padding: 20px 10px;
+  }
+
+  /* READING: 좌우 카드 더 좁게 */
+  .cards-summary-left .card-summary-item,
+  .cards-summary-right .card-summary-item {
+    width: 65px;
   }
 }
 
