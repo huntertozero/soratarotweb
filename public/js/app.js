@@ -138,28 +138,6 @@ function setupEventListeners() {
   }
 
   // ========== READING 화면 ==========
-  const btnNewReading = document.getElementById('btn-new-reading');
-  if (btnNewReading) {
-    btnNewReading.addEventListener('click', () => {
-      // 현재 스프레드로 다시 시작
-      appState.selectedCards = [];
-      appState.reading = null;
-      appState.question = '';
-      showScreen('shuffle');
-    });
-  }
-
-  const btnChangeSpread = document.getElementById('btn-change-spread');
-  if (btnChangeSpread) {
-    btnChangeSpread.addEventListener('click', () => {
-      appState.selectedSpread = null;
-      appState.selectedCards = [];
-      appState.reading = null;
-      appState.question = '';
-      showScreen('select-spread');
-    });
-  }
-
   const btnHome = document.getElementById('btn-home');
   if (btnHome) {
     btnHome.addEventListener('click', () => {
