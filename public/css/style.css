@@ -793,6 +793,26 @@ textarea::placeholder {
   font-weight: 700;
 }
 
+/* 카드리빌 위치 레이블 */
+.card-position-label {
+  color: var(--color-starlight);
+  font-size: 12px;
+  font-weight: 600;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+
+.card-position-label--reversed {
+  bottom: 10px;
+  top: auto;
+  transform: rotateZ(180deg);
+}
+
 .loading-state {
   text-align: center;
   padding: 40px 20px;
@@ -1447,6 +1467,20 @@ textarea::placeholder {
   .oracle-canvas {
     width: 160px;
     height: 160px;
+  }
+
+  /* 카드리빌 텍스트 모바일 축소 */
+  #cards-display .card-name {
+    font-size: 10px;
+  }
+
+  #cards-display .card-direction {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  #cards-display .card-position-label {
+    font-size: 9px;
   }
 
   /* 모바일 카드 텍스트 기본값 (원 카드 등) — 카드리빌: 해석 기준+1px */

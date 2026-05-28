@@ -96,16 +96,13 @@ function createCardElement(cardId, isReversed, position = null) {
     `;
   }
 
-  // Position 텍스트 (카드 이름과 동일한 색상/효과, 12px)
-  const positionStyle = isReversed
-    ? `color: var(--color-starlight); font-size: 12px; font-weight: 600; position: absolute; bottom: 10px; top: auto; left: 0; right: 0; text-align: center; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6); transform: rotateZ(180deg); z-index: 10;`
-    : `color: var(--color-starlight); font-size: 12px; font-weight: 600; position: absolute; top: 10px; left: 0; right: 0; text-align: center; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6); z-index: 10;`;
+  const positionClass = isReversed ? 'card-position-label card-position-label--reversed' : 'card-position-label';
   const frontStyle = !isReversed ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
 
   cardElement.innerHTML = `
     <div class="card-container">
       <!-- 카드 의미 텍스트 (플립 전후 항상 표시) -->
-      ${position ? `<div style="${positionStyle}">${position}</div>` : ''}
+      ${position ? `<div class="${positionClass}">${position}</div>` : ''}
 
       <div class="card-inner">
         <!-- 카드 앞면 (초기 상태, 카드 뒷면) -->
