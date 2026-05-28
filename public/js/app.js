@@ -734,18 +734,24 @@ function setupSpreadSlider() {
     slides.forEach((slide, i) => {
       const offset = (i - currentIndex + totalSlides) % totalSlides;
 
-      if (offset === 0) {
-        // 현재 카드: 앞면
-        slide.style.transform = 'translateY(0) scale(1) rotateY(0)';
+      // 순환 배열 정규화: -1, 0, 1 형태로
+      const normalizedOffset = offset > 1 ? offset - totalSlides : offset;
+
+      if (normalizedOffset === 0) {
+        // 현재 카드: 중앙 앞면
+        slide.style.transform = 'translateX(0) rotateY(0) scale(1)';
         slide.style.opacity = '1';
-        slide.style.zIndex = 3;
-      } else {
-        // 뒷면 카드: 뒤로 배치 + 흐리게
-        const depth = offset * 12;
-        const scale = 1 - offset * 0.03;
-        slide.style.transform = `translateY(${depth}px) scale(${scale})`;
-        slide.style.opacity = Math.max(0.3, 1 - offset * 0.3);
-        slide.style.zIndex = 3 - offset;
+        slide.style.zIndex = 30;
+      } else if (normalizedOffset === -1) {
+        // 왼쪽 카드: 부채 펼침 효과
+        slide.style.transform = 'translateX(-100px) rotateY(28deg) scale(0.9)';
+        slide.style.opacity = '0.4';
+        slide.style.zIndex = 10;
+      } else if (normalizedOffset === 1) {
+        // 오른쪽 카드: 부채 펼침 효과
+        slide.style.transform = 'translateX(100px) rotateY(-28deg) scale(0.9)';
+        slide.style.opacity = '0.4';
+        slide.style.zIndex = 10;
       }
     });
 
