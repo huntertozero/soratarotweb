@@ -742,16 +742,19 @@ function setupSpreadSlider() {
         slide.style.transform = 'translateX(0) rotateY(0) scale(1)';
         slide.style.opacity = '1';
         slide.style.zIndex = 30;
+        slide.classList.add('active');
       } else if (normalizedOffset === -1) {
         // 왼쪽 카드: 부채 펼침 효과
         slide.style.transform = 'translateX(-100px) rotateY(28deg) scale(0.9)';
         slide.style.opacity = '0.4';
         slide.style.zIndex = 10;
+        slide.classList.remove('active');
       } else if (normalizedOffset === 1) {
         // 오른쪽 카드: 부채 펼침 효과
         slide.style.transform = 'translateX(100px) rotateY(-28deg) scale(0.9)';
         slide.style.opacity = '0.4';
         slide.style.zIndex = 10;
+        slide.classList.remove('active');
       }
     });
 
@@ -767,13 +770,18 @@ function setupSpreadSlider() {
     dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
   });
 
-  // 터치 스와이프
+  // 터치 스와이프 (페이지 스크롤 방지)
   let touchStartX = 0;
-  wrapper.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  wrapper.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  wrapper.addEventListener('touchmove', e => {
+    e.preventDefault();
+  }, { passive: false });
   wrapper.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1);
-  });
+  }, { passive: true });
 
   updateStack();
 }
