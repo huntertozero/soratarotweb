@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~29 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~30 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 29 완료)
+## 현재 상태 (Phase 30 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -34,6 +34,7 @@
 | UX | 켈틱 크로스 카드 번호 수평 태그 뱃지, 켈틱 로딩 시 자동 스크롤, 모바일 웰컴 버튼 폭 조정 |
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거 |
 | 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시 `?v=`), JS/CSS 1년 캐시, HTML no-cache |
+| 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
 
 ---
 
@@ -46,7 +47,8 @@
 | `data/cardImages.js` | 카드 ID → 이미지 파일명 매핑 |
 | `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (24시간 제한 + 검증) |
 | `prompts/*.md` | system / one / three / celtic — 서버 재시작 없이 즉시 반영 |
-| `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout) |
+| `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `{ reading, usage }` 반환 |
+| `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
 | `public/js/app.js` | 상태 관리, 화면 전환, API fetch |
 | `public/js/animation.js` | 카드 플립, PC/모바일 순서 분기 |
 | `public/js/effects.js` | 스파크, 지속 파티클, 플립 플래시, 오라클 캔버스 |

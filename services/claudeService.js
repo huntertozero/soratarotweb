@@ -130,10 +130,9 @@ ${formattedCards}${questionPart}`;
 
     clearTimeout(timeoutId);
 
-    // 응답 처리
     const reading = message.content[0].type === 'text' ? message.content[0].text : '';
 
-    return reading;
+    return { reading, usage: message.usage };
   } catch (error) {
     if (error.name === 'AbortError') {
       throw new Error(`Claude API 요청이 타임아웃되었습니다 (${timeout / 1000}초). 다시 시도해주세요.`);

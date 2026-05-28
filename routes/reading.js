@@ -2,6 +2,7 @@ const express = require('express');
 const cards = require('../data/cards');
 const cardImages = require('../data/cardImages');
 const { generateReading } = require('../services/claudeService');
+const { sendSlackNotification } = require('../services/slackService');
 
 const router = express.Router();
 
@@ -127,12 +128,14 @@ router.post('/reading', async (req, res) => {
     });
 
     // 6. Claude로 해석 생성
-    const reading = await generateReading(
+    const startTime = Date.now();
+    const { reading, usage } = await generateReading(
       spread,
       requestedCards.map(c => ({ id: c.id, isReversed: c.isReversed })),
       question || '',
       cards
     );
+    const responseTime = Date.now() - startTime;
 
     // 7. 응답 생성 (카드 정보 + 해석)
     const responseCards = requestedCards.map(rc => ({
@@ -147,6 +150,19 @@ router.post('/reading', async (req, res) => {
         ? rc.cardData.reversedMeaning
         : rc.cardData.uprightMeaning,
     }));
+
+    // 리딩 성공 → 슬랙 알림 (비동기, 실패해도 응답에 영향 없음)
+    sendSlackNotification({
+      spread,
+      question: question || '',
+      cards: responseCards,
+      usage,
+      responseTime,
+      ip: req.ip,
+      userAgent: req.headers['user-agent'] || '',
+      acceptLanguage: req.headers['accept-language'] || '',
+      isDev: isDevBypass(req),
+    });
 
     // 리딩 성공 → 24시간 제한 쿠키 설정
     if (!isDevBypass(req)) {

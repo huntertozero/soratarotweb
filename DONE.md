@@ -171,6 +171,13 @@
 - 켈틱 크로스 카드 10장 플립 완료 후 로딩 인디케이터가 화면 밖에 위치하는 문제 → 로딩 활성화 시 `scrollTo(0, scrollHeight)` 자동 스크롤
 - 모바일 웰컴 화면 "리딩 시작하기" 버튼: 내용 맞춤 폭 → `width: 100%; max-width: 320px` (작은 화면에서도 전체 폭 활용)
 
+## Phase 30: Slack 리딩 알림 ✅
+- `services/slackService.js` 신규 생성: Incoming Webhook 기반 리딩 성공 시 알림
+- 알림 항목: 스프레드, 질문, 카드 목록(역방향 표시), 토큰(입력/출력), 비용($), 응답시간, 접속 IP, Accept-Language, 디바이스/브라우저, 환경(개발/프로덕션), 시각(KST)
+- `services/claudeService.js`: `generateReading` 반환값 `string` → `{ reading, usage }` (토큰 정보 포함)
+- `routes/reading.js`: 응답시간 측정 + 요청 메타데이터 슬랙 전달, 알림 실패 시 리딩 응답 영향 없음
+- `.env`: `SLACK_WEBHOOK_URL` 추가
+
 ## Phase 29: 코드 정리 + Railway 배포 준비 ✅
 
 ### 29-1. Dead Code 및 중복 로직 제거
