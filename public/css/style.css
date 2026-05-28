@@ -1369,16 +1369,16 @@ textarea::placeholder {
   }
 
   #cards-display.spread-three .csm-name {
-    font-size: 8px;
+    font-size: 11px;
     line-height: 1.2;
   }
 
   #cards-display.spread-three .csm-position-label {
-    font-size: 7px;
+    font-size: 10px;
   }
 
   #cards-display.spread-three .csm-direction {
-    font-size: 7px;
+    font-size: 10px;
     letter-spacing: 0;
   }
 
@@ -1399,16 +1399,16 @@ textarea::placeholder {
   }
 
   #cards-display.spread-celtic .csm-name {
-    font-size: 8px;
+    font-size: 11px;
     line-height: 1.2;
   }
 
   #cards-display.spread-celtic .csm-position-label {
-    font-size: 7px;
+    font-size: 10px;
   }
 
   #cards-display.spread-celtic .csm-direction {
-    font-size: 7px;
+    font-size: 10px;
     letter-spacing: 0;
   }
 
@@ -1449,13 +1449,18 @@ textarea::placeholder {
     height: 160px;
   }
 
-  /* 모바일 카드 텍스트 기본값 (원 카드 등) */
+  /* 모바일 카드 텍스트 기본값 (원 카드 등) — 카드리빌: 해석 기준+2px */
   #cards-display .csm-card-info .csm-name {
-    font-size: 9px;
+    font-size: 11px;
   }
 
   #cards-display .csm-position-label {
-    font-size: 8px;
+    font-size: 10px;
+  }
+
+  #cards-display .csm-direction {
+    font-size: 10px;
+    letter-spacing: 0;
   }
 
   /* SHUFFLE 화면: 13열 → 9열 (카드 터치 가능 크기 확보) */
@@ -1527,6 +1532,10 @@ textarea::placeholder {
   }
   .card-summary-item .csm-position-label {
     font-size: 8px;
+  }
+  .card-summary-item .csm-direction {
+    font-size: 8px;
+    letter-spacing: 0;
   }
 }
 
