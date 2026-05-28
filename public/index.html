@@ -18,22 +18,16 @@
   <link rel="preload" href="/css/style.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
 
-  <!-- 초기 로딩 최적화: 중요 색상 미리 정의 -->
+  <!-- 초기 로딩 최적화: 색상 변수 미리 정의 (CSS 로드 전 FOU 방지) -->
   <style>
     :root {
       --color-void: #0a0a1a;
       --color-gold: #f59e0b;
       --color-starlight: #e0d5ff;
       --color-border: #4c3d8f;
-    }
-    body {
-      background: var(--color-void);
-      color: var(--color-starlight);
-    }
-    .btn-primary {
-      background: var(--color-gold);
-      color: var(--color-void);
-      border-color: var(--color-gold);
+      --color-nebula: #1a1040;
+      --color-card-bg: #2d1b4e;
+      --color-arcane: #a855f7;
     }
   </style>
 </head>
