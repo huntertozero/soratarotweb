@@ -400,6 +400,26 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - 켈틱 크로스 4-card row: `.csm-name` 7px / `.csm-position-label` 6px / `.csm-direction` 6px
 - [x] 컨테이너 패딩 모바일 최적화: `.card-reveal-container` 40px→20px, `#cards-display` margin-bottom 40px→20px
 
+### Phase 25: 모바일 켈틱 크로스 카드 겹침 수정 및 레이아웃 재배치 ✅ 완료
+- [x] 모바일 480px 이하 카드 높이 고정값 제거 (`public/css/style.css`)
+  - 원인: `@media (max-width: 480px)` 내 `.card-item { height: 200px; }` 하드코딩이 `aspect-ratio: 2.5/4`를 무시
+  - 수정: `height: 200px` → `height: auto` → 카드 너비에 비례하여 높이 자동 계산
+- [x] 모바일 카드 width 명시로 행 내 겹침 수정 (`public/css/style.css`)
+  - 원인: `.card-item { width: auto; display: flex; }` 조합에서 `width: auto`가 `display: flex` 컨테이너의 max-content로 해석되어 그리드 셀을 초과
+  - 수정: `#cards-display.spread-three .card-item`, `#cards-display.spread-celtic .card-item`에 `width: 100%` 명시
+- [x] 켈틱 크로스 모바일 카드 배치 재구성 (`public/css/style.css`)
+  - 기존: 3+3+4 배치 (`nth-child(-n+6)` span 4, `nth-child(n+7)` span 3)
+  - 변경: 3+3+2+2 배치, 카드별 `grid-row` 명시로 DOM 순서와 무관하게 강제 배치
+    - 1행: 1, 3, 4번 카드 (`grid-row: 1; grid-column: span 4`)
+    - 2행: 5, 6, 8번 카드 (`grid-row: 2; grid-column: span 4`)
+    - 3행: 2, 7번 카드 (`grid-row: 3; grid-column: span 6`)
+    - 4행: 9, 10번 카드 (`grid-row: 4; grid-column: span 6`)
+- [x] 켈틱 크로스 카드 리빌(플립) 순서 변경 (`public/js/animation.js`)
+  - 기존: DOM 순서(1~10번) 그대로 순차 플립
+  - 변경: 1→3→4→5→6→8→2→7→9→10번 순서로 플립
+  - 구현: `flipOrderMap.celtic = [0, 2, 3, 4, 5, 7, 1, 6, 8, 9]` (0-인덱스)
+  - `displayAndFlipCards()`에서 켈틱 크로스일 때 해당 순서로 `cardElements` 재정렬 후 `flipCardsSequentially()` 호출
+
 ### Phase 20: 카드 선택 화면 UX 개선 및 버그 수정 ✅ 완료
 - [x] 선택 카드 글로우 애니메이션 속도 개선 (`style.css`)
   - `cardGlow 2s → 0.6s` (렉 걸린 착각 유발하던 느린 속도 해소)
@@ -641,4 +661,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-28 (Phase 24 모바일 CARD_REVEAL 레이아웃 재구성 — 스프레드별 3+3+4 그리드, 텍스트 단계적 축소)
+마지막 수정: 2026-05-28 (Phase 25 모바일 켈틱 크로스 카드 겹침 수정 및 레이아웃 재배치 — 3+3+2+2 그리드, 플립 순서 변경)

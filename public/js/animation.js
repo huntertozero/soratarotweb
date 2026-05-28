@@ -159,8 +159,17 @@ async function displayAndFlipCards(cardsData, positions = null) {
   });
   console.log('✅ 카드 요소 생성 및 추가:', cardElements.length, '개');
 
+  // 켈틱 크로스: 플립 순서 재정렬 (1,3,4,5,6,8,2,7,9,10번 카드 순)
+  const flipOrderMap = {
+    celtic: [0, 2, 3, 4, 5, 7, 1, 6, 8, 9]
+  };
+  const flipOrder = flipOrderMap[appState.selectedSpread];
+  const flipElements = flipOrder
+    ? flipOrder.map(i => cardElements[i])
+    : cardElements;
+
   // 순차 플립 (500ms 간격)
   console.log('🔄 카드 플립 시작...');
-  await flipCardsSequentially(cardElements, 500);
+  await flipCardsSequentially(flipElements, 500);
   console.log('✅ 카드 플립 완료');
 }
