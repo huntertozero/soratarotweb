@@ -50,30 +50,39 @@
       <div class="spread-container">
         <h2>어떤 방식으로 리딩을 받으시겠습니까?</h2>
 
-        <div class="spread-grid">
-          <!-- 한 장 -->
-          <div class="spread-card" data-spread="one">
-            <div class="spread-icon">✦</div>
-            <h3>원 카드</h3>
-            <p class="spread-desc">오늘의 메시지</p>
-            <p class="spread-detail">현재 상황과 에너지를<br>간결하게 읽습니다</p>
+        <div class="spread-slider-wrapper">
+          <button class="spread-nav-btn spread-nav-prev" id="spread-prev">&#8249;</button>
+
+          <div class="spread-slider-track" id="spread-slider-track">
+            <div class="spread-slide spread-card" data-spread="one">
+              <div class="spread-icon">✦</div>
+              <h3>원 카드</h3>
+              <p class="spread-desc">오늘의 메시지</p>
+              <p class="spread-detail">현재 상황과 에너지를<br>간결하게 읽습니다</p>
+            </div>
+
+            <div class="spread-slide spread-card" data-spread="three">
+              <div class="spread-icon">▲</div>
+              <h3>쓰리 카드</h3>
+              <p class="spread-desc">과거, 현재 그리고 미래</p>
+              <p class="spread-detail">시간의 흐름 속에서<br>당신의 이야기를 봅니다</p>
+            </div>
+
+            <div class="spread-slide spread-card" data-spread="celtic">
+              <div class="spread-icon">⊕</div>
+              <h3>켈틱 크로스</h3>
+              <p class="spread-desc">심층 분석</p>
+              <p class="spread-detail">10장의 카드를 가지고<br>전체 상황을 다면적으로 읽습니다</p>
+            </div>
           </div>
 
-          <!-- 3장 -->
-          <div class="spread-card" data-spread="three">
-            <div class="spread-icon">▲</div>
-            <h3>쓰리 카드</h3>
-            <p class="spread-desc">과거, 현재 그리고 미래</p>
-            <p class="spread-detail">시간의 흐름 속에서<br>당신의 이야기를 봅니다</p>
-          </div>
+          <button class="spread-nav-btn spread-nav-next" id="spread-next">&#8250;</button>
+        </div>
 
-          <!-- 켈틱 크로스 -->
-          <div class="spread-card" data-spread="celtic">
-            <div class="spread-icon">⊕</div>
-            <h3>켈틱 크로스</h3>
-            <p class="spread-desc">심층 분석</p>
-            <p class="spread-detail">10장의 카드를 가지고<br>전체 상황을 다면적으로 읽습니다</p>
-          </div>
+        <div class="spread-dots" id="spread-dots">
+          <span class="spread-dot active" data-index="0"></span>
+          <span class="spread-dot" data-index="1"></span>
+          <span class="spread-dot" data-index="2"></span>
         </div>
 
         <div class="button-group">
@@ -147,7 +156,10 @@
     <!-- READING 화면 -->
     <div id="screen-reading" class="screen">
       <div class="reading-container reading-layout">
-        <div class="cards-summary-left" id="cards-summary-left"></div>
+        <div class="cards-summary-wrapper">
+          <div class="cards-summary-left" id="cards-summary-left"></div>
+          <div class="cards-summary-right" id="cards-summary-right"></div>
+        </div>
 
         <div class="reading-content-wrapper">
           <!-- 유저 질문 (질문이 있을 때만 표시) -->
@@ -166,8 +178,6 @@
             </button>
           </div>
         </div>
-
-        <div class="cards-summary-right" id="cards-summary-right"></div>
       </div>
     </div>
 

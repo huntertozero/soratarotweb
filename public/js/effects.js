@@ -41,18 +41,18 @@
 
       // 랜덤 발사 각도 (전방향 + 상단 집중으로 폭죽 느낌)
       const angle = (Math.PI * 2 * i / SPARK_COUNT) + (Math.random() - 0.5) * 0.5;
-      const speed = 3 + Math.random() * 7;
+      const speed = 1 + Math.random() * 2.5;  // 느리게: 기존 3~10 → 1~3.5
       let vx = Math.cos(angle) * speed;
-      let vy = Math.sin(angle) * speed - 1; // 약간 위쪽으로 편향
+      let vy = Math.sin(angle) * speed - 0.4; // 약간 위쪽으로 편향
       let x = cx, y = cy;
       let opacity = 1;
 
       const animate = () => {
-        vy += 0.22;    // 중력 가속
-        vx *= 0.97;    // 공기 저항
+        vy += 0.06;    // 중력 완화: 기존 0.22 → 0.06 (천천히 떨어짐)
+        vx *= 0.985;   // 공기 저항 약화: 기존 0.97 → 0.985 (더 멀리 퍼짐)
         x += vx;
         y += vy;
-        opacity -= 0.033;
+        opacity -= 0.015;  // 서서히 사라짐: 기존 0.033 → 0.015 (약 2배 오래 지속)
 
         spark.style.transform = `translate(${x - cx}px, ${y - cy}px)`;
         spark.style.opacity = opacity;
@@ -80,8 +80,11 @@
         return;
       }
 
-      // 1~2개 소형 파티클 생성
-      const count = Math.random() > 0.5 ? 2 : 1;
+      // 혼잡 시 건너뜀 (성능 최적화)
+      if (activeSparkCount >= MAX_SPARKS * 0.5) return;
+
+      // 1개 파티클만 생성 (성능 개선)
+      const count = 1;
       for (let i = 0; i < count; i++) {
         if (activeSparkCount >= MAX_SPARKS) break;
 
@@ -128,7 +131,7 @@
         };
         requestAnimationFrame(animate);
       }
-    }, 180);
+    }, 300);
 
     cardElement.dataset.particleInterval = intervalId;
   }
@@ -141,25 +144,28 @@
     }
   }
 
-  // ========== 카드 플립 Flash 효과 ==========
+  // ========== 카드 플립 Flash 효과 (카드 개별 적용) ==========
 
-  function triggerFlipFlash(intensity = 0.6) {
+  function triggerFlipFlash(cardElement, intensity = 0.3) {
     // prefers-reduced-motion 시 스킵
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!cardElement) return;
 
+    // .card-item에 position:absolute로 붙여 overflow:hidden에 의해 카드 경계 안에 클리핑
     const flash = document.createElement('div');
     flash.style.cssText = `
-      position:fixed;
+      position:absolute;
       inset:0;
+      border-radius:inherit;
       background: radial-gradient(ellipse at center,
         rgba(255,255,255,${intensity}) 0%,
-        rgba(200,180,255,${intensity * 0.4}) 30%,
-        rgba(255,255,255,0) 70%);
+        rgba(200,180,255,${intensity * 0.5}) 40%,
+        rgba(255,255,255,0) 75%);
       pointer-events:none;
-      z-index:998;
+      z-index:20;
       animation: flashFade 0.65s ease-out forwards;
     `;
-    document.body.appendChild(flash);
+    cardElement.appendChild(flash);
     flash.addEventListener('animationend', () => flash.remove());
   }
 
@@ -179,9 +185,10 @@
     if (!oracleCanvas) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    // CSS: 200×200px, 실제 픽셀: dpr 반영
-    oracleCanvas.width = 200 * dpr;
-    oracleCanvas.height = 200 * dpr;
+    // CSS: 320×320px (글로우가 캔버스 경계에 닿지 않도록 여유 확보)
+    // 구체 반지름 55, 글로우 최대 반지름 r*2.2=121, 중심~끝 160 → 여유 39px
+    oracleCanvas.width = 320 * dpr;
+    oracleCanvas.height = 320 * dpr;
     oracleCtx = oracleCanvas.getContext('2d');
     oracleCtx.scale(dpr, dpr);
   }
@@ -204,7 +211,7 @@
     }
     // 캔버스 초기화
     if (oracleCtx) {
-      oracleCtx.clearRect(0, 0, 200, 200);
+      oracleCtx.clearRect(0, 0, 320, 320);
     }
   }
 
@@ -213,10 +220,10 @@
 
     oracleTime += 0.025;
     const ctx = oracleCtx;
-    const cx = 100, cy = 100, r = 55;
+    const cx = 160, cy = 160, r = 55;  // 중심: 160 (320/2), 구체 반지름 유지
 
     // 배경 클리어
-    ctx.clearRect(0, 0, 200, 200);
+    ctx.clearRect(0, 0, 320, 320);
 
     // ---- 1. 외부 글로우 (구체 주변 발광) ----
     const glowPulse = 0.25 + 0.08 * Math.sin(oracleTime * 1.5);

@@ -125,6 +125,8 @@ function showScreen(screenId) {
 
   appState.currentScreen = screenId;
 
+  window.scrollTo(0, 0);
+
   // 화면 전환 시 배경 파티클 폭발 효과
   if (window.ParticleSystem) {
     window.ParticleSystem.triggerScreenTransition(screenId);
@@ -376,6 +378,12 @@ function updateCardSelectionUI() {
   // 모든 카드 선택 완료 시 버튼 활성화
   if (btnCardsSelected) {
     btnCardsSelected.disabled = currentCount < requiredCount;
+  }
+
+  // 선택 완료 시 버튼 그룹 고정
+  const buttonGroup = document.querySelector('#screen-shuffle .button-group');
+  if (currentCount >= requiredCount && buttonGroup) {
+    buttonGroup.classList.add('is-pinned');
   }
 
   // 선택 완료된 카드를 disabled 상태로 표시
@@ -710,10 +718,46 @@ function displayReading(data) {
   window.addEventListener('resize', syncLayout);
 }
 
+// 스프레드 슬라이더 초기화
+function setupSpreadSlider() {
+  let currentIndex = 0;
+  const track = document.getElementById('spread-slider-track');
+  const dots = document.querySelectorAll('.spread-dot');
+  const prevBtn = document.getElementById('spread-prev');
+  const nextBtn = document.getElementById('spread-next');
+
+  if (!track) return;
+
+  const slides = track.querySelectorAll('.spread-slide');
+
+  function goTo(index) {
+    currentIndex = (index + slides.length) % slides.length;
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+  }
+
+  prevBtn?.addEventListener('click', () => goTo(currentIndex - 1));
+  nextBtn?.addEventListener('click', () => goTo(currentIndex + 1));
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
+  });
+
+  // 터치 스와이프
+  let touchStartX = 0;
+  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  track.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1);
+  });
+
+  goTo(0);
+}
+
 // ========== 초기화 ==========
 
 document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
+  setupSpreadSlider();
   fetchSpreadLimits(); // 초기 잠금 상태 조회 (IS_DEV_MODE면 즉시 return)
   showScreen('welcome');
 });
