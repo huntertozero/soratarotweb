@@ -322,6 +322,32 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 - [x] `body`: 768px 이하 `align-items: flex-start` (센터링 해제, 스크롤 허용)
 - [x] READING 화면 `reading-container` 패딩 축소 (768px: 20px 15px)
 
+### Phase 22: 웰컴 화면 초기 렌더링 일관성 및 반응형 개선 ✅ 완료
+- [x] 웰컴 화면 Critical CSS 인라인 처리
+  - 원인: IP 모바일 접속 시 외부 CSS 로드 지연으로 초기 렌더링이 일정하지 않음
+  - 수정: `public/index.html` `<head>` 내 `<style>` 태그에 웰컰 화면의 핵심 CSS 직접 인라인
+    - 색상 변수, 기본 레이아웃, deck-icon, 제목/부제목/설명 텍스트 스타일 포함
+    - Pretendard CDN에 `rel="preconnect"` 추가 (연결 사전 설정)
+    - Google Fonts `display=swap` 유지 (FOUT 방지)
+  - 결과: 외부 CSS 로드 전에도 웰컴 화면이 정확하게 렌더링됨
+- [x] 모바일 반응형 사이즈 조정 (`public/index.html` inline CSS)
+  - 768px 이하 (태블릿/모바일):
+    - 제목: 48px → 32px
+    - 부제목: 24px → 18px
+    - 설명: 16px → 14px
+    - 카드 아이콘: 120×160 → 80×107
+    - 여백: 60px 패딩 → 40px
+  - 480px 이하 (소형 모바일):
+    - 제목: 32px → 28px
+    - 부제목: 18px → 16px
+    - 설명: 14px → 13px
+    - 카드 아이콘: 80×107 → 72×96
+    - 카드 테두리: 2px → 1.5px
+- [x] 버튼 스타일 복원 (`public/index.html`)
+  - 원인: 인라인 CSS의 `.btn` 스타일이 모든 버튼에 적용되어 `.btn-secondary` 스타일 덮어씌움
+  - 수정: 인라인 CSS에서 버튼 스타일 완전 제거
+  - 결과: 외부 CSS의 `.btn-primary` (주황색 그라디언트) / `.btn-secondary` (투명 배경) 스타일이 정상 적용
+
 ### Phase 20: 카드 선택 화면 UX 개선 및 버그 수정 ✅ 완료
 - [x] 선택 카드 글로우 애니메이션 속도 개선 (`style.css`)
   - `cardGlow 2s → 0.6s` (렉 걸린 착각 유발하던 느린 속도 해소)
@@ -588,4 +614,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-28 (Phase 21 모바일 버그 수정 + 다음 세션 작업 목록 추가)
+마지막 수정: 2026-05-28 (Phase 22 웰컴 화면 초기 렌더링 일관성 및 반응형 개선)
