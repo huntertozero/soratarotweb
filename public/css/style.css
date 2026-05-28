@@ -1344,6 +1344,12 @@ textarea::placeholder {
     white-space: nowrap; /* 텍스트 2줄 방지 */
   }
 
+  /* 웰컴 화면 단독 버튼: 질문입력 '다음' 버튼(flex:1 in 2-button row)과 동일한 폭 */
+  #screen-welcome #btn-start-reading {
+    width: calc(50% - 7.5px);
+    white-space: nowrap;
+  }
+
   /* 스프레드 선택 화면: 단독 이전으로 버튼 — 내용 너비만큼만, 가운데 정렬 */
   #screen-select-spread .button-group .btn {
     width: auto;

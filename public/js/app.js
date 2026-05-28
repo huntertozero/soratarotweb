@@ -507,6 +507,12 @@ async function proceedToCardReveal() {
   if (loadingState) {
     loadingState.classList.add('active');
     if (window.Effects) window.Effects.startOracleAnimation();
+    // 켈틱 크로스만: 카드 10장으로 로딩 인디케이터가 화면 밖으로 밀려나므로 스크롤
+    if (appState.selectedSpread === 'celtic') {
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 100);
+    }
   }
 
   // 자동으로 해석 요청
