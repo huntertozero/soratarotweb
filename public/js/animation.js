@@ -159,9 +159,10 @@ async function displayAndFlipCards(cardsData, positions = null) {
   });
   console.log('✅ 카드 요소 생성 및 추가:', cardElements.length, '개');
 
-  // 켈틱 크로스: 플립 순서 재정렬 (1,3,4,5,6,8,2,7,9,10번 카드 순)
+  // 켈틱 크로스: 모바일은 레이아웃 순(1,3,4,5,6,8,2,7,9,10), PC는 순서대로(1~10)
+  const isMobile = window.innerWidth <= 768;
   const flipOrderMap = {
-    celtic: [0, 2, 3, 4, 5, 7, 1, 6, 8, 9]
+    celtic: isMobile ? [0, 2, 3, 4, 5, 7, 1, 6, 8, 9] : null
   };
   const flipOrder = flipOrderMap[appState.selectedSpread];
   const flipElements = flipOrder

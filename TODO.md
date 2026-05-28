@@ -23,8 +23,6 @@
 - **목표**: 사용자가 입력한 질문에 더 집중한 해석 결과 출력
 - **관련 파일**: `prompts/system.md`, `prompts/one.md`, `prompts/three.md`, `prompts/celtic.md`
 
-### 6. 켈틱 크로스 카드 리빌 순서 PC/모바일 분기
-- **PC**: 1→2→3→4→5→6→7→8→9→10 (순서대로)
-- **모바일**: 1→3→4→5→6→8→2→7→9→10 (현재 유지)
-- **관련 파일**: `public/js/animation.js` (`displayAndFlipCards()` 내 `flipOrderMap`)
-- **구현 방향**: `window.innerWidth <= 768` 조건으로 분기
+### ~~6. 켈틱 크로스 카드 리빌 순서 PC/모바일 분기~~ ✅ 완료
+- `window.innerWidth <= 768` 분기: 모바일은 레이아웃 순(1,3,4,5,6,8,2,7,9,10), PC는 순서대로(1~10)
+- `flipOrderMap.celtic`: 모바일 `[0,2,3,4,5,7,1,6,8,9]` / PC `null` (순차 플립)
