@@ -160,6 +160,90 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 16px rgba(245, 158, 11, 0.4);
     }
+
+    /* 모바일 반응형 스타일 */
+    @media (max-width: 768px) {
+      body {
+        align-items: flex-start;
+      }
+
+      #app {
+        padding: 16px;
+      }
+
+      .welcome-container {
+        padding: 40px 16px;
+      }
+
+      .deck-icon {
+        width: 80px;
+        height: 107px;
+        margin: 0 auto 32px;
+      }
+
+      .deck-icon .card {
+        font-size: 28px;
+      }
+
+      .title {
+        font-size: 32px;
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+
+      .description {
+        font-size: 14px;
+        margin-bottom: 24px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-size: 14px;
+        min-height: 44px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-container {
+        padding: 32px 12px;
+      }
+
+      .deck-icon {
+        width: 72px;
+        height: 96px;
+        margin: 0 auto 24px;
+      }
+
+      .deck-icon .card {
+        font-size: 24px;
+        border: 1.5px solid #f59e0b;
+      }
+
+      .title {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .description {
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        font-size: 13px;
+        min-height: 40px;
+      }
+    }
   </style>
 </head>
 <body>
