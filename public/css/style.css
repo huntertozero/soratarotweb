@@ -168,9 +168,17 @@ body {
 .spread-container h2 {
   text-align: center;
   font-size: 28px;
-  margin-bottom: 50px;
+  margin-bottom: 12px;
   color: var(--color-starlight);
   font-family: var(--font-serif);
+}
+
+.spread-subtitle {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 40px;
+  color: var(--color-starlight);
+  line-height: 1.5;
 }
 
 /* 슬라이더 wrapper */
@@ -243,16 +251,16 @@ body {
   transition: all 0.3s ease;
 }
 
-.spread-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--color-gold);
-  box-shadow: 0 10px 30px rgba(249, 158, 11, 0.2);
+/* 슬라이더 내부 카드: hover 효과 없음 */
+.spread-slider-track .spread-card {
+  pointer-events: none;
 }
 
 .spread-card.active {
   border-color: var(--color-gold);
   border-width: 3px;
   box-shadow: 0 0 15px rgba(249, 158, 11, 0.4);
+  pointer-events: auto;
 }
 
 .spread-icon {
