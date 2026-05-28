@@ -370,11 +370,12 @@ function createCardGrid() {
 
   cardsGrid.innerHTML = '';
 
-  // 78장의 카드 생성 (13×6 그리드)
-  for (let i = 0; i < 78; i++) {
+  // 78장의 카드 생성 (시각적 순서 랜덤화)
+  const cardIds = shuffleArray(Array.from({ length: 78 }, (_, i) => i));
+  for (const id of cardIds) {
     const cardElement = document.createElement('div');
     cardElement.className = 'card-back-item';
-    cardElement.dataset.cardId = i;
+    cardElement.dataset.cardId = id;
     cardsGrid.appendChild(cardElement);
   }
 }
