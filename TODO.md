@@ -2,15 +2,11 @@
 
 ## 다음 세션 작업 예정
 
-### 1. 카드 선택 화면 카드 위치 랜덤화
-- **문제**: 카드 위치가 고정이라 같은 위치를 계속 선택하면 항상 같은 카드가 나옴
-- **목표**: SHUFFLE 화면에서 78장 카드의 시각적 순서를 매번 섞어 랜덤성 부여
-- **관련 파일**: `public/js/cards.js`, `public/js/app.js`
+### ~~1. 카드 선택 화면 카드 위치 랜덤화~~ ✅ 완료
+- `createCardGrid()`: `shuffleArray()`로 78장 시각적 순서 매 진입마다 랜덤화
 
-### 2. 켈틱 크로스 해석 화면 — 카드 번호 코너 리본 적용
-- **현재**: 노란색 원형 뱃지 (`.card-number-badge`)
-- **목표**: 코너 리본 스타일로 변경
-- **관련 파일**: `public/css/style.css`, `public/js/app.js` (`displayReading()`)
+### ~~2. 켈틱 크로스 해석 화면 — 카드 번호 코너 리본 적용~~ ✅ 완료
+- `.card-number-badge`: `clip-path` 펜타곤 수평 태그 (높이 18px, 좌측 4px 돌출)
 
 ### ~~3. 켈틱 크로스 해석 화면 — 상단 카드 텍스트 매우 작게~~ ✅ 완료
 - `#screen-reading.spread-celtic` 스코프로 `.csm-name` 9px, `.csm-direction` 8px, `.csm-position-label` 8px 축소
