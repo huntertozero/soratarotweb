@@ -23,6 +23,10 @@ let _syncLayoutHandler = null;
 // 모바일에서 마지막 카드가 뷰포트에 들어오면 버튼 고정, 나가면 해제
 let _shuffleBtnObserver = null;
 
+// ========== 카드 주파수 떨림 효과 ==========
+// 카드 선택 화면에서 선택되지 않은 카드들이 떨리는 효과
+let _cardShiveringInterval = null;
+
 // ========== 스프레드 사용 제한 함수 ==========
 
 function formatCountdown(ms) {
@@ -112,6 +116,18 @@ function renderMarkdown(text) {
 // ========== 화면 관리 ==========
 
 function showScreen(screenId) {
+  // SHUFFLE 화면 벗어날 때 떨림 효과 정리
+  if (appState.currentScreen === 'shuffle' && screenId !== 'shuffle') {
+    if (_cardShiveringInterval) {
+      clearInterval(_cardShiveringInterval);
+      _cardShiveringInterval = null;
+    }
+    // 모든 카드의 shivering 클래스 제거
+    document.querySelectorAll('.card-back-item.shivering').forEach(item => {
+      item.classList.remove('shivering');
+    });
+  }
+
   // 모든 스크린 숨기기
   document.querySelectorAll('.screen').forEach(screen => {
     screen.classList.remove('active');
@@ -262,9 +278,41 @@ function proceedToShuffle() {
   setupCardSelectionListeners();
   updateCardSelectionUI();
   setupShuffleButtonPin(); // 모바일: 마지막 카드 도달 시 버튼 고정
+  startCardShiveringEffect(); // 카드 주파수 떨림 효과 시작
+}
+
+// 카드 주파수 떨림 효과: 선택되지 않은 카드들이 주기적으로 떨림
+function startCardShiveringEffect() {
+  // 기존 interval 정리
+  if (_cardShiveringInterval) {
+    clearInterval(_cardShiveringInterval);
+  }
+
+  _cardShiveringInterval = setInterval(() => {
+    const cardItems = document.querySelectorAll('.card-back-item');
+    const selectedIds = new Set(appState.selectedCards.map(c => c.id));
+
+    // 모든 카드에서 shivering 제거
+    cardItems.forEach(item => item.classList.remove('shivering'));
+
+    // 선택되지 않은 카드 중 랜덤으로 1~2장에만 떨림 효과 추가
+    const unselectedCards = Array.from(cardItems).filter(item => {
+      const cardId = parseInt(item.dataset.cardId);
+      return !selectedIds.has(cardId);
+    });
+
+    const count = Math.random() > 0.5 ? 2 : 1; // 1~2장만 떨림
+    const shuffled = unselectedCards.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < count && i < shuffled.length; i++) {
+      shuffled[i].classList.add('shivering');
+    }
+  }, 1000); // 1000ms(1초)마다 떨림 카드 변경
 }
 
 // 모바일 전용: 마지막 카드가 뷰포트에 들어오면 버튼 하단 고정, 나가면 해제
+let _lastCardIntersecting = false; // 마지막 카드의 현재 가시성 상태 저장
+
 function setupShuffleButtonPin() {
   // 데스크탑(769px 이상)에서는 동작하지 않음
   if (window.innerWidth > 768) return;
@@ -285,20 +333,34 @@ function setupShuffleButtonPin() {
 
   _shuffleBtnObserver = new IntersectionObserver(
     ([entry]) => {
-      if (entry.isIntersecting) {
-        // 마지막 카드가 화면에 보임 → 버튼 고정, 카드 그리드 하단 여백 추가
-        buttonGroup.classList.add('is-pinned');
-        cardsGrid.style.paddingBottom = 'calc(88px + env(safe-area-inset-bottom, 0px))';
-      } else {
-        // 마지막 카드가 화면 밖 → 버튼 해제, 여백 제거
-        buttonGroup.classList.remove('is-pinned');
-        cardsGrid.style.paddingBottom = '';
-      }
+      _lastCardIntersecting = entry.isIntersecting;
+      updateShuffleButtonPin();
     },
     { threshold: 0.1 } // 마지막 카드의 10%만 보여도 감지
   );
 
   _shuffleBtnObserver.observe(lastCard);
+}
+
+// 버튼 고정 상태 업데이트 (선택 완료 여부 + 마지막 카드 가시성 고려)
+function updateShuffleButtonPin() {
+  const cardsGrid = document.getElementById('cards-grid');
+  const buttonGroup = document.querySelector('#screen-shuffle .button-group');
+  if (!cardsGrid || !buttonGroup) return;
+
+  const requiredCount = getCardCountForSpread(appState.selectedSpread);
+  const currentCount = appState.selectedCards.length;
+  const isSelectionComplete = currentCount >= requiredCount;
+
+  if (_lastCardIntersecting || isSelectionComplete) {
+    // 마지막 카드가 화면에 보이거나 선택 완료 → 버튼 고정
+    buttonGroup.classList.add('is-pinned');
+    cardsGrid.style.paddingBottom = 'calc(88px + env(safe-area-inset-bottom, 0px))';
+  } else {
+    // 마지막 카드가 화면 밖이고 선택 미완료 → 버튼 해제
+    buttonGroup.classList.remove('is-pinned');
+    cardsGrid.style.paddingBottom = '';
+  }
 }
 
 // SHUFFLE 화면: 78장 카드 그리드 생성
@@ -393,6 +455,9 @@ function updateCardSelectionUI() {
       item.classList.remove('disabled');
     }
   });
+
+  // 선택 상태 변경 후 버튼 고정 상태 갱신 (모바일)
+  updateShuffleButtonPin();
 }
 
 // 스프레드별 필요한 카드 개수 반환
