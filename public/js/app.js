@@ -330,10 +330,6 @@ function setupCardSelectionListeners() {
       if (isSelected) {
         // 선택 해제 애니메이션
         item.classList.add('deselecting');
-        // 선택 해제 시 지속 파티클 중지
-        if (window.Effects) {
-          window.Effects.stopSelectedCardParticles(item);
-        }
         setTimeout(() => {
           item.classList.remove('deselecting');
           item.classList.remove('selected');
@@ -343,16 +339,12 @@ function setupCardSelectionListeners() {
         }, 400);
         appState.selectedCards = appState.selectedCards.filter(c => c.id !== cardId);
       } else if (appState.selectedCards.length < requiredCount) {
-        // 선택 추가 애니메이션 + 스파크 효과
+        // 선택 추가 애니메이션 (파티클 효과 제거 - 성능 최적화)
         item.classList.add('selecting');
-        if (window.Effects) {
-          window.Effects.triggerCardSpark(item);
-          window.Effects.startSelectedCardParticles(item);
-        }
         setTimeout(() => {
           item.classList.remove('selecting');
           item.classList.add('selected');
-        }, 600);
+        }, 300);
         appState.selectedCards.push({
           id: cardId,
           isReversed: Math.random() > 0.5, // 정방향/역방향 랜덤

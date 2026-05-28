@@ -15,7 +15,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 
   <!-- 메인 스타일 -->
+  <link rel="preload" href="/css/style.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
+
+  <!-- 초기 로딩 최적화: 중요 색상 미리 정의 -->
+  <style>
+    :root {
+      --color-void: #0a0a1a;
+      --color-gold: #f59e0b;
+      --color-starlight: #e0d5ff;
+      --color-border: #4c3d8f;
+    }
+    body {
+      background: var(--color-void);
+      color: var(--color-starlight);
+    }
+    .btn-primary {
+      background: var(--color-gold);
+      color: var(--color-void);
+      border-color: var(--color-gold);
+    }
+  </style>
 </head>
 <body>
   <div id="app">
