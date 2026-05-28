@@ -718,39 +718,58 @@ function displayReading(data) {
   window.addEventListener('resize', syncLayout);
 }
 
-// 스프레드 슬라이더 초기화
+// 스프레드 슬라이더 초기화 (스택 카드 효과)
 function setupSpreadSlider() {
   let currentIndex = 0;
   const track = document.getElementById('spread-slider-track');
   const dots = document.querySelectorAll('.spread-dot');
-  const prevBtn = document.getElementById('spread-prev');
-  const nextBtn = document.getElementById('spread-next');
+  const wrapper = document.getElementById('spread-slider-wrapper');
 
-  if (!track) return;
+  if (!track || !wrapper) return;
 
   const slides = track.querySelectorAll('.spread-slide');
+  const totalSlides = slides.length;
 
-  function goTo(index) {
-    currentIndex = (index + slides.length) % slides.length;
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+  function updateStack() {
+    slides.forEach((slide, i) => {
+      const offset = (i - currentIndex + totalSlides) % totalSlides;
+
+      if (offset === 0) {
+        // 현재 카드: 앞면
+        slide.style.transform = 'translateY(0) scale(1) rotateY(0)';
+        slide.style.opacity = '1';
+        slide.style.zIndex = 3;
+      } else {
+        // 뒷면 카드: 뒤로 배치 + 흐리게
+        const depth = offset * 12;
+        const scale = 1 - offset * 0.03;
+        slide.style.transform = `translateY(${depth}px) scale(${scale})`;
+        slide.style.opacity = Math.max(0.3, 1 - offset * 0.3);
+        slide.style.zIndex = 3 - offset;
+      }
+    });
+
     dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
   }
 
-  prevBtn?.addEventListener('click', () => goTo(currentIndex - 1));
-  nextBtn?.addEventListener('click', () => goTo(currentIndex + 1));
+  function goTo(index) {
+    currentIndex = (index + totalSlides) % totalSlides;
+    updateStack();
+  }
+
   dots.forEach(dot => {
     dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
   });
 
   // 터치 스와이프
   let touchStartX = 0;
-  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
-  track.addEventListener('touchend', e => {
+  wrapper.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  wrapper.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1);
   });
 
-  goTo(0);
+  updateStack();
 }
 
 // ========== 초기화 ==========
