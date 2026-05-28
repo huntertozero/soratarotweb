@@ -12,14 +12,12 @@
 - **목표**: 코너 리본 스타일로 변경
 - **관련 파일**: `public/css/style.css`, `public/js/app.js` (`displayReading()`)
 
-### 3. 켈틱 크로스 해석 화면 — 상단 카드 텍스트 매우 작게
-- **대상**: 카드 이름(`.csm-name`), Reverse(`.csm-direction`), 카드 의미(`.csm-position-label`)
-- **관련 파일**: `public/css/style.css`
+### ~~3. 켈틱 크로스 해석 화면 — 상단 카드 텍스트 매우 작게~~ ✅ 완료
+- `#screen-reading.spread-celtic` 스코프로 `.csm-name` 9px, `.csm-direction` 8px, `.csm-position-label` 8px 축소
 
-### 4. 켈틱 크로스 해석 화면 — 상단 카드 영역 배경 투명화
-- **현재**: 검정색 배경
-- **목표**: 투명 처리
-- **관련 파일**: `public/css/style.css` (`.cards-summary-left`, `.cards-summary-right`)
+### ~~4. 켈틱 크로스 해석 화면 — 상단 카드 영역 배경 투명화~~ ✅ 완료
+- 모바일 `.cards-summary-wrapper`의 `background: var(--color-void)` → `transparent` 변경
+- `renderCard()`에서 켈틱 크로스 해석 화면 한정으로 `.csm-overlay` 제거, 이미지 폴백 `background-color: transparent` 처리
 
 ### 5. 프롬프트 수정 — 질문 중심 해석 강화
 - **목표**: 사용자가 입력한 질문에 더 집중한 해석 결과 출력
