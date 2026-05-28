@@ -83,13 +83,8 @@
       // 혼잡 시 건너뜀 (성능 최적화)
       if (activeSparkCount >= MAX_SPARKS * 0.5) return;
 
-      // 1개 파티클만 생성 (성능 개선)
-      const count = 1;
-      for (let i = 0; i < count; i++) {
-        if (activeSparkCount >= MAX_SPARKS) break;
-
+      if (activeSparkCount < MAX_SPARKS) {
         const rect = cardElement.getBoundingClientRect();
-        // 카드 테두리 근방 랜덤 위치
         const edgeX = rect.left + Math.random() * rect.width;
         const edgeY = rect.top + Math.random() * rect.height;
 

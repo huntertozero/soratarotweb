@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { execSync } = require('child_process');
 const cookieParser = require('cookie-parser');
 
 // API 키 조기 검증
@@ -17,28 +18,63 @@ const readingRouter = require('./routes/reading');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 빌드 버전: git 커밋 해시 우선, 없으면 타임스탬프로 폴백
+// 배포마다 해시가 달라져 브라우저 캐시를 자동으로 무효화
+function getBuildVersion() {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['pipe', 'pipe', 'pipe'] })
+      .toString().trim();
+  } catch {
+    return Date.now().toString(36);
+  }
+}
+const BUILD_VERSION = getBuildVersion();
+console.log(`🔖 빌드 버전: ${BUILD_VERSION}`);
+
+// index.html을 서버 시작 시 1회 읽어 JS/CSS 참조에 ?v= 버전 주입 (메모리 캐시)
+const HTML_PATH = path.join(__dirname, 'public', 'index.html');
+const htmlTemplate = fs.readFileSync(HTML_PATH, 'utf-8')
+  .replace(/(\/(?:js|css)\/[^"?]+)"/g, `$1?v=${BUILD_VERSION}"`);
+
 // 미들웨어
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// 정적 파일 서빙: JS/CSS/이미지는 1년 캐시 (버전 쿼리스트링으로 배포마다 무효화)
+// index.html은 별도 라우트에서 no-cache로 제공 (index: false)
+app.use(express.static(path.join(__dirname, 'public'), {
+  index: false,
+  setHeaders: (res, filePath) => {
+    if (/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?)$/.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+  },
+}));
 
 // API 라우트
 app.use('/api', readingRouter);
 
-// GET /dev → 개발용 진입점 (index.html에 dev 플래그 주입)
-app.get('/dev', (req, res) => {
-  const htmlPath = path.join(__dirname, 'public', 'index.html');
-  let html = fs.readFileSync(htmlPath, 'utf-8');
-  html = html.replace(
-    '</head>',
-    '  <script>window.TAROT_APP_MODE = "dev";</script>\n</head>'
-  );
+// HTML 전송 헬퍼: 버전 주입된 HTML에 no-cache 헤더 설정
+function serveHtml(res, extraScript = '') {
+  let html = htmlTemplate;
+  if (extraScript) {
+    html = html.replace('</head>', `  ${extraScript}\n</head>`);
+  }
+  res.setHeader('Cache-Control', 'no-cache');
   res.type('html').send(html);
+}
+
+// GET /dev → 개발용 진입점 (24시간 제한 없음)
+app.get('/dev', (req, res) => {
+  serveHtml(res, '<script>window.TAROT_APP_MODE = "dev";</script>');
 });
 
-// SPA fallback: 모든 비-API 경로를 index.html로 리다이렉트
+// /index.html 직접 접근 처리 (버전 주입된 HTML 제공)
+app.get('/index.html', (req, res) => serveHtml(res));
+
+// SPA fallback: 모든 비-API 경로를 index.html로
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  serveHtml(res);
 });
 
 // 글로벌 에러 핸들러

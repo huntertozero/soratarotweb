@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~27 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~29 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 28 완료)
+## 현재 상태 (Phase 29 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -32,6 +32,8 @@
 | 모바일 | 반응형 레이아웃 전면 개선, 켈틱 크로스 PC/모바일 플립 순서 분기 |
 | 프롬프트 | `prompts/*.md` 파일 분리, 이미지·역방향·연관성 원칙 포함 |
 | UX | 켈틱 크로스 카드 번호 수평 태그 뱃지, 켈틱 로딩 시 자동 스크롤, 모바일 웰컴 버튼 폭 조정 |
+| 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거 |
+| 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시 `?v=`), JS/CSS 1년 캐시, HTML no-cache |
 
 ---
 
@@ -39,7 +41,7 @@
 
 | 파일 | 역할 |
 |------|------|
-| `server.js` | Express 설정, `/dev` 진입점, cookieParser, 에러 핸들러 |
+| `server.js` | Express 설정, `/dev` 진입점, cookieParser, 캐시 버스팅(git 해시 `?v=`), 에러 핸들러 |
 | `data/cards.js` | 78장 카드 데이터 (id, nameKo, keywords, meaning, imageSymbols) |
 | `data/cardImages.js` | 카드 ID → 이미지 파일명 매핑 |
 | `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (24시간 제한 + 검증) |
@@ -49,7 +51,8 @@
 | `public/js/animation.js` | 카드 플립, PC/모바일 순서 분기 |
 | `public/js/effects.js` | 스파크, 지속 파티클, 플립 플래시, 오라클 캔버스 |
 | `public/js/particles.js` | Canvas 별 파티클 배경, 오로라 blob |
-| `public/js/cards.js` | Fisher-Yates 셔플, 정역방향 결정 |
+| `public/js/cards.js` | Fisher-Yates 셔플 (`shuffleArray`) |
+| `railway.toml` | Railway 배포 설정 (NIXPACKS, 헬스체크, 재시작 정책) |
 | `public/js/cardMeta.js` | 클라이언트용 경량 카드 배열 (id, nameKo, suit, imageFile) |
 
 ---

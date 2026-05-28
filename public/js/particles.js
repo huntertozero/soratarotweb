@@ -31,12 +31,12 @@
 
   // ========== 파티클 생성 ==========
 
-  function createParticle(forceRandom = true) {
+  function createParticle() {
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * CONFIG.MAX_SPEED * 0.5 + 0.05;
     return {
-      x: forceRandom ? Math.random() * W : Math.random() * W,
-      y: forceRandom ? Math.random() * H : Math.random() * H,
+      x: Math.random() * W,
+      y: Math.random() * H,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       // 목표 속도 (폭발 후 복귀 대상)
@@ -94,7 +94,7 @@
     // 파티클 초기 생성
     const count = CONFIG.PARTICLE_COUNT;
     for (let i = 0; i < count; i++) {
-      particles.push(createParticle(true));
+      particles.push(createParticle());
     }
 
     // 오로라 blob 초기 생성

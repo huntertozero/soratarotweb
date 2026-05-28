@@ -13,11 +13,8 @@ function flipCard(cardElement, delayMs = 0) {
         highlight.className = 'card-highlight';
         cardElement.appendChild(highlight);
 
-        console.log('🎬 카드 플립 시작, Reverse:', cardElement.dataset.reversed);
-
         // 하이라이트 애니메이션 완료 후 이미지 표시
         const showImage = () => {
-          console.log('✨ 이미지 표시 - animationend 발생');
           cardFront.style.opacity = '1';
           highlight.remove();
         };
@@ -28,7 +25,6 @@ function flipCard(cardElement, delayMs = 0) {
         // 타임아웃 폴백 (CSS transition 0.7s + 여유 50ms)
         setTimeout(() => {
           if (highlight.parentElement) {
-            console.log('⏱️ 타임아웃 - 강제 이미지 표시');
             cardFront.style.opacity = '1';
             if (highlight.parentElement) highlight.remove();
           }
@@ -122,11 +118,7 @@ function createCardElement(cardId, isReversed, position = null) {
 
 // 여러 카드를 화면에 표시하고 플립
 async function displayAndFlipCards(cardsData, positions = null) {
-  console.log('🃏 displayAndFlipCards 시작:', cardsData.length, '장');
-
   const cardsDisplay = document.getElementById('cards-display');
-  console.log('🔍 cardsDisplay 요소:', cardsDisplay);
-
   if (!cardsDisplay) {
     console.error('❌ cards-display 요소를 찾을 수 없습니다');
     return;
@@ -136,9 +128,7 @@ async function displayAndFlipCards(cardsData, positions = null) {
   cardsDisplay.innerHTML = '';
 
   // spread별 클래스 추가 (레이아웃 제어용)
-  const spreadClass = `spread-${appState.selectedSpread}`;
-  cardsDisplay.className = spreadClass;
-  console.log('✅ 기존 카드 제거, 클래스 추가:', spreadClass);
+  cardsDisplay.className = `spread-${appState.selectedSpread}`;
 
   // 카드 요소 생성
   const cardElements = [];
@@ -146,7 +136,6 @@ async function displayAndFlipCards(cardsData, positions = null) {
     const position = positions ? positions[index] : null;
     const cardElement = createCardElement(cardData.id, cardData.isReversed, position);
     if (cardElement) {
-      // 역방향 카드에 클래스 추가
       if (cardData.isReversed) {
         cardElement.classList.add('reversed');
       }
@@ -154,20 +143,16 @@ async function displayAndFlipCards(cardsData, positions = null) {
       cardElements.push(cardElement);
     }
   });
-  console.log('✅ 카드 요소 생성 및 추가:', cardElements.length, '개');
 
   // 켈틱 크로스: 모바일은 레이아웃 순(1,3,4,5,6,8,2,7,9,10), PC는 순서대로(1~10)
   const isMobile = window.innerWidth <= 768;
-  const flipOrderMap = {
-    celtic: isMobile ? [0, 2, 3, 4, 5, 7, 1, 6, 8, 9] : null
-  };
-  const flipOrder = flipOrderMap[appState.selectedSpread];
+  const flipOrder = appState.selectedSpread === 'celtic' && isMobile
+    ? [0, 2, 3, 4, 5, 7, 1, 6, 8, 9]
+    : null;
   const flipElements = flipOrder
     ? flipOrder.map(i => cardElements[i])
     : cardElements;
 
   // 순차 플립 (500ms 간격)
-  console.log('🔄 카드 플립 시작...');
   await flipCardsSequentially(flipElements, 500);
-  console.log('✅ 카드 플립 완료');
 }

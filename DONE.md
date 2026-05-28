@@ -166,3 +166,26 @@
 - 2차: 수평 화살표 태그로 개선 (`clip-path: polygon` 펜타곤, 높이 18px, 좌측 4px 돌출)
   - `overflow: hidden` → `overflow: visible` (`#screen-reading.spread-celtic .card-summary-item`)
   - 모바일: 높이 16px / 돌출 3px, 기존 gap 10px 유지 (7px 여백 확보)
+
+## Phase 28: UX 세부 개선 ✅
+- 켈틱 크로스 카드 10장 플립 완료 후 로딩 인디케이터가 화면 밖에 위치하는 문제 → 로딩 활성화 시 `scrollTo(0, scrollHeight)` 자동 스크롤
+- 모바일 웰컴 화면 "리딩 시작하기" 버튼: 내용 맞춤 폭 → `width: 100%; max-width: 320px` (작은 화면에서도 전체 폭 활용)
+
+## Phase 29: 코드 정리 + Railway 배포 준비 ✅
+
+### 29-1. Dead Code 및 중복 로직 제거
+- `particles.js`: `createParticle(forceRandom)` — 양쪽 분기 동일한 dead parameter 제거
+- `effects.js`: `startSelectedCardParticles` 내 `count=1; for loop` → `if` 직접 분기로 단순화
+- `routes/reading.js`: `maxAge: 86400 * 1000` → 기존 `LIMIT_DURATION_MS` 상수 재사용
+- `services/claudeService.js`: 에러 핸들러의 중복 timeout map 제거 → `timeout / 1000` 사용, `timeout`/`maxTokens`를 함수 스코프로 이동
+- `app.js`: `spreadPositions` 객체 2회 중복(`proceedToCardReveal`, `displayReading`) → 모듈 상수 `SPREAD_POSITIONS`로 추출
+- `app.js` + `animation.js`: 개발용 `console.log` 전체 제거 (에러/경고 유지)
+- `cards.js`: 사용되지 않는 `selectRandomCards`, `selectCardsForSpread`, `getCardInfo` 함수 제거 → `shuffleArray`만 유지
+
+### 29-2. Railway 배포 + 캐시 버스팅
+- `server.js` 전면 개선:
+  - 서버 시작 시 git 커밋 해시(`git rev-parse --short HEAD`) 기반 `BUILD_VERSION` 생성 (git 없으면 타임스탬프 폴백)
+  - `index.html` 메모리 캐싱 + JS/CSS 참조에 `?v=BUILD_VERSION` 주입 (정규식: `/(\/(?:js|css)\/[^"?]+)"/g`)
+  - `express.static` `index: false` + `setHeaders`: JS/CSS/이미지 `Cache-Control: public, max-age=31536000, immutable`
+  - HTML 라우트(`/`, `/dev`, `/index.html`, SPA fallback): `Cache-Control: no-cache`
+- `railway.toml` 신규 생성: NIXPACKS 빌더, `npm start`, 헬스체크 `/`, 재시작 정책

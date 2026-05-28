@@ -1,5 +1,24 @@
 // 메인 애플리케이션 상태 및 로직
 
+// ========== 상수 ==========
+
+const SPREAD_POSITIONS = {
+  one: ['지금 이 순간'],
+  three: ['과거', '현재', '미래'],
+  celtic: [
+    '현재 상황',
+    '가로막는 것',
+    '의식적 목표',
+    '무의식적 기반',
+    '먼 과거',
+    '가까운 미래',
+    '나의 태도',
+    '외부 영향',
+    '희망과 두려움',
+    '최종 결과',
+  ],
+};
+
 // ========== 상태 관리 ==========
 
 const appState = {
@@ -474,30 +493,10 @@ function getCardCountForSpread(spread) {
 async function proceedToCardReveal() {
   showScreen('card-reveal');
 
-  // 사용자가 선택한 카드는 이미 appState.selectedCards에 있음
-
-  // 스프레드별 위치 정보 (claudeService.js 포지션과 동일)
-  const spreadPositions = {
-    one: ['지금 이 순간'],
-    three: ['과거', '현재', '미래'],
-    celtic: [
-      '현재 상황',
-      '가로막는 것',
-      '의식적 목표',
-      '무의식적 기반',
-      '먼 과거',
-      '가까운 미래',
-      '나의 태도',
-      '외부 영향',
-      '희망과 두려움',
-      '최종 결과',
-    ],
-  };
-
   // 원 카드는 위치 레이블 미표시 (3장, 10장만 과거/현재/미래 등 표시)
   const positions = appState.selectedSpread === 'one'
     ? null
-    : spreadPositions[appState.selectedSpread];
+    : SPREAD_POSITIONS[appState.selectedSpread];
 
   // 카드 표시 및 플립
   await displayAndFlipCards(appState.selectedCards, positions);
@@ -523,10 +522,8 @@ async function proceedToCardReveal() {
 
 async function fetchReading() {
   try {
-    console.log('🔄 해석 요청 시작...');
     const loadingState = document.getElementById('loading-state');
     if (loadingState) {
-      // 스프레드별 로딩 메시지 설정
       const loadingMessages = {
         one:    '타로 마스터가 카드를 읽고 있어요.<br>최대 20초 정도 걸려요.',
         three:  '타로 마스터가 카드를 읽고 있어요.<br>최대 30초 정도 걸려요.',
@@ -538,7 +535,6 @@ async function fetchReading() {
       }
       loadingState.classList.add('active');
       if (window.Effects) window.Effects.startOracleAnimation();
-      console.log('✅ 로딩 상태 활성화');
     }
 
     const requestBody = {
@@ -547,26 +543,21 @@ async function fetchReading() {
       cards: appState.selectedCards,
     };
 
-    console.log('📤 API 요청:', requestBody);
-
     const response = await fetch('/api/reading', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 개발 모드일 때 서버 우회 헤더 추가
         ...(IS_DEV_MODE ? { 'X-Tarot-Dev': '1' } : {}),
       },
       body: JSON.stringify(requestBody),
     });
-
-    console.log('📥 API 응답 상태:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
       // 429: 24시간 사용 제한 초과
       if (response.status === 429) {
         showError(errorData.error || '24시간 사용 제한에 걸렸습니다.');
-        fetchSpreadLimits(); // 잠금 UI 즉시 갱신
+        fetchSpreadLimits();
         const loadingState = document.getElementById('loading-state');
         if (loadingState) {
           loadingState.classList.remove('active');
@@ -578,24 +569,18 @@ async function fetchReading() {
     }
 
     const data = await response.json();
-    console.log('✅ 응답 데이터 수신:', data);
 
     if (!data.cards || !Array.isArray(data.cards)) {
       throw new Error('서버 응답에 cards 배열이 없습니다: ' + JSON.stringify(data));
     }
 
-    console.log('✅ cards 수:', data.cards.length, '장');
     appState.reading = data.reading;
 
-    // 로딩 상태 숨기기 + 오라클 구체 정지
     if (loadingState) {
       loadingState.classList.remove('active');
       if (window.Effects) window.Effects.stopOracleAnimation();
-      console.log('✅ 로딩 상태 비활성화');
     }
 
-    // READING 화면으로 이동
-    console.log('🔄 displayReading 호출');
     displayReading(data);
   } catch (error) {
     console.error('❌ 해석 요청 오류:', error);
@@ -610,8 +595,6 @@ async function fetchReading() {
 }
 
 function displayReading(data) {
-  console.log('🎨 displayReading 시작');
-
   // 해석 화면에 스프레드 클래스 부여 (CSS 타게팅용)
   const screenReading = document.getElementById('screen-reading');
   if (screenReading) {
@@ -619,35 +602,15 @@ function displayReading(data) {
     screenReading.classList.add(`spread-${appState.selectedSpread}`);
   }
 
-  // 스프레드별 위치 레이블 (claudeService.js 포지션과 동일)
-  const spreadPositions = {
-    one: ['지금 이 순간'],
-    three: ['과거', '현재', '미래'],
-    celtic: [
-      '현재 상황',
-      '가로막는 것',
-      '의식적 목표',
-      '무의식적 기반',
-      '먼 과거',
-      '가까운 미래',
-      '나의 태도',
-      '외부 영향',
-      '희망과 두려움',
-      '최종 결과',
-    ],
-  };
-  const positions = spreadPositions[appState.selectedSpread] || [];
-  console.log('✅ 포지션 레이블:', positions);
+  const positions = SPREAD_POSITIONS[appState.selectedSpread] || [];
 
   // ---- 카드 HTML 렌더링 ----
   const cardsSummaryLeft = document.getElementById('cards-summary-left');
   const cardsSummaryRight = document.getElementById('cards-summary-right');
-  console.log('🔍 카드 컨테이너:', cardsSummaryLeft, cardsSummaryRight);
 
   if (cardsSummaryLeft && cardsSummaryRight) {
     const leftCards = data.cards.slice(0, 5);
     const rightCards = data.cards.slice(5, 10);
-    console.log('📋 leftCards:', leftCards.length, 'rightCards:', rightCards.length);
 
     // 단일 카드 렌더 함수
     // positionIndex: data.cards 전체 기준 인덱스 (positions[] 조회용)
@@ -692,7 +655,6 @@ function displayReading(data) {
     try {
       cardsSummaryLeft.innerHTML = leftCards.map((c, i) => renderCard(c, i)).join('');
       cardsSummaryRight.innerHTML = rightCards.map((c, i) => renderCard(c, i + 5)).join('');
-      console.log('✅ 카드 렌더링 완료');
     } catch (renderErr) {
       console.error('❌ 카드 렌더링 오류:', renderErr);
     }
@@ -715,11 +677,9 @@ function displayReading(data) {
 
   // ---- 해석 텍스트 렌더링 ----
   const readingText = document.getElementById('reading-text');
-  console.log('🔍 reading-text 요소:', readingText);
   if (readingText) {
     try {
       readingText.innerHTML = renderMarkdown(data.reading);
-      console.log('✅ 해석 텍스트 표시 완료');
     } catch (textErr) {
       console.error('❌ 텍스트 렌더링 오류:', textErr);
       readingText.textContent = data.reading || '';
@@ -727,9 +687,7 @@ function displayReading(data) {
   }
 
   // ---- 화면 전환 (position: fixed 요소 계산은 이후에 해야 함) ----
-  console.log('🔄 showScreen(reading) 호출 직전');
   showScreen('reading');
-  console.log('✅ READING 화면 전환 완료');
 
   // ---- 위치·높이 동기화 (showScreen 이후에만 BoundingClientRect 값이 유효) ----
   const readingContentWrapper = document.querySelector('.reading-content-wrapper');

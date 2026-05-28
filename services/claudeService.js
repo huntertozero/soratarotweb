@@ -84,6 +84,10 @@ function formatCardsForPrompt(cards, cardDatabase, spread) {
 
 // Claude로 타로 해석 생성
 async function generateReading(spread, cards, question, cardDatabase) {
+  // 스프레드별 타임아웃/토큰 설정 (catch에서도 참조하므로 함수 스코프에 선언)
+  const timeout = ({ one: 30000, three: 45000, celtic: 90000 })[spread] || 30000;
+  const maxTokens = ({ one: 1024, three: 1500, celtic: 4000 })[spread] || 1024;
+
   try {
     // 스프레드 정보
     const spreadDetail = spreadInfo[spread];
@@ -105,17 +109,9 @@ async function generateReading(spread, cards, question, cardDatabase) {
 
 ${formattedCards}${questionPart}`;
 
-    // 스프레드별 타임아웃 설정 (celtic은 응답이 길어 더 여유 있게)
-    const timeoutMs = { one: 30000, three: 45000, celtic: 90000 };
-    const timeout = timeoutMs[spread] || 30000;
-
-    // Claude API 호출
+    // AbortController로 타임아웃 구현
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-    // 스프레드별 최대 토큰 설정
-    const maxTokensMap = { one: 1024, three: 1500, celtic: 4000 };
-    const maxTokens = maxTokensMap[spread] || 1024;
 
     const message = await client.messages.create(
       {
@@ -140,8 +136,7 @@ ${formattedCards}${questionPart}`;
     return reading;
   } catch (error) {
     if (error.name === 'AbortError') {
-      const timeoutSec = { one: 30, three: 45, celtic: 90 }[spread] || 30;
-      throw new Error(`Claude API 요청이 타임아웃되었습니다 (${timeoutSec}초). 다시 시도해주세요.`);
+      throw new Error(`Claude API 요청이 타임아웃되었습니다 (${timeout / 1000}초). 다시 시도해주세요.`);
     }
     throw error;
   }
