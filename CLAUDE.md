@@ -444,6 +444,23 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
   - CSS: `.card-back-item.no-hover { transform: none !important }`
   - hover 선택자: `:not(.no-hover)` 조건 추가
 
+### Phase 26: 켈틱 크로스 플립 순서 분기 + 모바일 카드 텍스트 폰트 크기 최적화 ✅ 완료
+- [x] 켈틱 크로스 카드 리빌 순서 PC/모바일 분기 (`public/js/animation.js`)
+  - PC(>768px): 1→2→3→4→5→6→7→8→9→10 순서대로 플립
+  - 모바일(≤768px): 1→3→4→5→6→8→2→7→9→10 레이아웃 순 유지
+  - `window.innerWidth <= 768` 조건으로 `flipOrderMap.celtic` 분기
+- [x] 모바일 카드 텍스트 폰트 크기 정리 (`public/css/style.css`)
+  - **해석(READING) 화면** (`@media max-width: 768px`):
+    - `card-summary-item .csm-direction` 8px 추가 (기존 11px 기본값 축소)
+    - csm-name 9px · csm-position-label 8px 기존 유지
+  - **카드리빌(CARD_REVEAL) 화면** 실제 적용 클래스 수정:
+    - 기존 `.csm-*` 클래스 오버라이드는 READING 전용이라 카드리빌에 미적용됐던 버그 발견
+    - `animation.js` 위치 레이블 인라인 스타일 → `.card-position-label` CSS 클래스로 교체
+      - `.card-position-label`: 일반 방향 스타일
+      - `.card-position-label--reversed`: 역방향(bottom 기준, rotateZ(180deg))
+    - 모바일 768px: `.card-name` 10px / `.card-direction` 9px / `.card-position-label` 9px
+    - 쓰리카드·켈틱크로스 `.csm-*` 오버라이드도 동일 비율(10/9/9px)로 통일
+
 ### Phase 18: 프론트엔드 애니메이션 강화 + UI 세부 조정 ✅ 완료
 
 #### 18-1. 동적 배경 파티클 시스템 (Canvas 기반)
@@ -664,4 +681,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-28 (Phase 25 모바일 켈틱 크로스 카드 겹침 수정 및 레이아웃 재배치 — 3+3+2+2 그리드, 플립 순서 변경, 로딩 텍스트 수정)
+마지막 수정: 2026-05-28 (Phase 26 켈틱 크로스 플립 순서 PC/모바일 분기 + 모바일 카드 텍스트 폰트 크기 최적화 — card-position-label 클래스 도입, card-name/direction 모바일 축소)
