@@ -710,9 +710,8 @@ function displayReading(data) {
   window.addEventListener('resize', syncLayout);
 }
 
-// 스프레드 슬라이더 초기화 (스택 카드 효과)
+// 스프레드 슬라이더 초기화 (모바일: 스택 카드, PC: 그리드)
 function setupSpreadSlider() {
-  let currentIndex = 0;
   const track = document.getElementById('spread-slider-track');
   const dots = document.querySelectorAll('.spread-dot');
   const wrapper = document.getElementById('spread-slider-wrapper');
@@ -721,61 +720,62 @@ function setupSpreadSlider() {
 
   const slides = track.querySelectorAll('.spread-slide');
   const totalSlides = slides.length;
+  const isMobile = window.innerWidth <= 768;
 
-  function updateStack() {
-    slides.forEach((slide, i) => {
-      const offset = (i - currentIndex + totalSlides) % totalSlides;
+  // 모바일에서만 스택 카드 효과 적용
+  if (isMobile) {
+    let currentIndex = 0;
 
-      // 순환 배열 정규화: -1, 0, 1 형태로
-      const normalizedOffset = offset > 1 ? offset - totalSlides : offset;
+    function updateStack() {
+      slides.forEach((slide, i) => {
+        const offset = (i - currentIndex + totalSlides) % totalSlides;
+        const normalizedOffset = offset > 1 ? offset - totalSlides : offset;
 
-      if (normalizedOffset === 0) {
-        // 현재 카드: 중앙 앞면
-        slide.style.transform = 'translateX(0) rotateY(0) scale(1)';
-        slide.style.opacity = '1';
-        slide.style.zIndex = 30;
-        slide.classList.add('active');
-      } else if (normalizedOffset === -1) {
-        // 왼쪽 카드: 부채 펼침 효과
-        slide.style.transform = 'translateX(-100px) rotateY(28deg) scale(0.9)';
-        slide.style.opacity = '0.4';
-        slide.style.zIndex = 10;
-        slide.classList.remove('active');
-      } else if (normalizedOffset === 1) {
-        // 오른쪽 카드: 부채 펼침 효과
-        slide.style.transform = 'translateX(100px) rotateY(-28deg) scale(0.9)';
-        slide.style.opacity = '0.4';
-        slide.style.zIndex = 10;
-        slide.classList.remove('active');
-      }
+        if (normalizedOffset === 0) {
+          slide.style.transform = 'translateX(0) rotateY(0) scale(1)';
+          slide.style.opacity = '1';
+          slide.style.zIndex = 30;
+          slide.classList.add('active');
+        } else if (normalizedOffset === -1) {
+          slide.style.transform = 'translateX(-100px) rotateY(28deg) scale(0.9)';
+          slide.style.opacity = '0.4';
+          slide.style.zIndex = 10;
+          slide.classList.remove('active');
+        } else if (normalizedOffset === 1) {
+          slide.style.transform = 'translateX(100px) rotateY(-28deg) scale(0.9)';
+          slide.style.opacity = '0.4';
+          slide.style.zIndex = 10;
+          slide.classList.remove('active');
+        }
+      });
+
+      dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+    }
+
+    function goTo(index) {
+      currentIndex = (index + totalSlides) % totalSlides;
+      updateStack();
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
     });
 
-    dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
-  }
+    // 터치 스와이프
+    let touchStartX = 0;
+    wrapper.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    wrapper.addEventListener('touchmove', e => {
+      e.preventDefault();
+    }, { passive: false });
+    wrapper.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1);
+    }, { passive: true });
 
-  function goTo(index) {
-    currentIndex = (index + totalSlides) % totalSlides;
     updateStack();
   }
-
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));
-  });
-
-  // 터치 스와이프 (페이지 스크롤 방지)
-  let touchStartX = 0;
-  wrapper.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
-  }, { passive: true });
-  wrapper.addEventListener('touchmove', e => {
-    e.preventDefault();
-  }, { passive: false });
-  wrapper.addEventListener('touchend', e => {
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goTo(diff > 0 ? currentIndex + 1 : currentIndex - 1);
-  }, { passive: true });
-
-  updateStack();
 }
 
 // ========== 초기화 ==========
