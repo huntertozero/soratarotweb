@@ -380,6 +380,26 @@ git commit -m "public/js/app.js - 화면 전환 로직 완성"
 - [x] 카드 테두리 선 두께 축소
   - 2px → 1px로 줄임으로써 더 얇고 세련된 모습 구현 (`style.css`)
 
+### Phase 24: 모바일 CARD_REVEAL 화면 레이아웃 재구성 ✅ 완료
+- [x] 스프레드별 모바일 카드 배치 전면 재구성 (`public/css/style.css`)
+  - **원 카드**: `max-width: 150px`, 1장 중앙 배치
+  - **쓰리 카드**: `grid-template-columns: repeat(3, 1fr)` 3열 가로 배치
+    - 카드 `padding: 6px`, `box-sizing: border-box`, `min-width: 0`
+    - `@media (max-width: 600px)` 내 기존 `1fr` 1열 → `repeat(3, 1fr)` 3열로 수정 (600px 미디어쿼리 충돌 해소)
+  - **켈틱 크로스**: `grid-template-columns: repeat(12, 1fr)` 12열 기반 3+3+4 그리드
+    - 1~6번 카드: `grid-column: span 4` (행당 3장)
+    - 7~10번 카드: `grid-column: span 3` (행당 4장)
+    - 카드 `padding: 4px`(3-card row) / `padding: 2px`(4-card row)
+    - 근본 원인: `padding: 20px` 그대로 유지 시 87px짜리 그리드 셀에서 오버플로우 → 4장 행 겹침 발생
+- [x] 오라클 캔버스 모바일 표시 크기 축소 (`style.css`)
+  - CSS `width/height: 160px` (내부 캔버스 해상도 320px 유지 → 선명도 보장)
+  - 카드 하단에 자연스럽게 위치 (별도 HTML 구조 변경 없이 플로우 활용)
+- [x] 카드 텍스트 스프레드/행별 단계적 축소 (`style.css`)
+  - 쓰리 카드: `.csm-name` 8px / `.csm-position-label` 7px / `.csm-direction` 7px
+  - 켈틱 크로스 3-card row: `.csm-name` 8px / `.csm-position-label` 7px / `.csm-direction` 7px
+  - 켈틱 크로스 4-card row: `.csm-name` 7px / `.csm-position-label` 6px / `.csm-direction` 6px
+- [x] 컨테이너 패딩 모바일 최적화: `.card-reveal-container` 40px→20px, `#cards-display` margin-bottom 40px→20px
+
 ### Phase 20: 카드 선택 화면 UX 개선 및 버그 수정 ✅ 완료
 - [x] 선택 카드 글로우 애니메이션 속도 개선 (`style.css`)
   - `cardGlow 2s → 0.6s` (렉 걸린 착각 유발하던 느린 속도 해소)
@@ -577,41 +597,16 @@ Invoke-RestMethod `
 
 ## 나중에 할 것
 
-### 🔴 우선순위 높음 (다음 세션 작업 예정)
+### 🔴 우선순위 높음 (남은 미완료 작업)
 
-- **[모바일] 화면 전환 시 스크롤 위치 초기화**
-  - 증상: 스프레드 선택 화면에서 아래로 스크롤 후 켈틱 크로스 선택 → 질문 입력 화면이 스크롤 내려간 상태로 진입
-  - 수정: `showScreen()` 호출 시 `window.scrollTo(0, 0)` 또는 해당 screen 컨테이너 `scrollTop = 0` 적용
-  - 구현 파일: `public/js/app.js` `showScreen()` 함수
+#### ✅ 완료된 항목 (2026-05-28)
+1. ✅ 화면 전환 시 스크롤 위치 초기화
+2. ✅ 카드 선택 시 파티클 효과 성능 최적화
+3. ✅ 카드 선택 화면 하단 버튼 표시 조건 개선 (선택 완료 시 자동 고정)
+4. ✅ READING 화면 카드 목록 최상단 고정 + 카드 텍스트 축소
+5. ✅ 스프레드 선택 화면 아이콘 및 레이아웃 개편
 
-- **[모바일] 카드 선택 시 원형 파티클·빛 발산 효과 성능 저하 개선**
-  - 증상: 카드를 선택할수록(3장 이상) 파티클 효과가 누적되어 점점 느려짐
-  - 원인 추정: `startSelectedCardParticles()`의 setInterval이 선택된 카드 수만큼 동시 실행
-  - 수정 방향: 선택 카드 수에 따라 파티클 발생 빈도 축소 또는 총 파티클 수 상한 강화
-  - 구현 파일: `public/js/effects.js`
-
-- **[모바일] 카드 선택 화면 하단 버튼 표시 조건에 선택 완료 추가**
-  - 현재: 마지막 카드(78번째)가 뷰포트에 들어올 때만 버튼 고정
-  - 수정: 필요 선택 수를 모두 채웠을 때도 버튼 `is-pinned` 활성화
-  - 구현 파일: `public/js/app.js` `updateCardSelectionUI()` 및 `setupCardSelectionListeners()` 내 선택 완료 감지 지점
-
-- **[모바일] CARD_REVEAL 화면 카드 배치 재구성**
-  - 현재: 모바일에서 1열 또는 2열 세로 나열로 길게 늘어져 어색함
-  - 수정: 1장 → 1열 1장 / 3장 → 1열 3장(가로) / 10장 → 2행×5열
-  - 카드 내 텍스트(위치 레이블·카드명·REVERSE) 폰트 크기 축소
-  - 구현 파일: `public/css/style.css` `@media (max-width: 768px)` 내 `#cards-display` 그리드
-
-- **[모바일] READING 화면 카드 목록 최상단 고정 + 카드 텍스트 축소**
-  - 현재: 모바일에서 카드 목록(좌우 패널)이 가로 스크롤 바 형태로 해석 위에 위치
-  - 수정: 카드 목록을 화면 최상단에 `position: sticky; top: 0`으로 고정
-  - 카드 내 텍스트(카드명, 위치 레이블) 폰트 크기 매우 작게 축소 (9~10px)
-  - 구현 파일: `public/css/style.css`, `public/js/app.js` `syncLayout()`
-
-- **[모바일] 스프레드 선택 화면 아이콘 및 레이아웃 개편**
-  - 현재: 카드가 너무 크고 설명 텍스트가 항상 노출됨
-  - 수정: 아이콘 3개 + 제목만 표시 → 탭 시 설명 + "선택하기" 버튼 펼쳐지는 아코디언 방식
-  - 아이콘 교체: 원 카드 → 카드 1장 SVG, 쓰리 카드 → 카드 3장 겹친 SVG, 켈틱 크로스는 ⊕ 유지
-  - 구현 파일: `public/index.html`, `public/css/style.css`, `public/js/app.js`
+#### ❌ 남은 미완료 작업
 
 - **켈틱 크로스 카드 시인성 개선**: READING 화면에서 카드 순번 명확화
   
@@ -646,4 +641,4 @@ Invoke-RestMethod `
 
 ---
 
-마지막 수정: 2026-05-28 (Phase 23 모바일 UI/UX 세부 개선 및 카드 떨림 효과 구현)
+마지막 수정: 2026-05-28 (Phase 24 모바일 CARD_REVEAL 레이아웃 재구성 — 스프레드별 3+3+4 그리드, 텍스트 단계적 축소)
