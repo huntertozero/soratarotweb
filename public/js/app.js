@@ -605,6 +605,13 @@ async function fetchReading() {
 function displayReading(data) {
   console.log('🎨 displayReading 시작');
 
+  // 해석 화면에 스프레드 클래스 부여 (CSS 타게팅용)
+  const screenReading = document.getElementById('screen-reading');
+  if (screenReading) {
+    screenReading.classList.remove('spread-one', 'spread-three', 'spread-celtic');
+    screenReading.classList.add(`spread-${appState.selectedSpread}`);
+  }
+
   // 스프레드별 위치 레이블 (claudeService.js 포지션과 동일)
   const spreadPositions = {
     one: ['지금 이 순간'],
@@ -651,12 +658,16 @@ function displayReading(data) {
         ? `<div class="card-number-badge">${positionIndex + 1}</div>`
         : '';
 
+      // 켈틱 크로스 해석 화면: 오버레이 제거, 이미지 폴백 투명화
+      const bgExtraStyle = isCeltic ? ' background-color: transparent;' : '';
+      const overlayHtml = isCeltic ? '' : '<div class="csm-overlay"></div>';
+
       return `
         <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
           <!-- 카드 이미지 (배경) -->
-          <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
-          <!-- 어두운 오버레이 -->
-          <div class="csm-overlay"></div>
+          <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}${bgExtraStyle}"></div>
+          <!-- 어두운 오버레이 (켈틱 크로스 해석 화면 제외) -->
+          ${overlayHtml}
           ${badgeHtml}
           <!-- 위치 레이블 (1카드 제외, 3장=가운데, 켈틱=우측) -->
           ${posLabel && appState.selectedSpread !== 'one'
