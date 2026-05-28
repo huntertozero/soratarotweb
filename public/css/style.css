@@ -316,6 +316,7 @@ body {
   .spread-card.active {
     pointer-events: auto;
   }
+
 }
 
 .spread-icon {
@@ -377,6 +378,13 @@ body {
   transform: none;
   border-color: var(--color-border);
   box-shadow: none;
+}
+
+/* 모바일: 잠긴 카드도 스택 absolute 유지 (specificity 0,3,0 > locked의 0,2,0) */
+@media (max-width: 768px) {
+  .spread-slider-track .spread-slide.locked {
+    position: absolute;
+  }
 }
 
 /* 잠금 텍스트: 오버레이 위에 선명하게 표시 */

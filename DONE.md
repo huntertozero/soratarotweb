@@ -196,3 +196,8 @@
   - `express.static` `index: false` + `setHeaders`: JS/CSS/이미지 `Cache-Control: public, max-age=31536000, immutable`
   - HTML 라우트(`/`, `/dev`, `/index.html`, SPA fallback): `Cache-Control: no-cache`
 - `railway.toml` 신규 생성: NIXPACKS 빌더, `npm start`, 헬스체크 `/`, 재시작 정책
+
+## Phase 31: 모바일 스프레드 선택 화면 카드 정렬 버그 수정 ✅
+- **원인**: `.spread-card.locked { position: relative }` (specificity 0,2,0)가 `.spread-slide { position: absolute }` (0,1,0)를 덮어써서, 세 스프레드 모두 잠긴 상태에서 카드들이 absolute 포지셔닝을 잃고 그리드 일반 흐름으로 배치됨
+- **수정**: `@media (max-width: 768px) { .spread-slider-track .spread-slide.locked { position: absolute; } }` 추가 — specificity 0,3,0으로 `.spread-card.locked` 이후에 위치하여 확실히 override
+- 잠긴 카드 포함 모든 상태에서 스택 카드 3D 효과(translateX ±100px + rotateY ±28deg) 정상 동작
