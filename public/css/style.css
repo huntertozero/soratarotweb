@@ -111,7 +111,7 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 2px solid var(--color-gold);
+  border: 1px solid var(--color-gold);
   border-radius: 8px;
   background: linear-gradient(135deg, var(--color-nebula) 0%, var(--color-card-bg) 100%);
   display: flex;
@@ -293,7 +293,7 @@ body {
 
 .spread-card {
   background: linear-gradient(135deg, var(--color-nebula) 0%, var(--color-card-bg) 100%);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 30px 20px;
   text-align: center;
@@ -303,7 +303,7 @@ body {
 
 .spread-card.active {
   border-color: var(--color-gold);
-  border-width: 2px;
+  border-width: 1px;
   box-shadow: 0 0 30px rgba(249, 158, 11, 0.8),
               0 0 60px rgba(249, 158, 11, 0.5),
               inset 0 0 30px rgba(249, 158, 11, 0.2);
@@ -444,7 +444,7 @@ body {
 textarea {
   width: 100%;
   padding: 16px;
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-nebula);
   color: var(--color-silver);
@@ -542,7 +542,7 @@ textarea::placeholder {
 .card-back-item {
   aspect-ratio: 3/4;
   background: linear-gradient(135deg, var(--color-mystic) 0%, var(--color-arcane) 100%);
-  border: 2px solid var(--color-gold);
+  border: 1px solid var(--color-gold);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -679,7 +679,7 @@ textarea::placeholder {
 
 .card-item {
   background: linear-gradient(135deg, var(--color-nebula) 0%, var(--color-card-bg) 100%);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -942,7 +942,7 @@ textarea::placeholder {
 .reading-question {
   display: none; /* JS가 질문 있을 때만 block으로 전환 */
   background: rgba(100, 181, 246, 0.08);
-  border: 2px solid rgba(100, 181, 246, 0.3);
+  border: 1px solid rgba(100, 181, 246, 0.3);
   border-radius: 10px;
   padding: 14px 18px;
   margin-bottom: 24px;
@@ -976,7 +976,7 @@ textarea::placeholder {
 .card-summary-item {
   aspect-ratio: 2.5/4;
   width: 120px;
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -1105,7 +1105,7 @@ textarea::placeholder {
 
 .reading-content {
   background: linear-gradient(135deg, rgba(26, 16, 64, 0.8) 0%, rgba(45, 27, 78, 0.8) 100%);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 30px;
   margin-bottom: 30px;
@@ -1216,7 +1216,7 @@ textarea::placeholder {
 .btn-primary {
   background: linear-gradient(135deg, var(--color-mystic) 0%, var(--color-arcane) 100%);
   color: var(--color-starlight);
-  border: 2px solid var(--color-gold);
+  border: 1px solid var(--color-gold);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -1228,7 +1228,7 @@ textarea::placeholder {
 .btn-secondary {
   background: transparent;
   color: var(--color-silver);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -1263,7 +1263,7 @@ textarea::placeholder {
 
 .modal-content {
   background: linear-gradient(135deg, var(--color-nebula) 0%, var(--color-card-bg) 100%);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 30px;
   max-width: 400px;
@@ -1310,7 +1310,7 @@ textarea::placeholder {
   width: 240px;
   aspect-ratio: 2.5 / 4;
   border-radius: 10px;
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   background-color: var(--color-nebula);
   overflow: visible;
   cursor: pointer;
