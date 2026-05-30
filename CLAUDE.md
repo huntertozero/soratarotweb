@@ -22,25 +22,22 @@
 
 ---
 
-## 현재 상태 (Phase 37 완료)
+## 현재 상태 (Phase 38 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
-| 백엔드 | Express API, 24시간 사용 제한(쿠키), 스프레드별 타임아웃/토큰 분리, 3카드 max_tokens 2500 |
-| 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js 마크다운 |
+| 백엔드 | Express API, 24시간 사용 제한(쿠키 + IP 이중), 스프레드별 타임아웃/토큰 분리, 3카드 max_tokens 2500 |
+| 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js + DOMPurify 마크다운 |
 | 애니메이션 | Canvas 파티클 배경, 오라클 구체 로딩, 카드 스파크/플래시, 웰컴 덱 아이콘 룬 궤도 |
 | 모바일 | 반응형 레이아웃 전면 개선, 화면별 상단 여백 정렬, shuffle-info fixed 고정, 진입 애니메이션 버그 수정 |
 | 프롬프트 | `prompts/*.md` 파일 분리, 이미지·역방향·연관성 원칙 포함 |
 | UX | 켈틱 크로스 카드 번호 뱃지, 켈틱 로딩 자동 스크롤, 웰컴 subtitle 수직 중앙 정렬, 텍스트 전면 개선 |
+| UX | 카드 줌 팝업, 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거 |
 | 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시 `?v=`), JS/CSS 1년 캐시, HTML no-cache |
 | 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
-| 문서 | `SCREENS.md` 생성 및 Phase 35 기준 전면 업데이트 (카드 줌 팝업, 잠금 시각 표시 등), `README.md` 업데이트 |
-| CSS | 질문 입력 화면 제목(`#screen-input-question h2`) PC 줄바꿈 방지 (`white-space: nowrap`) |
-| UX | `.spread-countdown` 문구를 남은 시간 카운트다운 → 실제 해제 시각 표시로 변경 (`오늘/내일 오전/오후 N시 N분부터 가능`), +1분 보정 적용 |
-| UX | 카드 줌 팝업: 해석 화면 카드 클릭 시 중앙 확대 팝업, 카드명·키워드·REVERSE 하단 표시, 켈틱 번호 뱃지 2× 스케일, 위치 레이블 표시, 재클릭 닫기 |
-| 버그 수정 | SHUFFLE 화면 카드 선택 완료 시 데스크탑 하단 여백 늘어나는 버그 수정 (`updateShuffleButtonPin()`에 데스크탑 조기 반환 추가, `updateCardSelectionUI()` 중복 `is-pinned` 제거) |
-| 문서 | `ROADMAP.md` 초기 기획서(Phase 1~5 미완료 상태) → Phase 36 기준 현행화 (완료 마일스톤 6개 그룹, 남은 작업, 기술 스택 정리) |
+| 보안 | Rate Limiting, IP 기반 24시간 제한, CSP/CORS/보안헤더, DOMPurify XSS 방어, Prompt Injection 필터, /dev 토큰 게이트 |
+| 문서 | `SECURITY.md` 생성 (9개 취약점 전체 조치 기록), `SCREENS.md`, `README.md`, `ROADMAP.md` 현행화 |
 
 ---
 
@@ -48,20 +45,21 @@
 
 | 파일 | 역할 |
 |------|------|
-| `server.js` | Express 설정, `/dev` 진입점, cookieParser, 캐시 버스팅(git 해시 `?v=`), 에러 핸들러 |
+| `server.js` | Express 설정, CORS/CSP/보안헤더, Rate Limiting, `/dev` 토큰 게이트, 캐시 버스팅, 에러 핸들러 |
 | `data/cards.js` | 78장 카드 데이터 (id, nameKo, keywords, meaning, imageSymbols) |
 | `data/cardImages.js` | 카드 ID → 이미지 파일명 매핑 |
-| `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (24시간 제한 + 검증) |
+| `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (IP+쿠키 이중 제한, Prompt Injection 필터, isReversed 검증) |
 | `prompts/*.md` | system / one / three / celtic — 서버 재시작 없이 즉시 반영 |
 | `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `{ reading, usage }` 반환 |
 | `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
-| `public/js/app.js` | 상태 관리, 화면 전환, API fetch |
+| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지) |
 | `public/js/animation.js` | 카드 플립, PC/모바일 순서 분기 |
 | `public/js/effects.js` | 스파크, 지속 파티클, 플립 플래시, 오라클 캔버스 |
 | `public/js/particles.js` | Canvas 별 파티클 배경, 오로라 blob |
 | `public/js/cards.js` | Fisher-Yates 셔플 (`shuffleArray`) |
 | `railway.toml` | Railway 배포 설정 (NIXPACKS, 헬스체크, 재시작 정책) |
 | `public/js/cardMeta.js` | 클라이언트용 경량 카드 배열 (id, nameKo, suit, imageFile) |
+| `SECURITY.md` | 보안 취약점 분석 및 조치 기록 (9개 항목) |
 
 ---
 
@@ -82,13 +80,18 @@ UI: `npm start` → `http://localhost:3000/dev` (3가지 스프레드 각각 테
 - **API 키 오류** → `.env`의 `ANTHROPIC_API_KEY` 확인
 - **READING 카드 이미지 안 보임** → 서버 재시작 필요 + `data/cardImages.js` 존재 확인
 - **해석 화면 전환 안 됨** → F12 Console 확인 → 에러 모달 메시지 확인 → 서버 재시작
+- **429 Too Many Requests** → Rate Limit 초과 (분당 20회 / 시간당 15회 리딩)
+- **/dev 접근 안 됨** → `DEV_TOKEN` 환경변수 확인 후 `/dev?token=<값>` 으로 접근
 
 ---
 
 ## 남은 작업
 
-### ⭐ 우선순위 낮음
+### ⭐ 우선순위 있음
+- 프롬프트 수정: 질문 중심 해석 강화 (`prompts/*.md`)
+- Railway 환경변수 추가: `ALLOWED_ORIGINS`, `DEV_TOKEN`
 
+### ⭐ 우선순위 낮음
 - 프리셋 질문 버튼, 리딩 히스토리(localStorage), 다크/라이트 테마, 카드 플립 효과음
 
 ---
@@ -96,5 +99,15 @@ UI: `npm start` → `http://localhost:3000/dev` (3가지 스프레드 각각 테
 ## 참고
 
 - 환경: Windows 11, Node.js v24.15.0
-- 개발 진입점: `http://localhost:3000/dev` (24시간 제한 없음)
+- 개발 진입점: `http://localhost:3000/dev` (DEV_TOKEN 설정 시 `?token=<값>` 필요)
 - 배포 진입점: `http://localhost:3000/` (제한 적용, Railway용)
+
+### Railway 필수 환경변수
+
+| 변수 | 설명 |
+|------|------|
+| `ANTHROPIC_API_KEY` | Anthropic API 키 |
+| `NODE_ENV` | `production` 고정 |
+| `SLACK_WEBHOOK_URL` | Slack 알림 Webhook |
+| `ALLOWED_ORIGINS` | CORS 허용 도메인 (예: `https://soratarotweb.up.railway.app`) |
+| `DEV_TOKEN` | /dev 엔드포인트 접근 토큰 (미설정 시 /dev 비공개 권장) |

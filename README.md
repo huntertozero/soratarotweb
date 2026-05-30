@@ -9,7 +9,8 @@
 - **AI 해석**: Claude Sonnet 4.6이 신비롭고 개인화된 한국어 해석 제공
 - **정방향/역방향**: 모든 카드의 정방향과 역방향 의미 지원
 - **신비로운 디자인**: Canvas 파티클 배경 + 카드 플립 애니메이션 + 오라클 구체 로딩
-- **24시간 사용 제한**: 쿠키 기반, Railway 다중 사용자 환경 지원
+- **24시간 사용 제한**: 쿠키 + IP 이중 제한, Railway 다중 사용자 환경 지원
+- **보안**: Rate Limiting, CSP/CORS 헤더, DOMPurify XSS 방어, Prompt Injection 필터
 - **모니터링**: Slack Incoming Webhook 리딩 알림 (스프레드/카드/토큰/비용/응답시간)
 - **Railway 배포**: `railway.toml` 포함, 캐시 버스팅(git 해시) 적용
 
@@ -18,6 +19,7 @@
 - **백엔드**: Node.js + Express (API 서버)
 - **프론트엔드**: HTML + CSS + JavaScript (번들러 없음, SPA)
 - **AI**: Anthropic Claude Sonnet 4.6 (`@anthropic-ai/sdk`)
+- **보안**: express-rate-limit, cors, DOMPurify (CDN)
 - **기타**: dotenv, cookie-parser, marked.js (마크다운 렌더링)
 
 ## 요구사항
@@ -35,6 +37,7 @@ npm install
 # ANTHROPIC_API_KEY=sk-ant-api03-...
 # PORT=3000 (선택)
 # SLACK_WEBHOOK_URL=... (선택, 리딩 알림)
+# DEV_TOKEN=임의의_긴_문자열 (선택, /dev 엔드포인트 보호)
 
 # 서버 실행
 npm start
@@ -42,6 +45,7 @@ npm start
 
 접속:
 - **개발용** (24시간 제한 없음): `http://localhost:3000/dev`
+  - `DEV_TOKEN` 설정 시: `http://localhost:3000/dev?token=<값>`
 - **일반**: `http://localhost:3000`
 
 개발 중 파일 변경 시 자동 재시작:
@@ -134,7 +138,7 @@ tarot-app/
 
 **오류 응답:**
 - `400`: 잘못된 요청 (spread 타입, 카드 수, id 범위 등)
-- `429`: 24시간 사용 제한 초과
+- `429`: 24시간 사용 제한 초과 또는 Rate Limit 초과
 - `500`: 서버 오류
 
 ### `GET /api/limits`
@@ -150,8 +154,11 @@ tarot-app/
 | 변수 | 설명 | 필수 |
 |------|------|------|
 | `ANTHROPIC_API_KEY` | Anthropic API 키 | 필수 |
+| `NODE_ENV` | `production` 고정 (Railway 배포 시) | 필수 |
 | `PORT` | Express 서버 포트 (기본: 3000) | 선택 |
 | `SLACK_WEBHOOK_URL` | Slack Incoming Webhook URL | 선택 |
+| `ALLOWED_ORIGINS` | CORS 허용 도메인 (예: `https://your-app.railway.app`) | 프로덕션 필수 |
+| `DEV_TOKEN` | `/dev` 엔드포인트 접근 토큰 | 권장 |
 
 ## 테스트
 
@@ -190,4 +197,13 @@ MIT
 
 ---
 
-**최종 수정**: 2026-05-31
+## 보안
+
+자세한 취약점 분석 및 조치 기록은 [SECURITY.md](./SECURITY.md) 참고.
+
+- Rate Limiting: IP당 분당 20회 / 리딩 시간당 15회
+- 24시간 제한: 쿠키 + IP 서버사이드 이중 적용 (쿠키 삭제 우회 불가)
+- XSS: DOMPurify로 Claude 응답 sanitize
+- CSP / CORS / 보안 헤더 전체 적용
+
+**최종 수정**: 2026-05-31 (Phase 38)

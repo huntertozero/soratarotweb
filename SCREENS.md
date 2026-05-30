@@ -7,7 +7,7 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-05-31 (Phase 35 기준)
+마지막 수정: 2026-05-31 (Phase 38 기준)
 
 ---
 
@@ -83,7 +83,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 - 이전 버튼 없음 (뒤로가기는 브라우저)
 
 ### 개발 모드
-- `http://localhost:3000/dev` 접속 시 `IS_DEV_MODE = true` → 잠금 UI 완전 비활성화
+- `http://localhost:3000/dev` 접속 시 서버가 `<meta name="app-mode" content="dev">` 삽입 → `IS_DEV_MODE = true` → 잠금 UI 완전 비활성화
+- `DEV_TOKEN` 환경변수 설정 시 `/dev?token=<값>` 으로만 접근 가능
 
 ---
 

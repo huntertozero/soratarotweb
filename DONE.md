@@ -201,3 +201,54 @@
 - **원인**: `.spread-card.locked { position: relative }` (specificity 0,2,0)가 `.spread-slide { position: absolute }` (0,1,0)를 덮어써서, 세 스프레드 모두 잠긴 상태에서 카드들이 absolute 포지셔닝을 잃고 그리드 일반 흐름으로 배치됨
 - **수정**: `@media (max-width: 768px) { .spread-slider-track .spread-slide.locked { position: absolute; } }` 추가 — specificity 0,3,0으로 `.spread-card.locked` 이후에 위치하여 확실히 override
 - 잠긴 카드 포함 모든 상태에서 스택 카드 3D 효과(translateX ±100px + rotateY ±28deg) 정상 동작
+
+## Phase 38: 보안 강화 전체 ✅
+
+### 38-1. 취약점 분석 및 문서화
+- `SECURITY.md` 신규 생성: 9개 취약점 심각도별 분류 (Critical 2, High 2, Medium 3, Low 2)
+- 각 항목별 위치(파일:라인), 재현 방법, 조치 내역 기록
+
+### 38-2. Rate Limiting (Critical)
+- `express-rate-limit` 패키지 추가
+- `/api` 전체: IP당 **분당 20회** 제한 (자동화 스크립트 1차 차단)
+- `/api/reading` 전용: IP당 **시간당 15회** 추가 제한 (쿠키 우회 시에도 API 호출 차단)
+- `app.set('trust proxy', 1)`: Railway 프록시 뒤에서 실제 클라이언트 IP 정확 추출
+
+### 38-3. IP 기반 24시간 제한 (Critical)
+- `ipLimitStore` (`Map<ip, Map<spread, timestamp>>`): 서버사이드 인메모리 사용 기록
+- 쿠키 삭제해도 IP 기록으로 제한 유지 (쿠키 + IP 이중 저장)
+- `GET /api/limits`: 쿠키와 IP 중 더 큰 값(`Math.max`) 기준으로 통일
+- `DELETE /api/limits`: 쿠키와 IP 스토어 동시 초기화
+
+### 38-4. `/dev` 엔드포인트 보호 (High)
+- `DEV_TOKEN` 환경변수 기반 게이트: `/dev?token=<DEV_TOKEN>` 인증 필요
+- 불일치 시 `404 Not found` (엔드포인트 존재 자체 비노출)
+- `DEV_TOKEN` 미설정 시 기존 동작 유지
+
+### 38-5. Prompt Injection 방어 (High)
+- `sanitizeQuestion()` 추가: HTML 태그 제거(`<[^>]*>`), C0 제어 문자 제거
+- sanitize된 질문으로 길이 재검증 후 Claude에 전달
+
+### 38-6. XSS 방어 (Medium)
+- `DOMPurify` CDN 추가 (`cdn.jsdelivr.net/npm/dompurify@3`)
+- `renderMarkdown()`: `marked.parse()` 결과를 `DOMPurify.sanitize()`로 정화 후 반환
+- dev 모드 감지: 인라인 스크립트(`window.TAROT_APP_MODE`) → `<meta name="app-mode">` 태그로 교체 (CSP `script-src 'unsafe-inline'` 제거)
+- `app.js`: `IS_DEV_MODE` 감지를 `document.querySelector('meta[name="app-mode"]')` 방식으로 변경
+
+### 38-7. CORS (Medium)
+- `cors` 패키지 추가, `/api` 라우트에 적용
+- 프로덕션: `ALLOWED_ORIGINS` 환경변수로 허용 도메인 명시
+- 개발: `localhost:3000`, `localhost:3001` 허용
+- 미허용 오리진 → `403 Forbidden`
+
+### 38-8. 보안 헤더 — CSP (Medium)
+- `Content-Security-Policy`: script-src, style-src, font-src, img-src, connect-src, frame-ancestors, object-src 전체 정의
+- `X-Content-Type-Options: nosniff` (MIME 스니핑 방지)
+- `X-Frame-Options: DENY` (클릭재킹 방지)
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
+### 38-9. isReversed 타입 강제 (Low)
+- `rc.isReversed || false` → `rc.isReversed === true` strict equality
+
+### 38-10. NODE_ENV 미설정 경고 (Low)
+- 서버 시작 시 `NODE_ENV` 미설정이면 콘솔 경고 출력

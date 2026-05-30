@@ -1,7 +1,7 @@
 # 타로 리딩 웹 앱 - 구현 로드맵
 
 **마지막 업데이트**: 2026-05-31  
-**현재 버전**: Phase 36 완료
+**현재 버전**: Phase 38 완료
 
 > 상세 구현 이력(Phase 1~31) → **DONE.md**  
 > 현재 개발 가이드 → **CLAUDE.md**  
@@ -53,6 +53,17 @@
 - 스크린샷 안내 문구, 처음으로 버튼 가운데 정렬
 - 버그 수정: 데스크탑 카드 선택 완료 시 하단 여백 늘어나는 문제
 
+### 보안 강화 (Phase 38) ✅
+- 취약점 분석 및 `SECURITY.md` 문서화 (9개 항목, 심각도별 분류)
+- Rate Limiting: `express-rate-limit` — /api 분당 20회, /api/reading 시간당 15회
+- IP 기반 24시간 제한: 쿠키 삭제 우회 차단 (`ipLimitStore` 인메모리)
+- `/dev` 보호: `DEV_TOKEN` 환경변수 게이트 (불일치 시 404)
+- Prompt Injection 방어: `sanitizeQuestion()` HTML 태그 및 제어 문자 제거
+- XSS 방어: `DOMPurify` 추가, `renderMarkdown()` sanitize 적용
+- CORS: `cors` 패키지, `ALLOWED_ORIGINS` 환경변수 기반 화이트리스트
+- 보안 헤더: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+- isReversed strict equality 타입 강제, NODE_ENV 미설정 경고
+
 ---
 
 ## 남은 작업
@@ -79,7 +90,7 @@
 | 런타임 | Node.js v24, Express |
 | AI | Claude Sonnet 4.6 (`@anthropic-ai/sdk`) |
 | 프론트엔드 | Vanilla JS + HTML/CSS (번들러 없음) |
-| 마크다운 | marked.js v12 CDN |
+| 마크다운 | marked.js v12 CDN + DOMPurify v3 CDN |
 | 배포 | Railway (NIXPACKS) |
 | 모니터링 | Slack Incoming Webhook |
 | 폰트 | Noto Serif KR (제목), Pretendard (본문) |
