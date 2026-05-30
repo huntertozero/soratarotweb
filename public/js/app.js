@@ -380,6 +380,9 @@ function setupShuffleButtonPin() {
 
 // 버튼 고정 상태 업데이트 (선택 완료 여부 + 마지막 카드 가시성 고려)
 function updateShuffleButtonPin() {
+  // 데스크탑에서는 fixed 버튼 없으므로 패딩/클래스 처리 불필요
+  if (window.innerWidth > 768) return;
+
   const cardsGrid = document.getElementById('cards-grid');
   const buttonGroup = document.querySelector('#screen-shuffle .button-group');
   if (!cardsGrid || !buttonGroup) return;
@@ -469,12 +472,6 @@ function updateCardSelectionUI() {
   // 모든 카드 선택 완료 시 버튼 활성화
   if (btnCardsSelected) {
     btnCardsSelected.disabled = currentCount < requiredCount;
-  }
-
-  // 선택 완료 시 버튼 그룹 고정
-  const buttonGroup = document.querySelector('#screen-shuffle .button-group');
-  if (currentCount >= requiredCount && buttonGroup) {
-    buttonGroup.classList.add('is-pinned');
   }
 
   // 선택 완료된 카드를 disabled 상태로 표시
