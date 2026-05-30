@@ -6,6 +6,7 @@ const fs = require('fs');
 const { execSync } = require('child_process');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 
 // API 키 조기 검증
 if (!process.env.ANTHROPIC_API_KEY) {
@@ -13,6 +14,13 @@ if (!process.env.ANTHROPIC_API_KEY) {
   console.error('   .env 파일을 생성하고 ANTHROPIC_API_KEY=sk-ant-api03-... 를 입력하세요.');
   process.exit(1);
 }
+
+// NODE_ENV 미설정 경고 (프로덕션에서 반드시 설정 필요)
+if (!process.env.NODE_ENV) {
+  console.warn('⚠️  NODE_ENV가 설정되지 않았습니다. 프로덕션 배포 시 NODE_ENV=production을 설정하세요.');
+}
+
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 const readingRouter = require('./routes/reading');
 
@@ -40,6 +48,22 @@ const readingLimiter = rateLimit({
   message: { error: '리딩 요청이 너무 많습니다. 1시간 후 다시 시도해주세요.' },
 });
 
+// CORS: 자기 자신 오리진만 허용
+// 프로덕션에서는 ALLOWED_ORIGINS 환경변수로 도메인 지정, 개발에서는 localhost만
+const allowedOrigins = IS_PRODUCTION
+  ? (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean)
+  : ['http://localhost:3000', 'http://localhost:3001'];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // origin 없음 = curl 또는 서버사이드 요청 (허용)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error('CORS 정책에 의해 차단된 요청입니다.'));
+  },
+  credentials: true,
+};
+
 // 빌드 버전: git 커밋 해시 우선, 없으면 타임스탬프로 폴백
 // 배포마다 해시가 달라져 브라우저 캐시를 자동으로 무효화
 function getBuildVersion() {
@@ -62,6 +86,34 @@ const htmlTemplate = fs.readFileSync(HTML_PATH, 'utf-8')
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 
+// 보안 헤더 (모든 응답에 적용)
+// X-Content-Type-Options: MIME 스니핑 방지
+// X-Frame-Options: 클릭재킹 방지
+// CSP: 허용된 출처 외 리소스 로드 및 스크립트 실행 차단
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    // marked.js, DOMPurify, Pretendard 폰트 CSS
+    "script-src 'self' https://cdn.jsdelivr.net",
+    // 인라인 스타일(Critical CSS) + 외부 폰트 CSS
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
+    // Google Fonts 실제 폰트 파일
+    "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net",
+    // 카드 이미지는 자체 서버만
+    "img-src 'self' data:",
+    // API 호출은 자체 서버만
+    "connect-src 'self'",
+    // iframe 완전 차단
+    "frame-ancestors 'none'",
+    // 플러그인 차단
+    "object-src 'none'",
+  ].join('; '));
+  next();
+});
+
 // 정적 파일 서빙: JS/CSS/이미지는 1년 캐시 (버전 쿼리스트링으로 배포마다 무효화)
 // index.html은 별도 라우트에서 no-cache로 제공 (index: false)
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -74,23 +126,33 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // API 라우트
+app.use('/api', cors(corsOptions));
 app.use('/api', apiLimiter);
 app.use('/api/reading', readingLimiter);
 app.use('/api', readingRouter);
 
 // HTML 전송 헬퍼: 버전 주입된 HTML에 no-cache 헤더 설정
-function serveHtml(res, extraScript = '') {
+// dev 모드는 인라인 스크립트 대신 <meta> 태그로 전달 (CSP script-src 'unsafe-inline' 불필요)
+function serveHtml(res, devMode = false) {
   let html = htmlTemplate;
-  if (extraScript) {
-    html = html.replace('</head>', `  ${extraScript}\n</head>`);
+  if (devMode) {
+    html = html.replace(
+      '<meta name="description"',
+      '<meta name="app-mode" content="dev">\n  <meta name="description"'
+    );
   }
   res.setHeader('Cache-Control', 'no-cache');
   res.type('html').send(html);
 }
 
-// GET /dev → 개발용 진입점 (24시간 제한 없음)
+// GET /dev → 개발용 진입점
+// DEV_TOKEN 환경변수가 설정된 경우 ?token= 쿼리 파라미터로 인증 필요
 app.get('/dev', (req, res) => {
-  serveHtml(res, '<script>window.TAROT_APP_MODE = "dev";</script>');
+  const devToken = process.env.DEV_TOKEN;
+  if (devToken && req.query.token !== devToken) {
+    return res.status(404).send('Not found');
+  }
+  serveHtml(res, true);
 });
 
 // /index.html 직접 접근 처리 (버전 주입된 HTML 제공)
@@ -103,6 +165,10 @@ app.get('*', (req, res) => {
 
 // 글로벌 에러 핸들러
 app.use((err, req, res, next) => {
+  // CORS 에러는 403으로 처리
+  if (err.message === 'CORS 정책에 의해 차단된 요청입니다.') {
+    return res.status(403).json({ error: err.message });
+  }
   console.error('❌ 서버 에러:', err.stack);
   res.status(500).json({
     error: '서버 내부 오류가 발생했습니다.'

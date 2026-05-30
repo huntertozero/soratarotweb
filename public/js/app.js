@@ -30,7 +30,8 @@ const appState = {
 };
 
 // ========== 스프레드 사용 제한 ==========
-const IS_DEV_MODE = window.TAROT_APP_MODE === 'dev';
+// 인라인 스크립트 대신 meta 태그로 dev 모드 감지 (CSP script-src 'unsafe-inline' 불필요)
+const IS_DEV_MODE = document.querySelector('meta[name="app-mode"]')?.content === 'dev';
 let spreadLimitIntervalId = null;
 let spreadLimitData = {};
 
@@ -133,11 +134,11 @@ function renderSpreadLimitUI() {
   }
 }
 
-// 마크다운을 HTML로 변환 (marked.js 사용)
+// 마크다운을 HTML로 변환 후 DOMPurify로 XSS sanitize
 function renderMarkdown(text) {
   if (!text) return '';
-  // breaks: true → 단일 줄바꿈도 <br>로 처리 (한국어 프롬프트 출력에 적합)
-  return marked.parse(text, { breaks: true });
+  const raw = marked.parse(text, { breaks: true });
+  return DOMPurify.sanitize(raw);
 }
 
 // ========== 화면 관리 ==========

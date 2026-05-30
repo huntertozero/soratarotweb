@@ -50,26 +50,44 @@ function setIpLimit(ip, spread) {
   ipLimitStore.get(ip).set(spread, Date.now());
 }
 
-// GET /api/limits - 스프레드별 잠금 상태 반환
+// IP 기반 제한: 특정 IP의 모든 스프레드 기록 삭제 (개발 초기화용)
+function clearIpLimit(ip) {
+  ipLimitStore.delete(ip);
+}
+
+// 질문 필드 sanitize: HTML 태그 및 프롬프트 인젝션에 쓰이는 패턴 제거
+function sanitizeQuestion(question) {
+  if (!question || typeof question !== 'string') return '';
+  return question
+    .replace(/<[^>]*>/g, '')           // HTML 태그 제거
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // 제어 문자 제거
+    .trim();
+}
+
+// GET /api/limits - 스프레드별 잠금 상태 반환 (IP + 쿠키 중 더 긴 것 기준)
 router.get('/limits', (req, res) => {
   const result = {};
+  const ip = req.ip || 'unknown';
   LIMIT_SPREADS.forEach(spread => {
     if (isDevBypass(req)) {
       result[spread] = { locked: false, remainingMs: 0 };
       return;
     }
-    const remaining = getRemainingMs(req.cookies[getLimitCookieName(spread)]);
+    const ipRemaining = getIpRemainingMs(ip, spread);
+    const cookieRemaining = getRemainingMs(req.cookies[getLimitCookieName(spread)]);
+    const remaining = Math.max(ipRemaining, cookieRemaining);
     result[spread] = { locked: remaining > 0, remainingMs: remaining };
   });
   return res.status(200).json(result);
 });
 
-// DELETE /api/limits - 모든 제한 쿠키 초기화 (개발 전용)
+// DELETE /api/limits - 모든 제한 초기화 (개발 전용, 쿠키 + IP 스토어 함께 삭제)
 router.delete('/limits', (req, res) => {
   if (IS_PRODUCTION) {
     return res.status(403).json({ error: '프로덕션 환경에서는 사용할 수 없습니다.' });
   }
   LIMIT_SPREADS.forEach(spread => res.clearCookie(getLimitCookieName(spread)));
+  clearIpLimit(req.ip || 'unknown');
   return res.status(200).json({ message: '모든 제한이 초기화되었습니다.' });
 });
 
@@ -131,31 +149,28 @@ router.post('/reading', async (req, res) => {
       });
     }
 
-    // 4. 질문 길이 검증
-    if (question && typeof question === 'string') {
-      if (question.length > 200) {
-        return res.status(400).json({
-          error: '질문은 최대 200자입니다.',
-        });
-      }
+    // 4. 질문 sanitize 및 길이 검증
+    const sanitizedQuestion = sanitizeQuestion(question);
+    if (sanitizedQuestion.length > 200) {
+      return res.status(400).json({ error: '질문은 최대 200자입니다.' });
     }
 
-    // 5. 요청 카드의 상세 정보 조회
+    // 5. 요청 카드의 상세 정보 조회 (isReversed boolean 타입 강제)
     const requestedCards = requestCards.map(rc => {
       const cardData = cards.find(c => c.id === rc.id);
       return {
         id: rc.id,
-        isReversed: rc.isReversed || false,
+        isReversed: rc.isReversed === true, // boolean 외 값은 모두 false 처리
         cardData, // Claude 호출용
       };
     });
 
-    // 6. Claude로 해석 생성
+    // 6. Claude로 해석 생성 (sanitize된 질문 사용)
     const startTime = Date.now();
     const { reading, usage } = await generateReading(
       spread,
       requestedCards.map(c => ({ id: c.id, isReversed: c.isReversed })),
-      question || '',
+      sanitizedQuestion,
       cards
     );
     const responseTime = Date.now() - startTime;
