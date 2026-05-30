@@ -86,7 +86,7 @@ function formatCardsForPrompt(cards, cardDatabase, spread) {
 async function generateReading(spread, cards, question, cardDatabase) {
   // 스프레드별 타임아웃/토큰 설정 (catch에서도 참조하므로 함수 스코프에 선언)
   const timeout = ({ one: 30000, three: 45000, celtic: 90000 })[spread] || 30000;
-  const maxTokens = ({ one: 1024, three: 1500, celtic: 4000 })[spread] || 1024;
+  const maxTokens = ({ one: 1024, three: 2500, celtic: 4000 })[spread] || 1024;
 
   try {
     // 스프레드 정보
