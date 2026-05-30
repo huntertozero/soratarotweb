@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 
 // API 키 조기 검증
 if (!process.env.ANTHROPIC_API_KEY) {
@@ -17,6 +18,27 @@ const readingRouter = require('./routes/reading');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Railway 등 리버스 프록시 뒤에서 실제 클라이언트 IP를 정확히 추출
+app.set('trust proxy', 1);
+
+// Rate Limiting: /api 전체 — IP당 1분에 20회 (일반 사용 패턴 상 절대 도달 불가)
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' },
+});
+
+// Rate Limiting: /api/reading 전용 — IP당 1시간에 15회 (쿠키 우회 시에도 API 호출 자체 차단)
+const readingLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: '리딩 요청이 너무 많습니다. 1시간 후 다시 시도해주세요.' },
+});
 
 // 빌드 버전: git 커밋 해시 우선, 없으면 타임스탬프로 폴백
 // 배포마다 해시가 달라져 브라우저 캐시를 자동으로 무효화
@@ -52,6 +74,8 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // API 라우트
+app.use('/api', apiLimiter);
+app.use('/api/reading', readingLimiter);
 app.use('/api', readingRouter);
 
 // HTML 전송 헬퍼: 버전 주입된 HTML에 no-cache 헤더 설정

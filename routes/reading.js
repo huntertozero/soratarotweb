@@ -13,6 +13,10 @@ const LIMIT_SPREADS = ['one', 'three', 'celtic'];
 const SPREAD_NAMES = { one: '원 카드', three: '쓰리 카드', celtic: '켈틱 크로스' };
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
+// IP 기반 서버사이드 사용 기록: Map<ip, Map<spread, timestamp>>
+// 쿠키를 삭제해도 서버가 독립적으로 제한을 유지
+const ipLimitStore = new Map();
+
 function getLimitCookieName(spread) {
   return `tarot_limit_${spread}`;
 }
@@ -28,6 +32,22 @@ function getRemainingMs(cookieValue) {
 // 개발 우회 헤더 검증 (프로덕션에서는 항상 false)
 function isDevBypass(req) {
   return !IS_PRODUCTION && req.headers['x-tarot-dev'] === '1';
+}
+
+// IP 기반 제한: 남은 ms 반환 (0이면 허용)
+function getIpRemainingMs(ip, spread) {
+  const ipRecord = ipLimitStore.get(ip);
+  if (!ipRecord) return 0;
+  const timestamp = ipRecord.get(spread);
+  if (!timestamp) return 0;
+  const remaining = LIMIT_DURATION_MS - (Date.now() - timestamp);
+  return remaining > 0 ? remaining : 0;
+}
+
+// IP 기반 제한: 사용 기록 저장
+function setIpLimit(ip, spread) {
+  if (!ipLimitStore.has(ip)) ipLimitStore.set(ip, new Map());
+  ipLimitStore.get(ip).set(spread, Date.now());
 }
 
 // GET /api/limits - 스프레드별 잠금 상태 반환
@@ -65,9 +85,12 @@ router.post('/reading', async (req, res) => {
       });
     }
 
-    // 1-b. 24시간 사용 제한 체크
+    // 1-b. 24시간 사용 제한 체크 (IP 우선 → 쿠키 보조)
     if (!isDevBypass(req)) {
-      const remaining = getRemainingMs(req.cookies[getLimitCookieName(spread)]);
+      const ip = req.ip || 'unknown';
+      const ipRemaining = getIpRemainingMs(ip, spread);
+      const cookieRemaining = getRemainingMs(req.cookies[getLimitCookieName(spread)]);
+      const remaining = Math.max(ipRemaining, cookieRemaining);
       if (remaining > 0) {
         return res.status(429).json({
           error: `${SPREAD_NAMES[spread]}는 24시간에 1회만 사용할 수 있습니다.`,
@@ -164,8 +187,9 @@ router.post('/reading', async (req, res) => {
       isDev: isDevBypass(req),
     });
 
-    // 리딩 성공 → 24시간 제한 쿠키 설정
+    // 리딩 성공 → 24시간 제한 기록 (IP 서버사이드 + 쿠키 이중 저장)
     if (!isDevBypass(req)) {
+      setIpLimit(req.ip || 'unknown', spread);
       res.cookie(getLimitCookieName(spread), Date.now().toString(), {
         maxAge: LIMIT_DURATION_MS,
         httpOnly: true,
