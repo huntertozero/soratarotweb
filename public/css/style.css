@@ -1540,7 +1540,8 @@ textarea::placeholder {
   }
 
   /* 웰컴 화면 단독 버튼: 질문입력 '다음' 버튼(flex:1 in 2-button row)과 동일한 폭 */
-  #screen-welcome #btn-start-reading {
+  #screen-welcome #btn-start-reading,
+  #screen-reading #btn-home {
     width: calc(50% - 7.5px);
     white-space: nowrap;
   }
