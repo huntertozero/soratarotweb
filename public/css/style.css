@@ -429,6 +429,7 @@ body {
   margin-bottom: 16px;
   color: var(--color-starlight);
   font-family: var(--font-serif);
+  white-space: nowrap;
   text-shadow: 0 0 20px rgba(249, 158, 11, 0.3);
 }
 

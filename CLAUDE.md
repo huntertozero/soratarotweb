@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 32 완료)
+## 현재 상태 (Phase 33 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -35,7 +35,8 @@
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거 |
 | 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시 `?v=`), JS/CSS 1년 캐시, HTML no-cache |
 | 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
-| 문서 | `SCREENS.md` 생성 — 화면별 구성요소/기능/ID 정리 (작업 지시용) |
+| 문서 | `SCREENS.md` 생성, `README.md` Phase 32 현황 반영 업데이트 |
+| CSS | 질문 입력 화면 제목(`#screen-input-question h2`) PC 줄바꿈 방지 (`white-space: nowrap`) |
 
 ---
 
