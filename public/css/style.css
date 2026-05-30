@@ -303,7 +303,7 @@ body {
 
 .spread-card.active {
   border-color: var(--color-gold);
-  border-width: 3px;
+  border-width: 2px;
   box-shadow: 0 0 30px rgba(249, 158, 11, 0.8),
               0 0 60px rgba(249, 158, 11, 0.5),
               inset 0 0 30px rgba(249, 158, 11, 0.2);
@@ -542,7 +542,7 @@ textarea::placeholder {
 .card-back-item {
   aspect-ratio: 3/4;
   background: linear-gradient(135deg, var(--color-mystic) 0%, var(--color-arcane) 100%);
-  border: 1px solid var(--color-gold);
+  border: 2px solid var(--color-gold);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -1310,7 +1310,7 @@ textarea::placeholder {
   width: 240px;
   aspect-ratio: 2.5 / 4;
   border-radius: 10px;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   background-color: var(--color-nebula);
   overflow: visible;
   cursor: pointer;
