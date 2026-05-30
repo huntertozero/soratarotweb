@@ -1295,6 +1295,30 @@ textarea::placeholder {
     padding-top: max(20px, calc(50svh - 235px));
   }
 
+  /* 스프레드/질문 화면 상단 여백 +20px */
+  .spread-container {
+    padding-top: 60px;
+  }
+
+  .question-container {
+    padding-top: 60px;
+  }
+
+  /* 카드선택 화면: shuffle-info 상단 고정 */
+  .shuffle-info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-void);
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .shuffle-container {
+    padding-top: 160px;
+  }
+
   .title {
     font-size: 36px;
   }
@@ -1654,7 +1678,11 @@ textarea::placeholder {
   }
 
   .spread-container {
-    padding: 20px 10px;
+    padding: 40px 10px 20px;
+  }
+
+  .shuffle-container {
+    padding-top: 150px;
   }
 
   .spread-container h2,
