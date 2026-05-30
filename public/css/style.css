@@ -1414,7 +1414,7 @@ textarea::placeholder {
 
   /* CARD_REVEAL 컨테이너 패딩 축소 */
   .card-reveal-container {
-    padding: 20px 15px;
+    padding: 40px 15px 20px;
     justify-content: flex-start;
   }
 
