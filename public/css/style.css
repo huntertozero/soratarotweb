@@ -1302,17 +1302,19 @@ textarea::placeholder {
   width: 240px;
   aspect-ratio: 2.5 / 4;
   border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-nebula);
   overflow: visible;
   cursor: pointer;
 }
 
 .card-zoom-bg-image {
   position: absolute;
-  inset: 0;
-  background-size: cover;
+  inset: 4px;
+  background-size: contain;
   background-position: center;
-  background-color: var(--color-nebula);
-  border-radius: 10px;
+  background-repeat: no-repeat;
+  border-radius: 7px;
   overflow: hidden;
 }
 
