@@ -965,6 +965,14 @@ textarea::placeholder {
   line-height: 1.6;
 }
 
+.reading-screenshot-notice {
+  margin: 30px 0;
+  text-align: center;
+  color: var(--color-silver);
+  font-size: 13px;
+  opacity: 0.7;
+}
+
 .card-summary-item {
   aspect-ratio: 2.5/4;
   width: 120px;
