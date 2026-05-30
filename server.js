@@ -48,20 +48,21 @@ const readingLimiter = rateLimit({
   message: { error: '리딩 요청이 너무 많습니다. 1시간 후 다시 시도해주세요.' },
 });
 
-// CORS: 자기 자신 오리진만 허용
-// 프로덕션에서는 ALLOWED_ORIGINS 환경변수로 도메인 지정, 개발에서는 localhost만
-const allowedOrigins = IS_PRODUCTION
-  ? (process.env.ALLOWED_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean)
-  : ['http://localhost:3000', 'http://localhost:3001'];
+// CORS: 같은 서버(same-origin) 요청은 자동 허용, 추가 도메인은 ALLOWED_ORIGINS로 지정
+// cors(fn) 형식으로 req에 접근해 Host 헤더와 Origin을 직접 비교
+const extraOrigins = (process.env.ALLOWED_ORIGINS || '')
+  .split(',').map(o => o.trim()).filter(Boolean);
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // origin 없음 = curl 또는 서버사이드 요청 (허용)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error('CORS 정책에 의해 차단된 요청입니다.'));
-  },
-  credentials: true,
+const corsOptions = (req, callback) => {
+  const origin = req.headers.origin;
+  // origin 없음 = curl 또는 서버사이드 요청
+  if (!origin) return callback(null, { origin: false, credentials: true });
+  // 같은 서버에서 온 요청: Origin이 서버 자신의 Host와 일치
+  const selfOrigin = `${req.protocol}://${req.get('host')}`;
+  if (origin === selfOrigin || extraOrigins.includes(origin)) {
+    return callback(null, { origin: true, credentials: true });
+  }
+  callback(new Error('CORS 정책에 의해 차단된 요청입니다.'));
 };
 
 // 빌드 버전: git 커밋 해시 우선, 없으면 타임스탬프로 폴백
