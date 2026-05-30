@@ -2,12 +2,12 @@
 
 > 작업 지시 시 화면 ID / 컴포넌트명으로 명시하면 더 정확한 작업이 가능합니다.
 > 변경사항이 생기면 이 문서도 함께 업데이트합니다.
-> 작작업 지시 방법 예시:
+> 작업 지시 방법 예시:
   - "READING 화면(#screen-reading) 좌측 카드 컬럼(#cards-summary-left)에 ..."
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-05-30 (Phase 31 기준)
+마지막 수정: 2026-05-31 (Phase 35 기준)
 
 ---
 
@@ -22,7 +22,8 @@ single-page app (index.html)
 ├── #screen-shuffle          4. 카드 선택 화면
 ├── #screen-card-reveal      5. 카드 공개 화면
 ├── #screen-reading          6. 해석 결과 화면
-└── #modal-error             공통 - 에러 모달
+├── #modal-error             공통 - 에러 모달
+└── #modal-card-zoom         공통 - 카드 줌 팝업
 ```
 
 **화면 전환 흐름:**
@@ -41,15 +42,16 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
-| 카드 덱 아이콘 | `.deck-icon` | 3장이 겹친 CSS 전용 카드 일러스트 |
+| 카드 덱 아이콘 | `.deck-icon` | 3장이 겹친 CSS 전용 카드 일러스트 + `.deck-canvas` 캔버스 |
 | 메인 제목 | `.title` | "신비로운 타로 리딩" (Noto Serif KR, 48px) |
 | 부제목 | `.subtitle` | "카드가 당신의 길을 안내합니다" (보라색) |
-| 설명 텍스트 | `.description` | AI 해석 안내 1~2줄 |
-| 시작 버튼 | `#btn-start-reading` | → SELECT_SPREAD 이동 |
+| 설명 텍스트 | `.description` | "질문을 입력하고 카드를 뽑으면 / AI가 개인화된 해석을 제공합니다" |
+| 시작 버튼 | `#btn-start-reading` | "무료 리딩 시작하기" → SELECT_SPREAD 이동 |
 
 ### 특이사항
 - Critical CSS 인라인 처리: 외부 CSS 로드 전에도 정상 렌더링 보장
 - 반응형: 768px → 32px 제목, 480px → 28px 제목
+- 모바일 수직 중앙 정렬: `padding: max(20px, calc(50svh - 235px))`로 viewport 높이 기준 정렬
 
 ---
 
@@ -62,21 +64,23 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 제목 | `h2` | "어떤 리딩을 원하십니까?" |
-| 부제목 | `.spread-subtitle` | "24시간마다 한 번씩" 주황색 강조 텍스트 |
+| 부제목 | `.spread-subtitle` | "3가지 옵션 중 하나를 골라 눌러주세요" + "각 옵션은 24시간마다 한 번씩 가능" |
 | 슬라이더 래퍼 | `#spread-slider-wrapper` | 카드 3장 감싸는 슬라이더 컨테이너 |
 | 슬라이더 트랙 | `#spread-slider-track` | 실제 슬라이드가 나열되는 영역 |
-| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드", "오늘의 메시지" |
-| 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | ▲ 아이콘, "쓰리 카드", "과거, 현재 그리고 미래" |
-| 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | ⊕ 아이콘, "켈틱 크로스", "심층 분석" |
+| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드", "오늘의 메시지", 상세 설명(`.spread-detail`) |
+| 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | ▲ 아이콘, "쓰리 카드", "과거, 현재 그리고 미래", 상세 설명(`.spread-detail`) |
+| 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | ⊕ 아이콘, "켈틱 크로스", "심층 분석", 상세 설명(`.spread-detail`) |
 | 페이지 도트 | `#spread-dots > .spread-dot` | 현재 슬라이드 인디케이터 (모바일) |
 
 ### 기능
 - **PC**: 3장 카드 나란히 그리드 배치, 클릭으로 선택
 - **모바일**: 스택 카드 슬라이더, 터치 스와이프로 전환, 페이지 도트 클릭 가능
-- **24시간 제한**: 잠긴 카드에 `.locked` 클래스 + `.spread-countdown` 카운트다운 표시
-- **잠금 카드**: 반투명 오버레이, 클릭 차단, 남은 시간 "N시간 N분 후 사용 가능" 표시
+- **24시간 제한**: 잠긴 카드에 `.locked` 클래스 + `.spread-countdown` 해제 시각 표시
+  - 표시 형식: "오늘/내일 오전/오후 N시 N분부터 가능" (+1분 보정 적용)
+  - 1초마다 로컬 카운트다운, 만료 시 서버 재조회
+- **잠금 카드**: 반투명 오버레이, `pointer-events: none` 클릭 차단
 - 선택된 카드에 황금색 후광 펄싱 애니메이션 (`spreadGlow`)
-- 이전 버튼 없음 (뒤로가기는 브라우저 or `#btn-back-welcome`가 있을 경우)
+- 이전 버튼 없음 (뒤로가기는 브라우저)
 
 ### 개발 모드
 - `http://localhost:3000/dev` 접속 시 `IS_DEV_MODE = true` → 잠금 UI 완전 비활성화
@@ -91,10 +95,10 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
-| 제목 | `h2` | "어떤 것이 궁금하세요?" |
-| 안내 텍스트 | `.question-hint` | "선택사항" 주황색 강조, 200자 제한 안내 |
-| 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200 |
-| 글자 수 카운터 | `#char-count` | "N / 200" 형태 |
+| 제목 | `h2` | "마음 속 고민은 무엇인가요?" |
+| 안내 텍스트 | `.question-hint` | "현실적이고 구체적일수록 더 좋은 해석을 받을 수 있습니다" + "선택사항" 주황색 강조, 200자 제한 안내 |
+| 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200, 예시 placeholder 포함 |
+| 글자 수 카운터 | `.question-info > #char-count` | "N / 200" 형태 |
 | 이전 버튼 | `#btn-back-spread` | → SELECT_SPREAD 이동 |
 | 다음 버튼 | `#btn-next-question` | → SHUFFLE 이동 |
 
@@ -113,7 +117,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
-| 상단 고정 정보 | `.shuffle-info` | `position: sticky; top: 0` |
+| 상단 고정 정보 | `.shuffle-info` | PC: `position: sticky; top: 0` / 모바일: `position: fixed; top: 0` |
 | 메시지 | `#shuffle-message` | "그럼 카드를 선택해볼까요?" |
 | 부가 설명 | (인라인 `<p>`) | "카드들의 주파수를 느끼며 신중히 선택해주세요" |
 | 선택 카운터 | `#shuffle-count` | "N / N" 형태 (예: "3 / 10") |
@@ -134,8 +138,9 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 ### 기능
 - 스프레드별 필요 카드 수: `one=1` / `three=3` / `celtic=10`
-- 선택 완료 시 버튼 자동 활성화 + 하단 고정 (`is-pinned`)
-- **모바일 버튼 핀**: `IntersectionObserver`로 마지막 카드 가시성 감지 → 버튼 자동 고정/해제
+- **모바일 버튼 핀**: `IntersectionObserver`로 마지막 카드 가시성 감지 → 버튼 자동 고정/해제 (`is-pinned`)
+  - `is-pinned` 상태: `position: fixed; bottom: 0` + `cardsGrid`에 `paddingBottom` 보정
+  - 데스크탑(769px 이상)에서는 버튼 핀 동작 없음 (레이아웃 변경 없음)
 - 정방향/역방향 50% 랜덤 결정 (선택 시점)
 - 반응형: 768px→9열, 600px→7열, 480px→6열
 
@@ -151,8 +156,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 |------|-------------|------|
 | 카드 표시 영역 | `#cards-display` | 스프레드 클래스 동적 부여 (`spread-one` / `spread-three` / `spread-celtic`) |
 | 카드 아이템 | `.card-item` | 각 카드 플립 컨테이너 |
-| 로딩 상태 | `#loading-state` | 플립 완료 후 활성화 |
-| 오라클 구체 | `.oracle-canvas` | Canvas 2D 수정구슬 애니메이션 (320×320px, CSS 160px 표시) |
+| 로딩 상태 | `#loading-state` | 플립 완료 후 `.active` 클래스 부여 |
+| 오라클 구체 | `.oracle-canvas` | Canvas 2D 수정구슬 애니메이션 (200×200px) |
 | 로딩 텍스트 | `.loading-text` | 스프레드별 소요시간 안내 |
 | 해석 요청 버튼 | `#btn-get-reading` | 현재 자동 호출로 `display:none` 상태 |
 
@@ -204,17 +209,18 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 카드 컨테이너 | `.cards-summary-wrapper` | 좌우 카드 컬럼 감싸는 래퍼 |
 | 좌측 카드 컬럼 | `#cards-summary-left` | cards[0~4] 표시 (PC: `position:fixed`) |
 | 우측 카드 컬럼 | `#cards-summary-right` | cards[5~9] 표시 (PC: `position:fixed`) |
-| 해석 중앙 래퍼 | `.reading-content-wrapper` | 질문박스 + 해석텍스트 + 버튼 |
+| 해석 중앙 래퍼 | `.reading-content-wrapper` | 질문박스 + 해석텍스트 + 안내문구 + 버튼 |
 | 질문 박스 | `#reading-question` | 질문 있을 때만 표시, 파란 테두리 |
 | 질문 레이블 | `.reading-question-label` | "💬 질문" |
 | 질문 텍스트 | `#reading-question-text` | 사용자 입력 질문 |
 | 해석 컨텐츠 | `.reading-content` | marked.js 마크다운 렌더링 영역 |
 | 해석 텍스트 | `#reading-text` | Claude AI 응답 HTML |
-| 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME |
+| 스크린샷 안내 | `.reading-screenshot-notice` | "해석 결과를 다시 볼 수 없어요. 스크린샷을 해주세요." |
+| 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME, 가운데 정렬 |
 
 ### 카드 요약 아이템 (`.card-summary-item`)
 ```
-.card-summary-item
+.card-summary-item  (클릭 시 카드 줌 팝업 오픈)
 ├── .csm-bg-image        카드 이미지 (z-index:0, 역방향: scaleY(-1))
 ├── .csm-overlay         반투명 오버레이 (z-index:1, 켈틱 크로스 제외)
 ├── .card-number-badge   번호 뱃지 (z-index:2, 켈틱 크로스만 표시, 1~10)
@@ -254,6 +260,31 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 ---
 
+## 공통 - 카드 줌 팝업 (`#modal-card-zoom`)
+
+**역할:** READING 화면에서 카드 클릭 시 중앙 확대 팝업 표시.
+
+| 요소 | ID / 클래스 | 설명 |
+|------|-------------|------|
+| 모달 오버레이 | `#modal-card-zoom.card-zoom-modal` | 활성화: `.card-zoom-modal.active`, 배경 클릭 시 닫힘 |
+| 팝업 컨테이너 | `.card-zoom-popup` | `slideUp` 0.25s 진입 애니메이션 |
+| 카드 이미지 영역 | `#card-zoom-card (.card-zoom-card-wrap)` | 240px 너비, 2.5:4 비율 |
+| 카드 배경 이미지 | `.card-zoom-bg-image` | 역방향 시 `scaleY(-1)` |
+| 번호 뱃지 | `.card-zoom-number-badge` | 켈틱 크로스만 표시 (2× 스케일) |
+| 위치 레이블 | `.card-zoom-position-label` | 원 카드 제외, 쓰리 카드는 중앙 정렬 |
+| 카드 정보 영역 | `#card-zoom-info (.card-zoom-card-info)` | 카드 아래 표시 |
+| 키워드 | `.card-zoom-keywords` | 카드 keywords 배열 쉼표 구분 |
+| 방향 | `.card-zoom-direction` | 역방향 시 "REVERSE" 금색 표시 |
+| 카드명 | `.card-zoom-name` | 한글 카드 이름 |
+| 닫기 안내 | `.card-zoom-hint` | "카드를 다시 누르면 꺼집니다" |
+
+### 기능
+- READING 화면 카드(`.card-summary-item`) 클릭 → `openCardZoom()` 호출
+- 팝업 클릭(배경 포함) → `closeCardZoom()` 호출
+- 모바일: `width: min(72vw, 240px)` 반응형
+
+---
+
 ## 공통 - 배경 레이어
 
 | 레이어 | 파일 | 설명 |
@@ -279,8 +310,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 항목 | 원 카드 (one) | 쓰리 카드 (three) | 켈틱 크로스 (celtic) |
 |------|--------------|-------------------|----------------------|
 | 카드 수 | 1장 | 3장 | 10장 |
-| 위치 레이블 | 없음 | 과거/현재/미래 (중앙) | 10위치 명칭 (상단) |
-| 번호 뱃지 | 없음 | 없음 | 1~10 (READING 화면) |
+| 위치 레이블 | 없음 | 과거/현재/미래 (가운데) | 10위치 명칭 (상단) |
+| 번호 뱃지 | 없음 | 없음 | 1~10 (READING 화면, 줌 팝업) |
 | 오버레이 | 있음 | 있음 | 없음 |
 | API max_tokens | 1024 | 1500 | 4000 |
 | API 타임아웃 | 30초 | 45초 | 90초 |
