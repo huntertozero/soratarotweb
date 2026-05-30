@@ -37,6 +37,7 @@
 | 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
 | 문서 | `SCREENS.md` 생성, `README.md` Phase 32 현황 반영 업데이트 |
 | CSS | 질문 입력 화면 제목(`#screen-input-question h2`) PC 줄바꿈 방지 (`white-space: nowrap`) |
+| UX | `.spread-countdown` 문구를 남은 시간 카운트다운 → 실제 해제 시각 표시로 변경 (`오늘/내일 오전/오후 N시 N분부터 가능`), +1분 보정 적용 |
 
 ---
 

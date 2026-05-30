@@ -49,13 +49,21 @@ let _cardShiveringInterval = null;
 // ========== 스프레드 사용 제한 함수 ==========
 
 function formatCountdown(ms) {
-  const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-  if (h >= 1) return `🔒 ${h}시간 ${m}분 후 사용 가능`;
-  if (m >= 1) return `🔒 ${m}분 ${sec}초 후 사용 가능`;
-  return `🔒 ${sec}초 후 사용 가능`;
+  // +1분: 초 단위를 표시하지 않으므로, 실제 해제 시각보다 1분 여유 있게 표시
+  const unlockTime = new Date(Date.now() + ms + 60 * 1000);
+  unlockTime.setSeconds(0, 0);
+
+  const todayMidnight = new Date();
+  todayMidnight.setHours(24, 0, 0, 0);
+  const dayLabel = unlockTime < todayMidnight ? '오늘' : '내일';
+
+  const h = unlockTime.getHours();
+  const m = unlockTime.getMinutes();
+  const ampm = h < 12 ? '오전' : '오후';
+  const h12 = h % 12 || 12;
+  const mStr = m > 0 ? ` ${m}분` : '';
+
+  return `🔒 ${dayLabel} ${ampm} ${h12}시${mStr}부터 가능`;
 }
 
 async function fetchSpreadLimits() {
