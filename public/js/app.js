@@ -614,6 +614,7 @@ async function fetchReading() {
 function openCardZoom(card, positionIndex, posLabel) {
   const modal = document.getElementById('modal-card-zoom');
   const cardWrap = document.getElementById('card-zoom-card');
+  const cardInfo = document.getElementById('card-zoom-info');
   if (!modal || !cardWrap) return;
 
   const imageUrl = `/img/cards/${card.imageFile}`;
@@ -636,18 +637,23 @@ function openCardZoom(card, positionIndex, posLabel) {
     ? card.keywords.slice(0, 3).join(', ')
     : '';
 
+  // 카드 이미지 + 코너 라벨만 카드 영역에
   cardWrap.innerHTML = `
     <div class="card-zoom-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
     ${badgeHtml}
     ${posLabelHtml}
-    <div class="card-zoom-bottom-bar">
+  `;
+
+  // 카드 정보는 카드 아래 영역에 (키워드 → REVERSE+이름 순서)
+  if (cardInfo) {
+    cardInfo.innerHTML = `
+      ${keywordsText ? `<div class="card-zoom-keywords">${keywordsText}</div>` : ''}
       <div class="card-zoom-info-row">
         ${directionHtml}
         <span class="card-zoom-name">${card.nameKo}</span>
       </div>
-      ${keywordsText ? `<div class="card-zoom-keywords">${keywordsText}</div>` : ''}
-    </div>
-  `;
+    `;
+  }
 
   modal.classList.add('active');
 }

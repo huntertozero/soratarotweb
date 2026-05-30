@@ -1350,23 +1350,19 @@ textarea::placeholder {
   text-align: center;
 }
 
-.card-zoom-bottom-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-radius: 0 0 10px 10px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78) 38%);
-  padding: 28px 10px 13px;
-  z-index: 2;
+.card-zoom-card-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  padding: 0 4px;
 }
 
 .card-zoom-info-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
 }
@@ -1382,13 +1378,11 @@ textarea::placeholder {
   font-size: 15px;
   font-weight: 700;
   color: var(--color-starlight);
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
 }
 
 .card-zoom-keywords {
-  font-size: 11px;
+  font-size: 12px;
   color: rgba(224, 213, 255, 0.72);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .card-zoom-hint {
