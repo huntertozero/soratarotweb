@@ -611,6 +611,52 @@ async function fetchReading() {
   }
 }
 
+function openCardZoom(card, positionIndex, posLabel) {
+  const modal = document.getElementById('modal-card-zoom');
+  const cardWrap = document.getElementById('card-zoom-card');
+  if (!modal || !cardWrap) return;
+
+  const imageUrl = `/img/cards/${card.imageFile}`;
+  const imgTransform = card.isReversed ? 'transform: scaleY(-1);' : '';
+  const isCeltic = appState.selectedSpread === 'celtic';
+
+  const badgeHtml = isCeltic
+    ? `<div class="card-zoom-number-badge">${positionIndex + 1}</div>`
+    : '';
+
+  const posLabelHtml = posLabel && appState.selectedSpread !== 'one'
+    ? `<div class="card-zoom-position-label${appState.selectedSpread === 'three' ? ' card-zoom-position-label--center' : ''}">${posLabel}</div>`
+    : '';
+
+  const directionHtml = card.isReversed
+    ? `<span class="card-zoom-direction">REVERSE</span>`
+    : '';
+
+  const keywordsText = Array.isArray(card.keywords)
+    ? card.keywords.slice(0, 3).join(', ')
+    : '';
+
+  cardWrap.innerHTML = `
+    <div class="card-zoom-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
+    ${badgeHtml}
+    ${posLabelHtml}
+    <div class="card-zoom-bottom-bar">
+      <div class="card-zoom-info-row">
+        ${directionHtml}
+        <span class="card-zoom-name">${card.nameKo}</span>
+      </div>
+      ${keywordsText ? `<div class="card-zoom-keywords">${keywordsText}</div>` : ''}
+    </div>
+  `;
+
+  modal.classList.add('active');
+}
+
+function closeCardZoom() {
+  const modal = document.getElementById('modal-card-zoom');
+  if (modal) modal.classList.remove('active');
+}
+
 function displayReading(data) {
   // 해석 화면에 스프레드 클래스 부여 (CSS 타게팅용)
   const screenReading = document.getElementById('screen-reading');
@@ -650,7 +696,7 @@ function displayReading(data) {
       const overlayHtml = isCeltic ? '' : '<div class="csm-overlay"></div>';
 
       return `
-        <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
+        <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}" data-card-idx="${positionIndex}">
           <!-- 카드 이미지 (배경) -->
           <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}${bgExtraStyle}"></div>
           <!-- 어두운 오버레이 (켈틱 크로스 해석 화면 제외) -->
@@ -672,6 +718,14 @@ function displayReading(data) {
     try {
       cardsSummaryLeft.innerHTML = leftCards.map((c, i) => renderCard(c, i)).join('');
       cardsSummaryRight.innerHTML = rightCards.map((c, i) => renderCard(c, i + 5)).join('');
+
+      // 카드 클릭 → 줌 팝업
+      document.querySelectorAll('#screen-reading .card-summary-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const idx = parseInt(el.dataset.cardIdx, 10);
+          openCardZoom(data.cards[idx], idx, positions[idx] || '');
+        });
+      });
     } catch (renderErr) {
       console.error('❌ 카드 렌더링 오류:', renderErr);
     }
@@ -843,4 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSpreadSlider();
   fetchSpreadLimits(); // 초기 잠금 상태 조회 (IS_DEV_MODE면 즉시 return)
   showScreen('welcome');
+
+  // 카드 줌 팝업 닫기
+  document.getElementById('modal-card-zoom')?.addEventListener('click', closeCardZoom);
 });
