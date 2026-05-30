@@ -69,8 +69,12 @@ const corsOptions = (req, callback) => {
 // 배포마다 해시가 달라져 브라우저 캐시를 자동으로 무효화
 function getBuildVersion() {
   try {
-    return execSync('git rev-parse --short HEAD', { stdio: ['pipe', 'pipe', 'pipe'] })
+    const hash = execSync('git rev-parse --short HEAD', { stdio: ['pipe', 'pipe', 'pipe'] })
       .toString().trim();
+    // 미커밋 변경이 있으면 타임스탬프 추가 → 브라우저 캐시 즉시 무효화
+    const dirty = execSync('git status --porcelain', { stdio: ['pipe', 'pipe', 'pipe'] })
+      .toString().trim();
+    return dirty ? `${hash}-${Date.now().toString(36)}` : hash;
   } catch {
     return Date.now().toString(36);
   }
@@ -97,8 +101,8 @@ app.use((req, res, next) => {
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    // marked.js, DOMPurify, Pretendard 폰트 CSS
-    "script-src 'self' https://cdn.jsdelivr.net",
+    // 모든 스크립트는 자체 서버에서 로드 (marked.js, DOMPurify 로컬 번들)
+    "script-src 'self'",
     // 인라인 스타일(Critical CSS) + 외부 폰트 CSS
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
     // Google Fonts 실제 폰트 파일

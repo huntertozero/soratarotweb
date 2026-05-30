@@ -623,10 +623,6 @@ function openCardZoom(card, positionIndex, posLabel) {
     ? `<div class="card-zoom-number-badge">${positionIndex + 1}</div>`
     : '';
 
-  const posLabelHtml = posLabel && appState.selectedSpread !== 'one'
-    ? `<div class="card-zoom-position-label${appState.selectedSpread === 'three' ? ' card-zoom-position-label--center' : ''}">${posLabel}</div>`
-    : '';
-
   const directionHtml = card.isReversed
     ? `<span class="card-zoom-direction">REVERSE</span>`
     : '';
@@ -635,21 +631,29 @@ function openCardZoom(card, positionIndex, posLabel) {
     ? card.keywords.slice(0, 3).join(', ')
     : '';
 
-  // 카드 이미지 + 코너 라벨만 카드 영역에
+  const displayName = card.nameKo
+    ? `${card.name} (${card.nameKo})`
+    : card.name;
+
+  const posLabelHtml = posLabel && appState.selectedSpread !== 'one'
+    ? `<div class="card-zoom-position-label">${posLabel}</div>`
+    : '';
+
+  // 카드 이미지 + 번호 뱃지만 카드 영역에
   cardWrap.innerHTML = `
     <div class="card-zoom-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
     ${badgeHtml}
-    ${posLabelHtml}
   `;
 
-  // 카드 정보는 카드 아래 영역에 (키워드 → REVERSE+이름 순서)
+  // 카드 정보: 위치레이블 → 카드이름/REVERSE → 키워드
   if (cardInfo) {
     cardInfo.innerHTML = `
-      ${keywordsText ? `<div class="card-zoom-keywords">${keywordsText}</div>` : ''}
+      ${posLabelHtml}
       <div class="card-zoom-info-row">
         ${directionHtml}
-        <span class="card-zoom-name">${card.nameKo}</span>
+        <span class="card-zoom-name">${displayName}</span>
       </div>
+      ${keywordsText ? `<div class="card-zoom-keywords">${keywordsText}</div>` : ''}
     `;
   }
 
@@ -699,22 +703,29 @@ function displayReading(data) {
       const bgExtraStyle = isCeltic ? ' background-color: transparent;' : '';
       const overlayHtml = isCeltic ? '' : '<div class="csm-overlay"></div>';
 
+      // 카드 이름: 영문명만 표시 (nameKo는 API에서 한글로 수신)
+      const displayName = card.name;
+
+      // 위치 레이블: 카드 아래 (1카드 제외)
+      const posLabelHtml = posLabel && appState.selectedSpread !== 'one'
+        ? `<div class="csm-position-label">${posLabel}</div>`
+        : '';
+
       return `
-        <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}" data-card-idx="${positionIndex}">
-          <!-- 카드 이미지 (배경) -->
-          <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}${bgExtraStyle}"></div>
-          <!-- 어두운 오버레이 (켈틱 크로스 해석 화면 제외) -->
-          ${overlayHtml}
-          ${badgeHtml}
-          <!-- 위치 레이블 (1카드 제외, 3장=가운데, 켈틱=우측) -->
-          ${posLabel && appState.selectedSpread !== 'one'
-            ? `<div class="csm-position-label${appState.selectedSpread === 'three' ? ' csm-position-label--center' : ''}">${posLabel}</div>`
-            : ''}
-          <!-- 카드 이름 / REVERSE (하단) -->
-          <div class="csm-card-info">
-            <div class="csm-direction">${direction}</div>
-            <div class="csm-name">${card.nameKo}</div>
+        <div class="card-summary-wrap" data-card-idx="${positionIndex}">
+          <div class="card-summary-item ${card.isReversed ? 'reversed' : ''}">
+            <!-- 카드 이미지 (배경) -->
+            <div class="csm-bg-image" style="background-image: url('${imageUrl}'); ${imgTransform}${bgExtraStyle}"></div>
+            <!-- 어두운 오버레이 (켈틱 크로스 해석 화면 제외) -->
+            ${overlayHtml}
+            ${badgeHtml}
+            <!-- 카드 이름 / REVERSE (하단) -->
+            <div class="csm-card-info">
+              <div class="csm-direction">${direction}</div>
+              <div class="csm-name">${displayName}</div>
+            </div>
           </div>
+          ${posLabelHtml}
         </div>
       `;
     };
@@ -723,8 +734,8 @@ function displayReading(data) {
       cardsSummaryLeft.innerHTML = leftCards.map((c, i) => renderCard(c, i)).join('');
       cardsSummaryRight.innerHTML = rightCards.map((c, i) => renderCard(c, i + 5)).join('');
 
-      // 카드 클릭 → 줌 팝업
-      document.querySelectorAll('#screen-reading .card-summary-item').forEach(el => {
+      // 카드 클릭 → 줌 팝업 (wrap 전체가 클릭 영역)
+      document.querySelectorAll('#screen-reading .card-summary-wrap').forEach(el => {
         el.addEventListener('click', () => {
           const idx = parseInt(el.dataset.cardIdx, 10);
           openCardZoom(data.cards[idx], idx, positions[idx] || '');
@@ -820,10 +831,58 @@ function displayReading(data) {
     // 폰트·이미지 로딩 완료 후 재조정
     setTimeout(syncLayout, 150);
     setTimeout(syncLayout, 400);
+    // 카드 목록 힌트 스크롤 (모바일 전용)
+    setTimeout(startCardListHintScroll, 600);
   });
 
   window.addEventListener('scroll', syncLayout);
   window.addEventListener('resize', syncLayout);
+}
+
+// 모바일 카드 목록 힌트 스크롤: 우측 끝까지 이동 후 다시 좌측으로
+function startCardListHintScroll() {
+  if (window.innerWidth > 768) return;
+
+  const wrapper = document.querySelector('.cards-summary-wrapper');
+  if (!wrapper) return;
+
+  const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+  if (maxScroll <= 20) return;
+
+  let cancelled = false;
+  const cancel = () => { cancelled = true; };
+  wrapper.addEventListener('touchstart', cancel, { passive: true, once: true });
+  wrapper.addEventListener('mousedown', cancel, { once: true });
+
+  const scrollTo = (target, duration, onDone) => {
+    const startPos = wrapper.scrollLeft;
+    const distance = target - startPos;
+    const startTime = performance.now();
+
+    const step = (now) => {
+      if (cancelled) return;
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      // easeInOutQuad
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+      wrapper.scrollLeft = startPos + distance * ease;
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else if (onDone) {
+        onDone();
+      }
+    };
+    requestAnimationFrame(step);
+  };
+
+  // 우측으로 천천히 스크롤 → 2초 대기 → 좌측으로 복귀
+  scrollTo(maxScroll, 8000, () => {
+    if (cancelled) return;
+    setTimeout(() => {
+      if (cancelled) return;
+      scrollTo(0, 8000, null);
+    }, 2000);
+  });
 }
 
 // 스프레드 슬라이더 초기화 (모바일: 스택 카드, PC: 그리드)

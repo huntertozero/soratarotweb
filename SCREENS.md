@@ -219,17 +219,23 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 스크린샷 안내 | `.reading-screenshot-notice` | "해석 결과를 다시 볼 수 없어요. 스크린샷을 해주세요." |
 | 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME, 가운데 정렬 |
 
-### 카드 요약 아이템 (`.card-summary-item`)
+### 카드 요약 아이템 (`.card-summary-wrap`)
 ```
-.card-summary-item  (클릭 시 카드 줌 팝업 오픈)
-├── .csm-bg-image        카드 이미지 (z-index:0, 역방향: scaleY(-1))
-├── .csm-overlay         반투명 오버레이 (z-index:1, 켈틱 크로스 제외)
-├── .card-number-badge   번호 뱃지 (z-index:2, 켈틱 크로스만 표시, 1~10)
-├── .csm-position-label  위치 레이블 (z-index:2, 1카드 제외)
-└── .csm-card-info       카드 이름/방향 (z-index:2)
-    ├── .csm-direction   "REVERSE" 텍스트 (파란색)
-    └── .csm-name        카드 이름 (한글)
+.card-summary-wrap  (클릭 시 카드 줌 팝업 오픈, data-card-idx 보유)
+├── .card-summary-item        카드 이미지 영역
+│   ├── .csm-bg-image         카드 이미지 (z-index:0, 역방향: scaleY(-1))
+│   ├── .csm-overlay          반투명 오버레이 (z-index:1, 켈틱 크로스 제외)
+│   ├── .card-number-badge    번호 뱃지 (z-index:2, 켈틱 크로스만, 1~10)
+│   └── .csm-card-info        카드 이름/방향 (카드 하단 오버레이)
+│       ├── .csm-direction    "REVERSE" 텍스트 (금색)
+│       └── .csm-name         카드 영문명
+└── .csm-position-label       위치 레이블 (카드 아래, 1카드 제외) -- 예: 가로막는 것
 ```
+
+### 모바일 카드 목록 자동 스크롤
+- 해석 화면 진입 0.6초 후 `startCardListHintScroll()` 실행
+- `.cards-summary-wrapper` scrollLeft: 0 → 끝(8초) → 2초 대기 → 0(8초)
+- 터치·클릭 시 즉시 취소 / 스크롤 여백 ≤20px이면 실행 안 함
 
 ### PC 레이아웃
 - 좌우 카드 컬럼: JS `syncLayout()`으로 `.reading-content-wrapper` 좌우에 `position:fixed` 배치

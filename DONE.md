@@ -252,3 +252,42 @@
 
 ### 38-10. NODE_ENV 미설정 경고 (Low)
 - 서버 시작 시 `NODE_ENV` 미설정이면 콘솔 경고 출력
+
+## Phase 39: 모바일 UX 개선 + 카드 한글명 단일 소스화 ✅
+
+### 39-1. 모바일 카드 목록 자동 스크롤 힌트
+- `startCardListHintScroll()` 추가 (`app.js`): 해석 화면 진입 시 0.6초 후 실행
+- 카드 목록(`.cards-summary-wrapper`)이 우측 끝까지 8초 천천히 스크롤 → 2초 대기 → 좌측으로 8초 복귀
+- 스크롤 여백 ≤20px이면 실행 안 함 (1·3장 스프레드에서 불필요한 경우 방지)
+- 터치/마우스 클릭 시 즉시 취소 (사용자 조작 우선)
+
+### 39-2. 카드 목록 레이아웃 재구조
+- `.card-summary-item` → `.card-summary-wrap` 래퍼로 감쌈 (flex column)
+- 위치 레이블(`.csm-position-label`): 카드 내부 absolute → 카드 아래 일반 블록으로 이동
+- 카드 클릭 이벤트: `.card-summary-item` → `.card-summary-wrap` 기준으로 변경 (레이블 영역도 클릭 가능)
+- 모바일 가로 스크롤: `flex-shrink: 0; width: 80px/65px` 단위를 wrap에 적용
+
+### 39-3. 카드 줌 팝업 개선
+- 위치 레이블: 카드 이미지 오른쪽 상단(absolute) → 카드 아래 정보 영역으로 이동
+- 텍스트 순서: 위치 레이블 → 카드명/REVERSE → 키워드
+- 카드명 형식: `영문명 (한글명)` (예: `Nine of Cups (컵 9)`)
+
+### 39-4. marked.js + DOMPurify 로컬 번들화
+- CDN 의존 제거: `cdn.jsdelivr.net` → `public/js/vendor/` 로컬 파일 서빙
+  - `npm install marked@12 dompurify@3 --save-dev` 후 minified 파일 복사
+  - `public/js/vendor/marked.min.js`, `public/js/vendor/purify.min.js`
+- `index.html` 스크립트 태그 로컬 경로로 변경
+- CSP `script-src`에서 `https://cdn.jsdelivr.net` 제거 (self만 허용)
+- 효과: CDN 실패 시 마크다운이 raw 텍스트로 표시되던 버그 완전 해결
+
+### 39-5. 개발 중 캐시 버스팅 개선
+- `server.js` `getBuildVersion()`: 미커밋 변경사항이 있으면 `{hash}-{timestamp}` 형식으로 BUILD_VERSION 생성
+- 효과: 코드 수정 후 서버 재시작 시 브라우저가 항상 최신 JS/CSS 로딩
+
+### 39-6. 카드 한글명 단일 소스화
+- `data/cards.js` `nameKo` 78장 → 한글명 (지팡이/컵/칼/동전, 페이지/기사/여왕/왕 스킴)
+- `public/js/cardMeta.js` 동일하게 한글 동기화
+- `routes/reading.js`: API 응답에 `name`(영문) 필드 추가 (`{ id, name, nameKo, ... }`)
+- `services/claudeService.js`: Claude 프롬프트 카드명 `nameKo` → `name (nameKo)` 형식
+- `prompts/system.md`: 한글명은 프롬프트 값을 그대로 쓰도록 지시 + 예시 스킴 통일
+- `app.js`: `CARD_NAMES_KO` 상수 제거 / 카드 목록=`card.name`(영문) / 줌팝업=`card.name (card.nameKo)`

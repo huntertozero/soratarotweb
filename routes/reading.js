@@ -178,6 +178,7 @@ router.post('/reading', async (req, res) => {
     // 7. 응답 생성 (카드 정보 + 해석)
     const responseCards = requestedCards.map(rc => ({
       id: rc.id,
+      name: rc.cardData.name,
       nameKo: rc.cardData.nameKo,
       isReversed: rc.isReversed,
       imageFile: cardImages[rc.id] || '',

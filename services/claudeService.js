@@ -74,7 +74,7 @@ function formatCardsForPrompt(cards, cardDatabase, spread) {
 
       return `
 **위치 ${index + 1}: ${positions[index] || `위치 ${index + 1}`}**
-- 카드: ${cardData.nameKo} (${direction})
+- 카드: ${cardData.name} (${cardData.nameKo}) ${direction}
 - 원소: ${cardData.element}${suitInfo}
 - 핵심 키워드: ${keywords}${imageSymbols}
 - 의미: ${meaning}`;
