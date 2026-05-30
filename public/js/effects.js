@@ -325,6 +325,67 @@
     oracleRafId = requestAnimationFrame(drawOracleFrame);
   }
 
+  // ========== 웰컴 화면 덱 아이콘 궤도 애니메이션 ==========
+
+  let deckCanvas = null;
+  let deckCtx = null;
+  let deckRafId = null;
+  let deckTime = 0;
+  let isDeckActive = false;
+
+  function initDeckCanvas() {
+    deckCanvas = document.querySelector('.deck-canvas');
+    if (!deckCanvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    deckCanvas.width = 280 * dpr;
+    deckCanvas.height = 280 * dpr;
+    deckCtx = deckCanvas.getContext('2d');
+    deckCtx.scale(dpr, dpr);
+  }
+
+  function startDeckAnimation() {
+    if (!deckCanvas) initDeckCanvas();
+    if (!deckCanvas || !deckCtx || isDeckActive) return;
+    isDeckActive = true;
+    deckTime = 0;
+    drawDeckFrame();
+  }
+
+  function stopDeckAnimation() {
+    isDeckActive = false;
+    if (deckRafId) { cancelAnimationFrame(deckRafId); deckRafId = null; }
+    if (deckCtx) deckCtx.clearRect(0, 0, 280, 280);
+  }
+
+  function drawDeckFrame() {
+    if (!isDeckActive) return;
+    deckTime += 0.018;
+    const ctx = deckCtx;
+    const cx = 140, cy = 140;
+    const orbitRx = 108, orbitRy = 36;
+
+    ctx.clearRect(0, 0, 280, 280);
+
+    RUNE_SYMBOLS.forEach((sym, i) => {
+      const angle = deckTime * ORBIT_SPEEDS[i] + (Math.PI * 2 * i / RUNE_SYMBOLS.length);
+      const px = cx + orbitRx * Math.cos(angle);
+      const py = cy + orbitRy * Math.sin(angle);
+      const depth = (Math.sin(angle) + 1) / 2;
+
+      ctx.save();
+      ctx.globalAlpha = 0.15 + depth * 0.85;
+      ctx.font = `${Math.floor(9 + depth * 7)}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = `hsl(42, 100%, ${50 + depth * 40}%)`;
+      if (depth > 0.5) { ctx.shadowColor = '#f59e0b'; ctx.shadowBlur = 4 + depth * 5; }
+      ctx.fillText(sym, px, py);
+      ctx.restore();
+    });
+
+    deckRafId = requestAnimationFrame(drawDeckFrame);
+  }
+
   // ========== 전역 노출 ==========
 
   window.Effects = {
@@ -334,12 +395,15 @@
     triggerFlipFlash,
     startOracleAnimation,
     stopOracleAnimation,
+    startDeckAnimation,
+    stopDeckAnimation,
   };
 
-  // DOM 준비 후 오라클 초기화
+  // DOM 준비 후 오라클/덱 초기화
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initOracleSphere);
+    document.addEventListener('DOMContentLoaded', () => { initOracleSphere(); initDeckCanvas(); });
   } else {
     initOracleSphere();
+    initDeckCanvas();
   }
 })();

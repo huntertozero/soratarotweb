@@ -171,6 +171,15 @@ function showScreen(screenId) {
   if (screenId === 'select-spread') {
     fetchSpreadLimits();
   }
+
+  // 웰컴 화면 덱 아이콘 궤도 애니메이션 제어
+  if (window.Effects) {
+    if (screenId === 'welcome') {
+      window.Effects.startDeckAnimation();
+    } else {
+      window.Effects.stopDeckAnimation();
+    }
+  }
 }
 
 function showError(message) {

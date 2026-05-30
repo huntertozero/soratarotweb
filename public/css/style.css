@@ -136,6 +136,17 @@ body {
   z-index: 3;
 }
 
+.deck-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  pointer-events: none;
+  z-index: 10;
+}
+
 .title {
   font-size: 48px;
   font-family: var(--font-serif);
