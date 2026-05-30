@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 35 완료)
+## 현재 상태 (Phase 36 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -35,10 +35,11 @@
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거 |
 | 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시 `?v=`), JS/CSS 1년 캐시, HTML no-cache |
 | 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
-| 문서 | `SCREENS.md` 생성, `README.md` Phase 32 현황 반영 업데이트 |
+| 문서 | `SCREENS.md` 생성 및 Phase 35 기준 전면 업데이트 (카드 줌 팝업, 잠금 시각 표시 등), `README.md` 업데이트 |
 | CSS | 질문 입력 화면 제목(`#screen-input-question h2`) PC 줄바꿈 방지 (`white-space: nowrap`) |
 | UX | `.spread-countdown` 문구를 남은 시간 카운트다운 → 실제 해제 시각 표시로 변경 (`오늘/내일 오전/오후 N시 N분부터 가능`), +1분 보정 적용 |
 | UX | 카드 줌 팝업: 해석 화면 카드 클릭 시 중앙 확대 팝업, 카드명·키워드·REVERSE 하단 표시, 켈틱 번호 뱃지 2× 스케일, 위치 레이블 표시, 재클릭 닫기 |
+| 버그 수정 | SHUFFLE 화면 카드 선택 완료 시 데스크탑 하단 여백 늘어나는 버그 수정 (`updateShuffleButtonPin()`에 데스크탑 조기 반환 추가, `updateCardSelectionUI()` 중복 `is-pinned` 제거) |
 
 ---
 
