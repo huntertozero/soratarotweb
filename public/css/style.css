@@ -1291,6 +1291,10 @@ textarea::placeholder {
 /* ========== 반응형 디자인 ========== */
 
 @media (max-width: 768px) {
+  .welcome-container {
+    padding-top: max(20px, calc(50svh - 235px));
+  }
+
   .title {
     font-size: 36px;
   }
@@ -1633,7 +1637,7 @@ textarea::placeholder {
   }
 
   .welcome-container {
-    padding: 30px 15px; /* 균형 있는 패딩 */
+    padding: max(16px, calc(50svh - 217px)) 15px 30px;
   }
 
   .title {
