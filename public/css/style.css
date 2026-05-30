@@ -71,6 +71,11 @@ body {
   display: block;
 }
 
+@keyframes fadeInOpacity {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1302,6 +1307,11 @@ textarea::placeholder {
 
   .question-container {
     padding-top: 60px;
+  }
+
+  /* transform 사용 시 position:fixed 기준이 뷰포트 → 부모로 바뀌어 shuffle-info가 튀는 현상 방지 */
+  #screen-shuffle {
+    animation: fadeInOpacity 0.5s ease-in-out;
   }
 
   /* 카드선택 화면: shuffle-info 상단 고정 (배경 투명, 다른 화면과 동일 상단 여백) */
