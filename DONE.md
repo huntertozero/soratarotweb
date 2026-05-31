@@ -314,3 +314,17 @@
 ### 41-2. 셔플 뒤로가기 분기 처리
 - `#btn-back-question` 클릭 시: `appState.selectedSpread === 'one'`이면 `select-spread`로 이동, 그 외는 기존대로 `input-question`으로 이동
 - `selectedCards` 초기화는 공통 유지
+
+## Phase 42: 웰컴 면책 문구 + 원 카드 프롬프트 개선 ✅
+
+### 42-1. 웰컴 화면 면책 문구 추가
+- `public/index.html`: `#btn-start-reading` 버튼 하단에 `.welcome-disclaimer` `<p>` 추가
+  - 텍스트: "개인 정보를 수집 또는 이용하거나 / 별도의 비용을 요구하지 않습니다."
+- `public/css/style.css`: `.welcome-disclaimer` 스타일 — `margin-top: 80px`, `font-size: 12px`, `font-style: italic`, `color: rgba(255,255,255,0.2)`, `text-align: center`
+
+### 42-2. 원 카드 프롬프트 행동 항목 개선
+- `prompts/one.md`: "오늘 하루 적용 방법" 항목을 행동 2가지 → 행동 1가지 + 피해야 할 것 1가지로 변경
+- 추상적 예시 문구 제거, 실천 지침 구체화
+
+### 42-3. 질문 입력 화면 버튼 텍스트 변경
+- `public/index.html`: `#btn-next-question` 버튼 텍스트 "다음" → "카드 선택하기"

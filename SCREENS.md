@@ -47,6 +47,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 부제목 | `.subtitle` | "카드가 당신의 길을 안내합니다" (보라색) |
 | 설명 텍스트 | `.description` | "질문을 입력하고 카드를 뽑으면 / AI가 개인화된 해석을 제공합니다" |
 | 시작 버튼 | `#btn-start-reading` | "무료 리딩 시작하기" → SELECT_SPREAD 이동 |
+| 면책 문구 | `.welcome-disclaimer` | "개인 정보를 수집 또는 이용하거나 / 별도의 비용을 요구하지 않습니다." (버튼 하단 80px, 12px 이탤릭, 불투명도 20%) |
 
 ### 특이사항
 - Critical CSS 인라인 처리: 외부 CSS 로드 전에도 정상 렌더링 보장

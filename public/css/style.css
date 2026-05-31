@@ -170,6 +170,15 @@ body {
   line-height: 1.8;
 }
 
+.welcome-disclaimer {
+  margin-top: 80px;
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  line-height: 1.8;
+}
+
 /* ========== SPREAD 선택 화면 ========== */
 
 .spread-container {
@@ -439,6 +448,25 @@ body {
   margin-bottom: 30px;
   font-size: 14px;
   line-height: 1.6;
+}
+
+.question-hint.is-transparent {
+  opacity: 0; /* color 대신 opacity: 인라인 style 포함 자식 요소까지 가림 */
+}
+
+.question-info.is-transparent {
+  opacity: 0;
+}
+
+/* 1카드: 질문 입력 비활성 상태 (설명 문구 표시) */
+textarea.one-card-message {
+  opacity: 1;
+  color: var(--color-starlight);
+  cursor: default;
+  border-color: rgba(100, 181, 246, 0.3);
+  background: rgba(100, 181, 246, 0.05);
+  resize: none;
+  line-height: 1.7;
 }
 
 textarea {
