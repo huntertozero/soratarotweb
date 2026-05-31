@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~41 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~42 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 42 완료)
+## 현재 상태 (Phase 43 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -36,6 +36,7 @@
 | UX | 켈틱 크로스 카드 번호 뱃지, 켈틱 로딩 자동 스크롤, 웰컴 subtitle 수직 중앙 정렬, 텍스트 전면 개선 |
 | UX | 카드 줌 팝업(위치레이블→카드명→키워드 순), 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
+| 모바일 UX | h2·#shuffle-message 폰트 10% 축소(32/25px) + 가운데 정렬, .question-hint·shuffle 부가설명 줄바꿈, .spread-subtitle 문구 개선("24시간 제한" gold 강조) |
 | 카드 한글명 | `data/cards.js` nameKo 한글화(지팡이/컵/칼/동전), API `name`+`nameKo` 동시 응답, 팝업·해석 텍스트 일치 |
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거, CARD_NAMES_KO 상수 제거 |
 | 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시+dirty 타임스탬프 `?v=`), JS/CSS 1년 캐시, HTML no-cache |

@@ -65,7 +65,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 제목 | `h2` | "어떤 리딩을 원하십니까?" |
-| 부제목 | `.spread-subtitle` | "3가지 옵션 중 하나를 골라 눌러주세요" + "각 옵션은 24시간마다 한 번씩 가능" |
+| 부제목 | `.spread-subtitle` | "다음 3가지 옵션 중 / 하나를 골라 눌러주세요 / (각 옵션은 **24시간 제한**이 있어요)" — "24시간 제한" gold색 강조 |
 | 슬라이더 래퍼 | `#spread-slider-wrapper` | 카드 3장 감싸는 슬라이더 컨테이너 |
 | 슬라이더 트랙 | `#spread-slider-track` | 실제 슬라이드가 나열되는 영역 |
 | 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드", "오늘의 메시지", 상세 설명(`.spread-detail`) |
@@ -100,7 +100,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 제목 | `h2` | "마음 속 고민은 무엇인가요?" |
-| 안내 텍스트 | `.question-hint` | "현실적이고 구체적일수록 더 좋은 해석을 받을 수 있습니다" + "선택사항" 주황색 강조, 200자 제한 안내 |
+| 안내 텍스트 | `.question-hint` | "현실적이고 구체적일수록 / 더 좋은 해석을 받을 수 있습니다" (줄바꿈) + "선택사항" gold 강조, 200자 제한 안내, 가운데 정렬 |
 | 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200, 예시 placeholder 포함 |
 | 글자 수 카운터 | `.question-info > #char-count` | "N / 200" 형태 |
 | 이전 버튼 | `#btn-back-spread` | → SELECT_SPREAD 이동 |
@@ -123,7 +123,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 |------|-------------|------|
 | 상단 고정 정보 | `.shuffle-info` | PC: `position: sticky; top: 0` / 모바일: `position: fixed; top: 0` |
 | 메시지 | `#shuffle-message` | "그럼 카드를 선택해볼까요?" |
-| 부가 설명 | (인라인 `<p>`) | "카드들의 주파수를 느끼며 신중히 선택해주세요" |
+| 부가 설명 | (인라인 `<p>`) | "카드들의 주파수를 느끼며 / 신중히 선택해주세요" (줄바꿈, 가운데 정렬, margin: 16px 위 8px 아래) |
 | 선택 카운터 | `#shuffle-count` | "N / N" 형태 (예: "3 / 10") |
 | 카드 그리드 | `#cards-grid` | 78장 `.card-back-item` 동적 생성 |
 | 이전 버튼 | `#btn-back-question` | → INPUT_QUESTION (3카드·켈틱) / → SELECT_SPREAD (원 카드), selectedCards 초기화 |

@@ -328,3 +328,21 @@
 
 ### 42-3. 질문 입력 화면 버튼 텍스트 변경
 - `public/index.html`: `#btn-next-question` 버튼 텍스트 "다음" → "카드 선택하기"
+
+## Phase 43: 모바일 텍스트 레이아웃 개선 ✅
+
+### 43-1. 모바일 h2 + #shuffle-message 폰트 축소 및 가운데 정렬
+- `style.css` 768px 브레이크포인트: 36px → 32px (약 10% 감소), `text-align: center` 추가
+- `style.css` 480px 브레이크포인트: 28px → 25px (약 10% 감소), `text-align: center` 추가
+- 대상: `.spread-container h2`, `.question-container h2`, `#shuffle-message`
+
+### 43-2. .question-hint 줄바꿈
+- `public/index.html`: "현실적이고 구체적일수록 더 좋은 해석을 받을 수 있습니다" → "현실적이고 구체적일수록`<br>`더 좋은 해석을 받을 수 있습니다" (줄바꿈 추가)
+
+### 43-3. shuffle 부가 설명 줄바꿈 + 정렬 + 간격 조정
+- `public/index.html`: "카드들의 주파수를 느끼며 신중히 선택해주세요" → 줄바꿈 + `text-align: center` + `margin: 16px 0 8px`
+- #shuffle-message↔부가설명, 부가설명↔#shuffle-count 간격을 h2↔.question-hint(16px) 기준으로 통일
+
+### 43-4. .spread-subtitle 문구 개선
+- `public/index.html`: "다음 3가지 옵션 중 / 하나를 골라 눌러주세요 / (각 옵션은 **24시간 제한**이 있어요)"
+- "24시간 제한" 색상: `var(--color-gold)` (.spread-desc와 동일)
