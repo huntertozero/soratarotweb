@@ -1,7 +1,7 @@
 # 타로 리딩 웹 앱 - 구현 로드맵
 
 **마지막 업데이트**: 2026-05-31  
-**현재 버전**: Phase 38 완료
+**현재 버전**: Phase 40 완료
 
 > 상세 구현 이력(Phase 1~31) → **DONE.md**  
 > 현재 개발 가이드 → **CLAUDE.md**  
@@ -64,6 +64,18 @@
 - 보안 헤더: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
 - isReversed strict equality 타입 강제, NODE_ENV 미설정 경고
 
+### 모바일 UX 개선 + 카드 한글명 (Phase 39) ✅
+- READING 화면 카드 목록 가로 자동 스크롤 힌트 (8초 우→2초 대기→8초 좌, 터치 시 취소)
+- marked.js + DOMPurify CDN → `public/js/vendor/` 로컬 번들 (CSP cdn.jsdelivr.net 제거)
+- 카드 한글명 단일 소스화: `data/cards.js nameKo`, API `name`+`nameKo` 동시 응답
+- 개발 중 캐시 버스팅 개선: dirty 변경 시 `{hash}-{timestamp}` 형식
+
+### 버그 수정 (Phase 40) ✅
+- SHUFFLE 화면 진입 시 스크롤 최상단 보정:
+  - `history.scrollRestoration = 'manual'` — 브라우저 자동 스크롤 복원 비활성화
+  - `createCardGrid()` 후 `requestAnimationFrame(() => scrollTo(0,0))` — DOM 추가 후 스크롤 재보정
+  - 효과: `.shuffle-info`(상단 텍스트)와 `.cards-grid` 간헐적 겹침 해소
+
 ---
 
 ## 남은 작업
@@ -90,7 +102,7 @@
 | 런타임 | Node.js v24, Express |
 | AI | Claude Sonnet 4.6 (`@anthropic-ai/sdk`) |
 | 프론트엔드 | Vanilla JS + HTML/CSS (번들러 없음) |
-| 마크다운 | marked.js v12 CDN + DOMPurify v3 CDN |
+| 마크다운 | marked.js v12 + DOMPurify v3 (로컬 번들, `public/js/vendor/`) |
 | 배포 | Railway (NIXPACKS) |
 | 모니터링 | Slack Incoming Webhook |
 | 폰트 | Noto Serif KR (제목), Pretendard (본문) |

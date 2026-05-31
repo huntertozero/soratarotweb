@@ -291,3 +291,14 @@
 - `services/claudeService.js`: Claude 프롬프트 카드명 `nameKo` → `name (nameKo)` 형식
 - `prompts/system.md`: 한글명은 프롬프트 값을 그대로 쓰도록 지시 + 예시 스킴 통일
 - `app.js`: `CARD_NAMES_KO` 상수 제거 / 카드 목록=`card.name`(영문) / 줌팝업=`card.name (card.nameKo)`
+
+## Phase 40: #screen-shuffle 진입 시 스크롤 최상단 보정 ✅
+
+### 40-1. 브라우저 스크롤 복원 비활성화
+- `DOMContentLoaded` 초기화 시 `history.scrollRestoration = 'manual'` 설정
+- 모바일 브라우저(iOS Safari 등)의 자동 스크롤 복원이 `window.scrollTo(0, 0)`을 덮어쓰는 현상 차단
+
+### 40-2. 카드 그리드 DOM 추가 후 스크롤 재보정
+- `proceedToShuffle()`에서 `createCardGrid()` 직후 `requestAnimationFrame(() => window.scrollTo(0, 0))` 추가
+- 78장 카드 DOM 추가 → 브라우저 레이아웃 재계산 → 다음 프레임에서 스크롤 확실히 최상단으로 고정
+- 효과: 진입 시 `.shuffle-info`(상단 텍스트)와 `.cards-grid` 겹침 현상(간헐적) 해소

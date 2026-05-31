@@ -311,7 +311,8 @@ function setupEventListeners() {
 function proceedToShuffle() {
   appState.selectedCards = [];
   showScreen('shuffle');
-  createCardGrid();
+  createCardGrid(); // 78장 DOM 추가 후 스크롤 재보정 (레이아웃 재계산 타이밍 대응)
+  requestAnimationFrame(() => window.scrollTo(0, 0));
   setupCardSelectionListeners();
   updateCardSelectionUI();
   setupShuffleButtonPin(); // 모바일: 마지막 카드 도달 시 버튼 고정
@@ -956,6 +957,9 @@ function setupSpreadSlider() {
 // ========== 초기화 ==========
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 브라우저 자동 스크롤 복원 비활성화 (화면 전환 시 scrollTo(0,0) 덮어쓰기 방지)
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
   setupEventListeners();
   setupSpreadSlider();
   fetchSpreadLimits(); // 초기 잠금 상태 조회 (IS_DEV_MODE면 즉시 return)
