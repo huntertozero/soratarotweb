@@ -191,6 +191,36 @@ function showScreen(screenId) {
   }
 }
 
+// 1카드 선택 시 질문 입력 화면 상태 적용 (비활성화 or 복원)
+function applyInputQuestionState() {
+  const textarea = document.getElementById('input-question-text');
+  const hint = document.querySelector('.question-hint');
+  const questionInfo = document.querySelector('.question-info');
+  const charCount = document.getElementById('char-count');
+  const h2 = document.querySelector('#screen-input-question h2');
+  if (!textarea) return;
+
+  const isOne = appState.selectedSpread === 'one';
+
+  if (isOne) {
+    textarea.value = '원 카드 옵션은 별도의 질문을 입력하지 않고,\n지금 이 순간 당신에게 가장 필요한 메시지를 전달합니다.';
+    textarea.disabled = true;
+    textarea.classList.add('one-card-message');
+    if (hint) hint.classList.add('is-transparent');
+    if (questionInfo) questionInfo.classList.add('is-transparent');
+    if (charCount) charCount.textContent = '0';
+    if (h2) h2.textContent = '마음 속 고민이 있으신가요?';
+  } else {
+    textarea.value = '';
+    textarea.disabled = false;
+    textarea.classList.remove('one-card-message');
+    if (hint) hint.classList.remove('is-transparent');
+    if (questionInfo) questionInfo.classList.remove('is-transparent');
+    if (charCount) charCount.textContent = '0';
+    if (h2) h2.textContent = '마음 속 고민은 무엇인가요?';
+  }
+}
+
 function showError(message) {
   const errorModal = document.getElementById('modal-error');
   const errorMessage = document.getElementById('error-message');
@@ -226,7 +256,13 @@ function setupEventListeners() {
       if (card.classList.contains('locked')) return;
       const spread = card.dataset.spread;
       appState.selectedSpread = spread;
-      showScreen('input-question');
+      if (spread === 'one') {
+        appState.question = '';
+        proceedToShuffle();
+      } else {
+        showScreen('input-question');
+        applyInputQuestionState();
+      }
     });
   });
 
@@ -258,7 +294,8 @@ function setupEventListeners() {
   const btnNextQuestion = document.getElementById('btn-next-question');
   if (btnNextQuestion) {
     btnNextQuestion.addEventListener('click', () => {
-      appState.question = inputQuestionText?.value || '';
+      // 1카드: 질문 없이 진행 (textarea 비활성 상태)
+      appState.question = appState.selectedSpread === 'one' ? '' : (inputQuestionText?.value || '');
       proceedToShuffle();
     });
   }
@@ -268,7 +305,12 @@ function setupEventListeners() {
   if (btnBackQuestion) {
     btnBackQuestion.addEventListener('click', () => {
       appState.selectedCards = [];
-      showScreen('input-question');
+      if (appState.selectedSpread === 'one') {
+        showScreen('select-spread');
+      } else {
+        showScreen('input-question');
+        applyInputQuestionState();
+      }
     });
   }
 

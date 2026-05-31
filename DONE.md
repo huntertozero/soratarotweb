@@ -302,3 +302,15 @@
 - `proceedToShuffle()`에서 `createCardGrid()` 직후 `requestAnimationFrame(() => window.scrollTo(0, 0))` 추가
 - 78장 카드 DOM 추가 → 브라우저 레이아웃 재계산 → 다음 프레임에서 스크롤 확실히 최상단으로 고정
 - 효과: 진입 시 `.shuffle-info`(상단 텍스트)와 `.cards-grid` 겹침 현상(간헐적) 해소
+
+## Phase 41: 원 카드 선택 시 질문 입력 화면 스킵 ✅
+
+### 41-1. 스프레드 선택 → 셔플 직행 (원 카드)
+- `app.js` 스프레드 카드 클릭 핸들러: `spread === 'one'`이면 `appState.question = ''` 설정 후 `proceedToShuffle()` 직접 호출
+- 기존: SELECT_SPREAD → INPUT_QUESTION → SHUFFLE
+- 변경: SELECT_SPREAD → SHUFFLE (원 카드만)
+- 3카드·켈틱 크로스는 기존대로 INPUT_QUESTION 경유
+
+### 41-2. 셔플 뒤로가기 분기 처리
+- `#btn-back-question` 클릭 시: `appState.selectedSpread === 'one'`이면 `select-spread`로 이동, 그 외는 기존대로 `input-question`으로 이동
+- `selectedCards` 초기화는 공통 유지

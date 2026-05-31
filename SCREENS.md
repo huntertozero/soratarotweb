@@ -7,7 +7,7 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-05-31 (Phase 38 기준)
+마지막 수정: 2026-05-31 (Phase 41 기준)
 
 ---
 
@@ -92,6 +92,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 **역할:** 질문 입력 (선택사항, 최대 200자).
 
+> ⚠️ **원 카드 스프레드는 이 화면을 거치지 않습니다.** SELECT_SPREAD에서 원 카드 선택 시 바로 SHUFFLE로 진입하며, `question`은 빈 문자열로 처리됩니다. 이 화면은 3카드·켈틱 크로스 전용입니다.
+
 ### 구성요소
 
 | 요소 | ID / 클래스 | 설명 |
@@ -123,7 +125,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 부가 설명 | (인라인 `<p>`) | "카드들의 주파수를 느끼며 신중히 선택해주세요" |
 | 선택 카운터 | `#shuffle-count` | "N / N" 형태 (예: "3 / 10") |
 | 카드 그리드 | `#cards-grid` | 78장 `.card-back-item` 동적 생성 |
-| 이전 버튼 | `#btn-back-question` | → INPUT_QUESTION, selectedCards 초기화 |
+| 이전 버튼 | `#btn-back-question` | → INPUT_QUESTION (3카드·켈틱) / → SELECT_SPREAD (원 카드), selectedCards 초기화 |
 | 선택 완료 버튼 | `#btn-cards-selected` | 선택 완료 전 `disabled`, → CARD_REVEAL |
 
 ### 카드 그리드 (`#cards-grid`)

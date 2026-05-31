@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~39 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~40 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 40 완료)
+## 현재 상태 (Phase 41 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -31,6 +31,7 @@
 | 애니메이션 | Canvas 파티클 배경, 오라클 구체 로딩, 카드 스파크/플래시, 웰컴 덱 아이콘 룬 궤도 |
 | 모바일 | 반응형 레이아웃 전면 개선, 화면별 상단 여백 정렬, shuffle-info fixed 고정, 진입 애니메이션 버그 수정 |
 | 모바일 UX | READING 카드 목록 자동 스크롤 힌트 (8초 우→2초 대기→8초 좌 복귀, 터치 시 취소), SHUFFLE 진입 시 스크롤 최상단 강제 보정 (`history.scrollRestoration = 'manual'` + rAF 재보정) |
+| UX 흐름 | 원 카드 선택 시 INPUT_QUESTION 화면 스킵, 바로 SHUFFLE 진입 / 셔플 뒤로가기 → 원 카드면 SELECT_SPREAD 복귀 |
 | 프롬프트 | `prompts/*.md` 파일 분리, 이미지·역방향·연관성 원칙 포함, 한글명 단일 소스 지시 |
 | UX | 켈틱 크로스 카드 번호 뱃지, 켈틱 로딩 자동 스크롤, 웰컴 subtitle 수직 중앙 정렬, 텍스트 전면 개선 |
 | UX | 카드 줌 팝업(위치레이블→카드명→키워드 순), 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
@@ -54,7 +55,7 @@
 | `prompts/*.md` | system / one / three / celtic — 서버 재시작 없이 즉시 반영 |
 | `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `{ reading, usage }` 반환 |
 | `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
-| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화 |
+| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵 |
 | `public/js/vendor/` | marked.min.js + purify.min.js 로컬 번들 (CDN 의존 제거) |
 | `public/js/animation.js` | 카드 플립, PC/모바일 순서 분기 |
 | `public/js/effects.js` | 스파크, 지속 파티클, 플립 플래시, 오라클 캔버스 |
