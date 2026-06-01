@@ -1085,7 +1085,12 @@ function openClarifierPreSelection() {
 
   if (!section) { startOracleAndFetch(); return; }
 
-  if (reasonEl) reasonEl.textContent = appState.clarifier.reason || '';
+  if (reasonEl) {
+    // 마침표/느낌표/물음표 뒤 공백을 줄바꿈으로 변환
+    const reasonHtml = (appState.clarifier.reason || '')
+      .replace(/([.!?])\s+/g, '$1<br>');
+    reasonEl.innerHTML = reasonHtml;
+  }
   if (pickCount) pickCount.textContent = '0';
   if (pickRequired) pickRequired.textContent = appState.clarifier.cardCount;
   if (btnConfirm) btnConfirm.disabled = true;
@@ -1108,17 +1113,6 @@ function openClarifierPreSelection() {
 
   section.style.display = 'block';
   setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-
-  // 건너뛰기 버튼
-  const btnSkip = document.getElementById('btn-clarifier-skip');
-  if (btnSkip && !btnSkip._bound) {
-    btnSkip._bound = true;
-    btnSkip.addEventListener('click', () => {
-      appState.clarifier.selectedCards = [];
-      section.style.display = 'none';
-      startOracleAndFetch();
-    });
-  }
 
   // 선택 완료 버튼
   if (btnConfirm && !btnConfirm._bound) {
