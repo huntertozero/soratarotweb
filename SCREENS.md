@@ -68,7 +68,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 부제목 | `.spread-subtitle` | "다음 3가지 옵션 중 / 하나를 골라 눌러주세요 / (각 옵션은 **24시간 제한**이 있어요)" — "24시간 제한" gold색 강조 |
 | 슬라이더 래퍼 | `#spread-slider-wrapper` | 카드 3장 감싸는 슬라이더 컨테이너 |
 | 슬라이더 트랙 | `#spread-slider-track` | 실제 슬라이드가 나열되는 영역 |
-| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드", "오늘의 메시지", 상세 설명(`.spread-detail`) |
+| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드", "지금 이 순간", 상세 설명(`.spread-detail`: "별도의 질문 없이 / 현재 상황과 에너지를 읽습니다") |
 | 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | ▲ 아이콘, "쓰리 카드", "과거, 현재 그리고 미래", 상세 설명(`.spread-detail`) |
 | 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | ⊕ 아이콘, "켈틱 크로스", "심층 분석", 상세 설명(`.spread-detail`) |
 | 페이지 도트 | `#spread-dots > .spread-dot` | 현재 슬라이드 인디케이터 (모바일) |
@@ -353,11 +353,13 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 위치 레이블 | 없음 | 과거/현재/미래 (가운데) | 10위치 명칭 (상단) |
 | 번호 뱃지 | 없음 | 없음 | 1~10 (READING 화면, 줌 팝업) |
 | 오버레이 | 있음 | 있음 | 없음 |
-| API max_tokens | 1024 | 1500 | 4000 |
+| API max_tokens | 1024 (+600) | 2500 (+600) | 4000 |
 | API 타임아웃 | 30초 | 45초 | 90초 |
 | 로딩 안내 | 최대 20초 | 최대 30초 | 최대 40초 |
 | 플립 순서 (모바일) | - | 좌→우 | 1,3,4,5,6,8,2,7,9,10 |
 | 프롬프트 파일 | `prompts/one.md` | `prompts/three.md` | `prompts/celtic.md` |
+
+> `+600`: 클라리파이어 카드 포함 시 max_tokens 추가 (최대 4096 상한)
 
 ---
 
