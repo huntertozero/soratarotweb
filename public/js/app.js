@@ -526,10 +526,11 @@ function updateCardSelectionUI() {
   }
 
   // 선택 완료된 카드를 disabled 상태로 표시
+  const selectedIdSet = new Set(appState.selectedCards.map(c => c.id));
   const cardItems = document.querySelectorAll('.card-back-item');
   cardItems.forEach(item => {
     const cardId = parseInt(item.dataset.cardId);
-    const isSelected = appState.selectedCards.some(c => c.id === cardId);
+    const isSelected = selectedIdSet.has(cardId);
 
     if (isSelected) {
       item.classList.add('selected');
@@ -592,8 +593,16 @@ function startOracleAndFetch() {
 }
 
 async function fetchReading() {
+  const loadingState = document.getElementById('loading-state');
+
+  function stopLoading() {
+    if (loadingState) {
+      loadingState.classList.remove('active');
+      if (window.Effects) window.Effects.stopOracleAnimation();
+    }
+  }
+
   try {
-    const loadingState = document.getElementById('loading-state');
     if (loadingState) {
       const loadingMessages = {
         one:    '타로 마스터가 카드를 읽고 있어요.<br>최대 20초 정도 걸려요.',
@@ -630,11 +639,7 @@ async function fetchReading() {
       if (response.status === 429) {
         showError(errorData.error || '24시간 사용 제한에 걸렸습니다.');
         fetchSpreadLimits();
-        const loadingState = document.getElementById('loading-state');
-        if (loadingState) {
-          loadingState.classList.remove('active');
-          if (window.Effects) window.Effects.stopOracleAnimation();
-        }
+        stopLoading();
         return;
       }
       throw new Error(errorData.error || '타로 해석 요청 실패');
@@ -647,22 +652,12 @@ async function fetchReading() {
     }
 
     appState.reading = data.reading;
-
-    if (loadingState) {
-      loadingState.classList.remove('active');
-      if (window.Effects) window.Effects.stopOracleAnimation();
-    }
-
+    stopLoading();
     displayReading(data);
   } catch (error) {
     console.error('❌ 해석 요청 오류:', error);
     showError(error.message || '타로 해석을 불러올 수 없습니다. 다시 시도해주세요.');
-
-    const loadingState = document.getElementById('loading-state');
-    if (loadingState) {
-      loadingState.classList.remove('active');
-      if (window.Effects) window.Effects.stopOracleAnimation();
-    }
+    stopLoading();
   }
 }
 

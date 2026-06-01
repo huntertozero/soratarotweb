@@ -1,7 +1,7 @@
 # 타로 리딩 웹 앱 - 구현 로드맵
 
 **마지막 업데이트**: 2026-06-01  
-**현재 버전**: Phase 45 완료
+**현재 버전**: Phase 46 완료
 
 > 상세 구현 이력(Phase 1~31) → **DONE.md**  
 > 현재 개발 가이드 → **CLAUDE.md**  
@@ -92,6 +92,12 @@
 - 조건 C(AI 신호) 삭제, 조건 D 클라이언트로 이동
 - READING 화면 카드 목록에 클라리파이어 카드 포함 (맨 오른쪽, sky-400 `+` 뱃지)
 - `prompts/one.md`, `three.md` 통합 해석 지시로 프롬프트 교체
+
+### 코드 최적화 (Phase 46) ✅
+- `claudeService.js`: 스프레드별 타임아웃·토큰 인라인 객체 → 파일 레벨 상수 분리
+- `routes/reading.js`: 클라리파이어 카드 `cards.find()` 이중 조회 제거
+- `app.js` `fetchReading()`: `loadingState` DOM 조회 단일화, `stopLoading()` 헬퍼 추출
+- `app.js` `updateCardSelectionUI()`: `some()` O(n) → `Set.has()` O(1) 최적화
 
 ---
 

@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~44 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~46 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 45 완료)
+## 현재 상태 (Phase 46 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -40,7 +40,7 @@
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
 | 모바일 UX | h2·#shuffle-message 폰트 10% 축소(32/25px) + 가운데 정렬, .question-hint·shuffle 부가설명 줄바꿈, .spread-subtitle 문구 개선("24시간 제한" gold 강조) |
 | 카드 한글명 | `data/cards.js` nameKo 한글화(지팡이/컵/칼/동전), API `name`+`nameKo` 동시 응답, 팝업·해석 텍스트 일치 |
-| 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거, CARD_NAMES_KO 상수 제거 |
+| 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거, CARD_NAMES_KO 상수 제거, `fetchReading` loadingState 통합·stopLoading 헬퍼, `updateCardSelectionUI` Set 최적화, claudeService 스프레드 상수 분리, reading 클라리파이어 이중 조회 제거 |
 | 배포 | `railway.toml` 생성, 캐시 버스팅(git 해시+dirty 타임스탬프 `?v=`), JS/CSS 1년 캐시, HTML no-cache |
 | 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
 | 보안 | Rate Limiting, IP 기반 24시간 제한, CSP/CORS/보안헤더(cdn.jsdelivr.net script-src 제거), DOMPurify XSS 방어, Prompt Injection 필터, /dev 토큰 게이트 |

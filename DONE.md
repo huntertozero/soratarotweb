@@ -444,3 +444,22 @@
   - 이유 텍스트: 문장 단위 `<br>` 줄바꿈
 - `.clarifier-badge`: sky-400(`#38bdf8`) 색상, 우측 상단 돌출 화살표 (`.card-number-badge` 미러)
 - 구 `.clarifier-banner*`, `.clarifier-loading*`, `.clarifier-result*` 등 스타일 삭제
+
+---
+
+## Phase 46: 코드 최적화 ✅
+
+### 46-1. `services/claudeService.js`
+- 스프레드별 타임아웃·토큰 인라인 객체 → 파일 레벨 상수 `SPREAD_TIMEOUTS` / `SPREAD_BASE_TOKENS` 분리
+  - 매 `generateReading()` 호출마다 임시 객체 생성 제거, 가독성 향상
+
+### 46-2. `routes/reading.js`
+- 클라리파이어 카드 `cards.find()` 이중 조회 제거
+  - `requestedClarifierCards` 생성 시 `cardData` 포함 → `responseClarifierCards` 생성 시 재조회 불필요
+
+### 46-3. `public/js/app.js`
+- `fetchReading()`: `loadingState` DOM 조회를 함수 최상단 1회로 통합
+  - try 블록 내부, if(429) 블록, catch 블록에 중복 선언(shadowing 포함)되던 것을 제거
+  - `stopLoading()` 내부 헬퍼 추출 — 중복 `classList.remove + stopOracleAnimation` 3곳 통합
+- `updateCardSelectionUI()`: 78장 카드 순회 시 `some()` O(n) 탐색 → `Set.has()` O(1) 로 최적화
+  - 매 UI 갱신마다 `selectedCards` 배열을 Set으로 미리 변환 후 O(1) 조회

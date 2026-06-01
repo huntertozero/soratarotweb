@@ -188,6 +188,7 @@ router.post('/reading', async (req, res) => {
     const requestedClarifierCards = clarifierCards.map(rc => ({
       id: rc.id,
       isReversed: rc.isReversed === true,
+      cardData: cards.find(c => c.id === rc.id),
     }));
 
     // 7. Claude로 해석 생성 (clarifierCards 포함 시 통합 해석)
@@ -217,17 +218,14 @@ router.post('/reading', async (req, res) => {
     }));
 
     // 클라리파이어 카드 응답 데이터 (있을 때만)
-    const responseClarifierCards = requestedClarifierCards.map(rc => {
-      const cardData = cards.find(c => c.id === rc.id);
-      return {
-        id: rc.id,
-        name: cardData.name,
-        nameKo: cardData.nameKo,
-        isReversed: rc.isReversed,
-        imageFile: cardImages[rc.id] || '',
-        keywords: rc.isReversed ? cardData.keywords.reversed : cardData.keywords.upright,
-      };
-    });
+    const responseClarifierCards = requestedClarifierCards.map(rc => ({
+      id: rc.id,
+      name: rc.cardData.name,
+      nameKo: rc.cardData.nameKo,
+      isReversed: rc.isReversed,
+      imageFile: cardImages[rc.id] || '',
+      keywords: rc.isReversed ? rc.cardData.keywords.reversed : rc.cardData.keywords.upright,
+    }));
 
     // 리딩 성공 → 슬랙 알림 (비동기, 실패해도 응답에 영향 없음)
     sendSlackNotification({

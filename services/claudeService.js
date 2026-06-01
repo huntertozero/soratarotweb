@@ -20,6 +20,10 @@ function loadPrompt(filename) {
   }
 }
 
+// 스프레드별 Claude API 타임아웃(ms) / 최대 토큰 수
+const SPREAD_TIMEOUTS   = { one: 30000, three: 45000, celtic: 90000 };
+const SPREAD_BASE_TOKENS = { one: 1024,  three: 2500,  celtic: 4000  };
+
 // 스프레드 정보 (포지션 이름은 코드에서 관리, 프롬프트 내용은 prompts/*.md에서 관리)
 const spreadInfo = {
   one: {
@@ -105,8 +109,8 @@ function formatClarifierCardsForPrompt(clarifierCards, cardDatabase) {
 async function generateReading(spread, cards, question, cardDatabase, clarifierCards = []) {
   // 클라리파이어 카드가 있으면 타임아웃/토큰 소폭 증가
   const hasClarifier = clarifierCards.length > 0;
-  const timeout = ({ one: 30000, three: 45000, celtic: 90000 })[spread] || 30000;
-  const baseTokens = ({ one: 1024, three: 2500, celtic: 4000 })[spread] || 1024;
+  const timeout   = SPREAD_TIMEOUTS[spread]    || 30000;
+  const baseTokens = SPREAD_BASE_TOKENS[spread] || 1024;
   const maxTokens = hasClarifier ? Math.min(baseTokens + 600, 4096) : baseTokens;
 
   try {
