@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~42 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~43 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,17 +22,19 @@
 
 ---
 
-## 현재 상태 (Phase 43 완료)
+## 현재 상태 (Phase 44 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
 | 백엔드 | Express API, 24시간 사용 제한(쿠키 + IP 이중), 스프레드별 타임아웃/토큰 분리, 3카드 max_tokens 2500 |
+| 클라리파이어 | `POST /api/reading/clarifier` 신규, 기존 응답에 `clarifier` 필드 추가 (조건 C·D 감지), `generateClarifierReading()` |
 | 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js + DOMPurify 마크다운(로컬 번들) |
+| 클라리파이어 UI | READING 화면 하단 인라인 배너·카드그리드·보충해석 섹션, 조건 A(비교질문)·B(원카드역방향) 클라이언트 감지 |
 | 애니메이션 | Canvas 파티클 배경, 오라클 구체 로딩, 카드 스파크/플래시, 웰컴 덱 아이콘 룬 궤도 |
 | 모바일 | 반응형 레이아웃 전면 개선, 화면별 상단 여백 정렬, shuffle-info fixed 고정, 진입 애니메이션 버그 수정 |
 | 모바일 UX | READING 카드 목록 자동 스크롤 힌트 (8초 우→2초 대기→8초 좌 복귀, 터치 시 취소), SHUFFLE 진입 시 스크롤 최상단 강제 보정 (`history.scrollRestoration = 'manual'` + rAF 재보정) |
 | UX 흐름 | 원 카드 선택 시 INPUT_QUESTION 화면 스킵, 바로 SHUFFLE 진입 / 셔플 뒤로가기 → 원 카드면 SELECT_SPREAD 복귀 |
-| 프롬프트 | `prompts/*.md` 파일 분리, 이미지·역방향·연관성 원칙 포함, 한글명 단일 소스 지시, 원 카드 행동 항목 개선 |
+| 프롬프트 | `prompts/*.md` 파일 분리, 이미지·역방향·연관성 원칙 포함, 한글명 단일 소스 지시, 클라리파이어 프롬프트 추가 |
 | UX | 켈틱 크로스 카드 번호 뱃지, 켈틱 로딩 자동 스크롤, 웰컴 subtitle 수직 중앙 정렬, 텍스트 전면 개선 |
 | UX | 카드 줌 팝업(위치레이블→카드명→키워드 순), 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
@@ -53,11 +55,11 @@
 | `server.js` | Express 설정, CORS/CSP/보안헤더, Rate Limiting, `/dev` 토큰 게이트, 캐시 버스팅, 에러 핸들러 |
 | `data/cards.js` | 78장 카드 데이터 (id, name 영문, nameKo 한글, keywords, meaning, imageSymbols) |
 | `data/cardImages.js` | 카드 ID → 이미지 파일명 매핑 |
-| `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (IP+쿠키 이중 제한, Prompt Injection 필터, isReversed 검증) |
-| `prompts/*.md` | system / one / three / celtic — 서버 재시작 없이 즉시 반영 |
-| `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `{ reading, usage }` 반환 |
+| `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (IP+쿠키 이중 제한, Prompt Injection 필터, isReversed 검증, clarifier 감지), `POST /api/reading/clarifier` |
+| `prompts/*.md` | system / one / three / celtic / clarifier — 서버 재시작 없이 즉시 반영 |
+| `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `generateReading()` + `generateClarifierReading()` |
 | `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
-| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵 |
+| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵, 클라리파이어 클라이언트 로직 |
 | `public/js/vendor/` | marked.min.js + purify.min.js 로컬 번들 (CDN 의존 제거) |
 | `public/js/animation.js` | 카드 플립, PC/모바일 순서 분기 |
 | `public/js/effects.js` | 스파크, 지속 파티클, 플립 플래시, 오라클 캔버스 |
@@ -96,6 +98,8 @@ UI: `npm start` → `http://localhost:3000/dev` (3가지 스프레드 각각 테
 ### ⭐ 우선순위 낮음
 - 배경 음악 추가
 - 프리셋 질문 버튼, 리딩 히스토리(localStorage), 다크/라이트 테마, 카드 플립 효과음
+- 결과 공유 (클립보드 복사 또는 URL)
+- 클라리파이어 AI 신호 남용 모니터링 (정방향 평범한 리딩에서도 간헐 발동)
 
 ---
 

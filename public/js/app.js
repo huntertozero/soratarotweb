@@ -27,6 +27,12 @@ const appState = {
   question: '',
   selectedCards: [],
   reading: null,
+  clarifier: {
+    trigger: null,      // 'comparison' | 'one_reversed' | 'ai_signal' | 'reversed_majority' | null
+    cardCount: 1,       // 선택할 카드 수
+    reason: null,       // 배너에 표시할 이유
+    selectedCards: [],  // 클라리파이어 카드 선택 상태
+  },
 };
 
 // ========== 스프레드 사용 제한 ==========
@@ -337,6 +343,7 @@ function setupEventListeners() {
       appState.selectedCards = [];
       appState.reading = null;
       appState.question = '';
+      appState.clarifier = { trigger: null, cardCount: 1, reason: null, selectedCards: [] };
       showScreen('welcome');
     });
   }
@@ -640,6 +647,9 @@ async function fetchReading() {
     }
 
     displayReading(data);
+
+    // 클라리파이어 조건 체크 (서버 응답 + 클라이언트 감지)
+    checkClarifierConditions(data.clarifier);
   } catch (error) {
     console.error('❌ 해석 요청 오류:', error);
     showError(error.message || '타로 해석을 불러올 수 없습니다. 다시 시도해주세요.');
@@ -994,6 +1004,248 @@ function setupSpreadSlider() {
 
     updateStack();
   }
+}
+
+// ========== 클라리파이어 (보충 카드) ==========
+
+// 조건 A: 클라이언트 비교/선택 질문 감지
+function detectComparisonQuestion(question) {
+  if (!question || !question.trim()) return false;
+  const pattern = /둘\s*중|어느\s*쪽|[가-힣]+와\s*[가-힣]+\s*중|아니면|vs\.?|선택해야|갈아타야/i;
+  return pattern.test(question);
+}
+
+// 클라리파이어 조건 종합 체크 후 UI 표시
+function checkClarifierConditions(serverClarifier) {
+  let trigger = null;
+  let reason = null;
+  let cardCount = 1;
+
+  // 조건 A: 비교/선택 질문 (2장)
+  if (detectComparisonQuestion(appState.question)) {
+    trigger = 'comparison';
+    reason = '선택지가 있는 질문에는 각 방향을 보여주는 카드가 도움이 돼요';
+    cardCount = 2;
+  }
+
+  // 조건 B: 원 카드 역방향 (1장) — A보다 우선순위 낮음
+  if (!trigger && appState.selectedSpread === 'one' && appState.selectedCards[0]?.isReversed) {
+    trigger = 'one_reversed';
+    reason = '막혀있는 에너지를 뚫어줄 돌파구 카드가 있을 것 같아요';
+    cardCount = 1;
+  }
+
+  // 조건 C, D: 서버 판단 결과 (A, B가 없을 때만)
+  if (!trigger && serverClarifier?.needed) {
+    trigger = serverClarifier.trigger;
+    reason = serverClarifier.reason;
+    cardCount = 1;
+  }
+
+  if (!trigger) return; // 활성화 조건 없음
+
+  appState.clarifier.trigger = trigger;
+  appState.clarifier.reason = reason;
+  appState.clarifier.cardCount = cardCount;
+  appState.clarifier.selectedCards = [];
+
+  showClarifierBanner(reason);
+}
+
+// 클라리파이어 배너 표시
+function showClarifierBanner(reason) {
+  const section = document.getElementById('clarifier-section');
+  const reasonEl = document.getElementById('clarifier-reason-text');
+  if (!section) return;
+
+  if (reasonEl && reason) reasonEl.textContent = reason;
+  section.style.display = 'block';
+
+  // 배너 클릭 이벤트 (1회만)
+  const btnDraw = document.getElementById('btn-draw-clarifier');
+  if (btnDraw && !btnDraw._clarifierBound) {
+    btnDraw._clarifierBound = true;
+    btnDraw.addEventListener('click', openClarifierShuffle);
+  }
+}
+
+// 클라리파이어 카드 선택 UI 열기
+function openClarifierShuffle() {
+  const banner = document.getElementById('clarifier-banner');
+  const shuffleArea = document.getElementById('clarifier-shuffle-area');
+  const pickCount = document.getElementById('clarifier-pick-count');
+  const pickRequired = document.getElementById('clarifier-pick-required');
+  const grid = document.getElementById('clarifier-cards-grid');
+  const btnConfirm = document.getElementById('btn-clarifier-confirm');
+
+  if (banner) banner.style.display = 'none';
+  if (shuffleArea) shuffleArea.style.display = 'block';
+
+  const required = appState.clarifier.cardCount;
+  if (pickCount) pickCount.textContent = '0';
+  if (pickRequired) pickRequired.textContent = required;
+  if (btnConfirm) btnConfirm.disabled = true;
+
+  // 이미 선택된 카드 ID 목록 (원래 카드들)
+  const usedIds = new Set(appState.selectedCards.map(c => c.id));
+
+  // 78장 중 미사용 카드만 셔플해서 그리드 생성
+  if (grid) {
+    grid.innerHTML = '';
+    const availableIds = shuffleArray(
+      Array.from({ length: 78 }, (_, i) => i).filter(id => !usedIds.has(id))
+    );
+    for (const id of availableIds) {
+      const el = document.createElement('div');
+      el.className = 'card-back-item';
+      el.dataset.cardId = id;
+      grid.appendChild(el);
+    }
+  }
+
+  appState.clarifier.selectedCards = [];
+  setupClarifierCardListeners();
+
+  // 선택 영역으로 스크롤
+  setTimeout(() => shuffleArea?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+// 클라리파이어 카드 선택 이벤트
+function setupClarifierCardListeners() {
+  const grid = document.getElementById('clarifier-cards-grid');
+  const btnConfirm = document.getElementById('btn-clarifier-confirm');
+  const pickCount = document.getElementById('clarifier-pick-count');
+  if (!grid) return;
+
+  const required = appState.clarifier.cardCount;
+
+  grid.querySelectorAll('.card-back-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const cardId = parseInt(item.dataset.cardId);
+      const isSelected = appState.clarifier.selectedCards.some(c => c.id === cardId);
+
+      if (isSelected) {
+        item.classList.remove('selected');
+        item.classList.add('deselecting');
+        setTimeout(() => item.classList.remove('deselecting'), 400);
+        appState.clarifier.selectedCards = appState.clarifier.selectedCards.filter(c => c.id !== cardId);
+      } else if (appState.clarifier.selectedCards.length < required) {
+        item.classList.add('selecting');
+        setTimeout(() => { item.classList.remove('selecting'); item.classList.add('selected'); }, 300);
+        appState.clarifier.selectedCards.push({ id: cardId, isReversed: Math.random() > 0.5 });
+      }
+
+      const current = appState.clarifier.selectedCards.length;
+      if (pickCount) pickCount.textContent = current;
+      if (btnConfirm) btnConfirm.disabled = current < required;
+
+      // disabled 상태 동기화
+      grid.querySelectorAll('.card-back-item').forEach(el => {
+        const id = parseInt(el.dataset.cardId);
+        const sel = appState.clarifier.selectedCards.some(c => c.id === id);
+        if (sel) {
+          el.classList.add('selected');
+          el.classList.remove('disabled');
+        } else if (current >= required) {
+          el.classList.add('disabled');
+        } else {
+          el.classList.remove('disabled');
+        }
+      });
+    });
+  });
+
+  if (btnConfirm && !btnConfirm._clarifierConfirmBound) {
+    btnConfirm._clarifierConfirmBound = true;
+    btnConfirm.addEventListener('click', fetchClarifierReading);
+  }
+}
+
+// 클라리파이어 해석 API 호출
+async function fetchClarifierReading() {
+  const shuffleArea = document.getElementById('clarifier-shuffle-area');
+  const readingArea = document.getElementById('clarifier-reading-area');
+  const loading = document.getElementById('clarifier-loading');
+  const result = document.getElementById('clarifier-result');
+
+  if (shuffleArea) shuffleArea.style.display = 'none';
+  if (readingArea) readingArea.style.display = 'block';
+  if (loading) loading.style.display = 'flex';
+  if (result) result.style.display = 'none';
+
+  setTimeout(() => readingArea?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+  try {
+    const response = await fetch('/api/reading/clarifier', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(IS_DEV_MODE ? { 'X-Tarot-Dev': '1' } : {}),
+      },
+      body: JSON.stringify({
+        originalCards: appState.selectedCards,
+        clarifierCards: appState.clarifier.selectedCards,
+        question: appState.question,
+        spread: appState.selectedSpread,
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error || '보충 해석 요청 실패');
+    }
+
+    const data = await response.json();
+
+    if (loading) loading.style.display = 'none';
+    if (result) result.style.display = 'block';
+
+    renderClarifierResult(data);
+  } catch (error) {
+    console.error('❌ 클라리파이어 오류:', error);
+    if (loading) loading.style.display = 'none';
+    showError(error.message || '보충 해석을 불러올 수 없습니다. 다시 시도해주세요.');
+    // 실패 시 배너 복원
+    const banner = document.getElementById('clarifier-banner');
+    const section = document.getElementById('clarifier-section');
+    if (readingArea) readingArea.style.display = 'none';
+    if (section) section.style.display = 'block';
+    if (banner) banner.style.display = 'block';
+  }
+}
+
+// 클라리파이어 결과 렌더링
+function renderClarifierResult(data) {
+  const cardsRow = document.getElementById('clarifier-cards-row');
+  const readingText = document.getElementById('clarifier-reading-text');
+
+  if (cardsRow && data.cards) {
+    cardsRow.innerHTML = data.cards.map(card => {
+      const imageUrl = `/img/cards/${card.imageFile}`;
+      const imgTransform = card.isReversed ? 'transform: scaleY(-1);' : '';
+      const direction = card.isReversed ? '<span class="csm-direction">REVERSE</span>' : '';
+      const displayName = card.nameKo ? `${card.name} (${card.nameKo})` : card.name;
+      return `
+        <div class="clarifier-card-item">
+          <div class="clarifier-card-img" style="background-image: url('${imageUrl}'); ${imgTransform}"></div>
+          <div class="clarifier-card-label">
+            ${direction}
+            <span>${displayName}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  if (readingText && data.reading) {
+    try {
+      readingText.innerHTML = renderMarkdown(data.reading);
+    } catch (_) {
+      readingText.textContent = data.reading;
+    }
+  }
+
+  setTimeout(() => document.getElementById('clarifier-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 
 // ========== 초기화 ==========

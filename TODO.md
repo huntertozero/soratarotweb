@@ -6,6 +6,11 @@
 - **목표**: 사용자가 입력한 질문에 더 집중한 해석 결과 출력
 - **관련 파일**: `prompts/system.md`, `prompts/one.md`, `prompts/three.md`, `prompts/celtic.md`
 
+### 2. 클라리파이어 AI 신호 모니터링
+- **목표**: 조건 C (AI 신호)가 정방향 평범한 리딩에서도 발동하는 경우 확인 및 프롬프트 보수화
+- **현황**: 정방향 3장 리딩에서도 `needed: true` 간헐 반환 확인됨 (검증 시)
+- **관련 파일**: `prompts/one.md`, `prompts/three.md`
+
 ---
 
 ## 우선순위 낮음 (언제든 진행 가능)

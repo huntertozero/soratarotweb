@@ -7,7 +7,7 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-05-31 (Phase 41 기준)
+마지막 수정: 2026-06-01 (Phase 44 기준)
 
 ---
 
@@ -220,6 +220,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 해석 컨텐츠 | `.reading-content` | marked.js 마크다운 렌더링 영역 |
 | 해석 텍스트 | `#reading-text` | Claude AI 응답 HTML |
 | 스크린샷 안내 | `.reading-screenshot-notice` | "해석 결과를 다시 볼 수 없어요. 스크린샷을 해주세요." |
+| 클라리파이어 섹션 | `#clarifier-section` | 조건 충족 시 표시 (초기 `display:none`), 스크린샷 안내 아래 |
 | 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME, 가운데 정렬 |
 
 ### 카드 요약 아이템 (`.card-summary-wrap`)
@@ -234,6 +235,37 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 │       └── .csm-name         카드 영문명
 └── .csm-position-label       위치 레이블 (카드 아래, 1카드 제외) -- 예: 가로막는 것
 ```
+
+### 클라리파이어 섹션 (`#clarifier-section`)
+
+리딩 완료 후 특정 조건이 감지되면 READING 화면 하단에 인라인으로 표시됩니다.
+
+| 요소 | ID / 클래스 | 설명 |
+|------|-------------|------|
+| 배너 | `#clarifier-banner` | "✦ 카드가 추가 메시지를 전하고 있어요" + 이유 텍스트 + "추가 카드 뽑기" 버튼 |
+| 이유 텍스트 | `#clarifier-reason-text` | 조건별 안내 문구 (예: "역방향 에너지를 뚫어줄 카드가 있어요") |
+| 추가 카드 뽑기 버튼 | `#btn-draw-clarifier` | 클릭 시 배너 숨김 + 카드 선택 UI 표시 |
+| 카드 선택 영역 | `#clarifier-shuffle-area` | 선택 카운터 + `.clarifier-cards-grid` (기존 카드 제외) |
+| 선택 카운터 | `#clarifier-pick-count / #clarifier-pick-required` | "N / N" 형태 |
+| 카드 그리드 | `#clarifier-cards-grid` | 기존 사용 카드 제외한 나머지 `.card-back-item` 그리드 |
+| 확인 버튼 | `#btn-clarifier-confirm` | 선택 완료 전 `disabled` → 클릭 시 API 호출 |
+| 보충 해석 영역 | `#clarifier-reading-area` | 로딩 dots + 결과 (`#clarifier-result`) |
+| 로딩 | `#clarifier-loading` | `.clarifier-loading-dots` 3점 바운스 애니메이션 |
+| 카드 이미지 행 | `#clarifier-cards-row` | 보충 카드 이미지 + 카드명 표시 |
+| 보충 해석 텍스트 | `#clarifier-reading-text` | Claude 보충 해석 마크다운 렌더링 |
+
+**활성화 조건:**
+| 조건 | 발동 | 카드 수 |
+|------|------|---------|
+| A. 비교/선택 질문 | 클라이언트 정규식 감지 | 2장 |
+| B. 원 카드 역방향 | `spread=one && isReversed=true` | 1장 |
+| C. AI 불확실성 신호 | Claude 응답 내 `<!--CLARIFIER:-->` 태그 | 1장 |
+| D. 역방향 과반수 | 서버 역방향 비율 >50% | 1장 |
+
+- 켈틱 크로스는 모든 조건 비허용
+- 우선순위: A > B > C/D (서버 응답)
+
+---
 
 ### 모바일 카드 목록 자동 스크롤
 - 해석 화면 진입 0.6초 후 `startCardListHintScroll()` 실행

@@ -1,7 +1,7 @@
 const express = require('express');
 const cards = require('../data/cards');
 const cardImages = require('../data/cardImages');
-const { generateReading } = require('../services/claudeService');
+const { generateReading, generateClarifierReading } = require('../services/claudeService');
 const { sendSlackNotification } = require('../services/slackService');
 
 const router = express.Router();
@@ -165,7 +165,11 @@ router.post('/reading', async (req, res) => {
       };
     });
 
-    // 6. Claude로 해석 생성 (sanitize된 질문 사용)
+    // 6. 조건 D: 역방향 과반수 감지 (Claude 호출 전에 미리 계산)
+    const reversedCount = requestedCards.filter(c => c.isReversed).length;
+    const reversedMajority = spread !== 'celtic' && reversedCount / requestedCards.length > 0.5;
+
+    // 7. Claude로 해석 생성 (sanitize된 질문 사용)
     const startTime = Date.now();
     const { reading, usage } = await generateReading(
       spread,
@@ -175,7 +179,28 @@ router.post('/reading', async (req, res) => {
     );
     const responseTime = Date.now() - startTime;
 
-    // 7. 응답 생성 (카드 정보 + 해석)
+    // 8. 조건 C: AI 불확실성 신호 파싱 (<!--CLARIFIER:{...}--> 추출 후 본문에서 제거)
+    let cleanReading = reading;
+    let aiClarifier = null;
+    const clarifierMatch = reading.match(/<!--CLARIFIER:(\{[^>]*\})-->/);
+    if (clarifierMatch) {
+      try {
+        aiClarifier = JSON.parse(clarifierMatch[1]);
+      } catch (_) { /* 파싱 실패 시 무시 */ }
+      cleanReading = reading.replace(/\s*<!--CLARIFIER:[^>]*-->\s*$/, '').trimEnd();
+    }
+
+    // 클라리파이어 활성화 여부 결정 (켈틱은 비허용)
+    let clarifierField = { needed: false, trigger: null, reason: null };
+    if (spread !== 'celtic') {
+      if (aiClarifier?.needed) {
+        clarifierField = { needed: true, trigger: 'ai_signal', reason: aiClarifier.reason || null };
+      } else if (reversedMajority) {
+        clarifierField = { needed: true, trigger: 'reversed_majority', reason: '역방향 카드가 과반수입니다' };
+      }
+    }
+
+    // 9. 응답 생성 (카드 정보 + 해석)
     const responseCards = requestedCards.map(rc => ({
       id: rc.id,
       name: rc.cardData.name,
@@ -215,8 +240,9 @@ router.post('/reading', async (req, res) => {
     }
 
     return res.status(200).json({
-      reading,
+      reading: cleanReading,
       cards: responseCards,
+      clarifier: clarifierField,
     });
   } catch (error) {
     console.error('❌ API 에러:', error.message);
@@ -233,6 +259,79 @@ router.post('/reading', async (req, res) => {
       error: '타로 해석 중 오류가 발생했습니다. 다시 시도해주세요.',
       detail: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
+  }
+});
+
+// POST /api/reading/clarifier - 클라리파이어(보충) 카드 해석
+router.post('/reading/clarifier', async (req, res) => {
+  try {
+    const { originalCards, clarifierCards, question, spread } = req.body;
+
+    // 1. 기본 검증
+    if (!spread || !['one', 'three', 'celtic'].includes(spread)) {
+      return res.status(400).json({ error: '잘못된 spread 타입입니다.' });
+    }
+    if (!Array.isArray(originalCards) || originalCards.length === 0) {
+      return res.status(400).json({ error: '원래 카드 정보가 필요합니다.' });
+    }
+    if (!Array.isArray(clarifierCards) || clarifierCards.length < 1 || clarifierCards.length > 2) {
+      return res.status(400).json({ error: '클라리파이어 카드는 1~2장이어야 합니다.' });
+    }
+
+    // 2. 클라리파이어 카드 ID 검증 (범위 + 중복)
+    const allCardIds = new Set([...originalCards.map(c => c.id)]);
+    for (const card of clarifierCards) {
+      if (typeof card.id !== 'number' || card.id < 0 || card.id > 77) {
+        return res.status(400).json({ error: `잘못된 카드 ID입니다: ${card.id}` });
+      }
+      if (allCardIds.has(card.id)) {
+        return res.status(400).json({ error: `카드 ID ${card.id}는 이미 사용된 카드입니다.` });
+      }
+      allCardIds.add(card.id);
+    }
+
+    // 3. 질문 sanitize
+    const sanitizedQuestion = sanitizeQuestion(question);
+
+    // 4. 원래 카드 + 클라리파이어 카드 상세 정보 조회
+    const origCardsWithData = originalCards.map(rc => ({
+      id: rc.id,
+      isReversed: rc.isReversed === true,
+    }));
+    const clarCardsWithData = clarifierCards.map(rc => ({
+      id: rc.id,
+      isReversed: rc.isReversed === true,
+    }));
+
+    // 5. Claude로 클라리파이어 해석 생성
+    const { reading, usage } = await generateClarifierReading(
+      origCardsWithData,
+      clarCardsWithData,
+      sanitizedQuestion,
+      spread,
+      cards
+    );
+
+    // 6. 클라리파이어 카드 응답 데이터
+    const responseCards = clarCardsWithData.map(rc => {
+      const cardData = cards.find(c => c.id === rc.id);
+      return {
+        id: rc.id,
+        name: cardData.name,
+        nameKo: cardData.nameKo,
+        isReversed: rc.isReversed,
+        imageFile: cardImages[rc.id] || '',
+        keywords: rc.isReversed ? cardData.keywords.reversed : cardData.keywords.upright,
+      };
+    });
+
+    return res.status(200).json({ reading, cards: responseCards, usage });
+  } catch (error) {
+    console.error('❌ 클라리파이어 API 에러:', error.message);
+    if (error.message.includes('타임아웃')) {
+      return res.status(504).json({ error: 'Claude API가 응답하지 않습니다. 다시 시도해주세요.' });
+    }
+    return res.status(500).json({ error: '보충 해석 중 오류가 발생했습니다. 다시 시도해주세요.' });
   }
 });
 

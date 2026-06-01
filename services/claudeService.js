@@ -141,7 +141,73 @@ ${formattedCards}${questionPart}`;
   }
 }
 
+// 클라리파이어(보충) 카드 해석 생성
+async function generateClarifierReading(originalCards, clarifierCards, question, spread, cardDatabase) {
+  const timeout = 30000;
+  const maxTokens = 800;
+
+  try {
+    const systemPrompt = loadPrompt('system.md');
+    const clarifierInstruction = loadPrompt('clarifier.md');
+
+    // 원래 카드 요약 (위치 레이블 포함)
+    const originalPositions = spreadInfo[spread]?.positions || [];
+    const originalCardsText = originalCards.map((card, i) => {
+      const cardData = cardDatabase.find(c => c.id === card.id);
+      if (!cardData) return '';
+      const dir = card.isReversed ? '역방향' : '정방향';
+      return `- ${originalPositions[i] || `위치 ${i + 1}`}: ${cardData.name} (${cardData.nameKo}) ${dir}`;
+    }).filter(Boolean).join('\n');
+
+    // 클라리파이어 카드 상세 정보
+    const clarifierCardsText = clarifierCards.map((card, i) => {
+      const cardData = cardDatabase.find(c => c.id === card.id);
+      if (!cardData) return '';
+      const dir = card.isReversed ? '역방향' : '정방향';
+      const keywords = card.isReversed
+        ? cardData.keywords.reversed.join(', ')
+        : cardData.keywords.upright.join(', ');
+      const imageSymbols = cardData.imageSymbols ? `\n- 이미지 묘사: ${cardData.imageSymbols}` : '';
+      return `**보충 카드 ${i + 1}: ${cardData.name} (${cardData.nameKo}) ${dir}**\n- 핵심 키워드: ${keywords}${imageSymbols}`;
+    }).filter(Boolean).join('\n\n');
+
+    const questionPart = question ? `\n사용자의 질문: "${question}"` : '';
+
+    const userPrompt = `${clarifierInstruction}
+
+앞선 리딩의 카드 (${spread === 'one' ? '원 카드' : spread === 'three' ? '쓰리 카드' : '켈틱 크로스'}):
+${originalCardsText}${questionPart}
+
+보충 카드:
+${clarifierCardsText}`;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    const message = await client.messages.create(
+      {
+        model: 'claude-sonnet-4-6',
+        max_tokens: maxTokens,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }],
+      },
+      { signal: controller.signal }
+    );
+
+    clearTimeout(timeoutId);
+
+    const reading = message.content[0].type === 'text' ? message.content[0].text : '';
+    return { reading, usage: message.usage };
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Claude API 요청이 타임아웃되었습니다 (30초). 다시 시도해주세요.');
+    }
+    throw error;
+  }
+}
+
 module.exports = {
   generateReading,
+  generateClarifierReading,
   spreadInfo,
 };

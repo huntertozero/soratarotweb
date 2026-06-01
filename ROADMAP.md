@@ -1,7 +1,7 @@
 # 타로 리딩 웹 앱 - 구현 로드맵
 
-**마지막 업데이트**: 2026-05-31  
-**현재 버전**: Phase 40 완료
+**마지막 업데이트**: 2026-06-01  
+**현재 버전**: Phase 44 완료
 
 > 상세 구현 이력(Phase 1~31) → **DONE.md**  
 > 현재 개발 가이드 → **CLAUDE.md**  
@@ -75,6 +75,18 @@
   - `history.scrollRestoration = 'manual'` — 브라우저 자동 스크롤 복원 비활성화
   - `createCardGrid()` 후 `requestAnimationFrame(() => scrollTo(0,0))` — DOM 추가 후 스크롤 재보정
   - 효과: `.shuffle-info`(상단 텍스트)와 `.cards-grid` 간헐적 겹침 해소
+
+### UX 개선 (Phase 41~43) ✅
+- 원 카드 선택 시 INPUT_QUESTION 화면 스킵, 바로 SHUFFLE 진입
+- 웰컴 화면 면책 문구 추가, 원 카드 프롬프트 개선
+- 모바일 텍스트 레이아웃 개선 (h2 폰트 축소, 줄바꿈 최적화, 24시간 제한 gold 강조)
+
+### 클라리파이어 카드 (Phase 44) ✅
+- 리딩 완료 후 조건에 따라 보충 카드 1~2장 추가 선택 및 보충 해석 기능
+- 4가지 활성화 조건: A(비교질문/클라이언트), B(원카드역방향/클라이언트), C(AI신호/서버), D(역방향과반수/서버)
+- `POST /api/reading/clarifier` 신규 엔드포인트, `prompts/clarifier.md` 추가
+- READING 화면에 인라인 클라리파이어 섹션 추가 (배너→카드선택→보충해석)
+- 켈틱 크로스(10장) 비허용, 중복 카드 ID 방어
 
 ---
 

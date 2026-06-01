@@ -346,3 +346,54 @@
 ### 43-4. .spread-subtitle 문구 개선
 - `public/index.html`: "다음 3가지 옵션 중 / 하나를 골라 눌러주세요 / (각 옵션은 **24시간 제한**이 있어요)"
 - "24시간 제한" 색상: `var(--color-gold)` (.spread-desc와 동일)
+
+---
+
+## Phase 44: 클라리파이어 카드 (Clarifier Card) 기능 구현 ✅
+
+리딩 완료 후 조건에 따라 보충 카드 1~2장을 추가 선택해 보충 해석을 받는 기능.
+
+### 44-1. 클라리파이어 활성화 조건 구현
+
+| 조건 | 감지 위치 | 적용 스프레드 | 카드 수 |
+|------|----------|-------------|---------|
+| A. 선택/비교 키워드 | 클라이언트 (`app.js`) | 전체 | 2장 |
+| B. 원 카드 역방향 | 클라이언트 | 원 카드만 | 1장 |
+| C. AI 불확실성 신호 | 서버 (Claude 응답 파싱) | 원 카드·3카드 | 1장 |
+| D. 역방향 과반수 (>50%) | 서버 | 3카드 (켈틱 제외) | 1장 |
+
+- **조건 A**: `/둘\s*중|어느\s*쪽|[가-힣]+와\s*[가-힣]+\s*중|아니면|vs\.?|선택해야|갈아타야/i` 정규식
+- **조건 C**: 프롬프트에 `<!--CLARIFIER:{"needed":true,"reason":"..."}-->` 지시 추가 (`prompts/one.md`, `prompts/three.md`), 서버에서 추출·제거 후 `clarifier` 필드로 분리
+- 켈틱 크로스(10장)는 이미 충분하므로 조건 C·D 모두 비허용
+
+### 44-2. 서버 변경사항 (`routes/reading.js`, `services/claudeService.js`)
+
+- `POST /api/reading` 응답에 `clarifier: { needed, trigger, reason }` 필드 추가
+  - `trigger` 값: `"ai_signal"` | `"reversed_majority"` | `null`
+- `POST /api/reading/clarifier` 신규 엔드포인트
+  - 입력: `{ originalCards, clarifierCards (1~2장), question, spread }`
+  - 중복 카드 ID 방어 (원래 카드 포함 전체 집합 기준)
+  - max_tokens: 800, timeout: 30초
+- `services/claudeService.js`: `generateClarifierReading()` 함수 추가
+- `prompts/clarifier.md`: 클라리파이어 전용 프롬프트 신규 생성
+
+### 44-3. 클라이언트 변경사항 (`app.js`)
+
+- `appState.clarifier` 하위 상태 추가 (`trigger`, `cardCount`, `reason`, `selectedCards`)
+- `detectComparisonQuestion(question)` — 조건 A 정규식 감지
+- `checkClarifierConditions(serverClarifier)` — 조건 A·B·서버 응답 종합 판단
+- `showClarifierBanner(reason)` — READING 화면 하단 배너 표시
+- `openClarifierShuffle()` — 보충 카드 선택 UI (기존 사용 카드 제외)
+- `setupClarifierCardListeners()` — 클라리파이어 그리드 이벤트
+- `fetchClarifierReading()` — `/api/reading/clarifier` 호출
+- `renderClarifierResult(data)` — 보충 카드 이미지 + 해석 텍스트 렌더링
+- `btn-home` 클릭 시 `appState.clarifier` 초기화 포함
+
+### 44-4. UI (`index.html`, `style.css`)
+
+- READING 화면(`.reading-content-wrapper`) 내 클라리파이어 섹션 인라인 추가:
+  - `#clarifier-section`: 전체 섹션 (초기 `display:none`, 조건 충족 시 표시)
+  - `#clarifier-banner`: "✦ 카드가 추가 메시지를 전하고 있어요" + 이유 텍스트 + "추가 카드 뽑기" 버튼
+  - `#clarifier-shuffle-area`: 보충 카드 그리드 (기존 `.card-back-item` 재활용)
+  - `#clarifier-reading-area`: 로딩 dots + 카드 이미지 + 보충 해석 텍스트
+- `style.css`: 클라리파이어 전용 스타일 186줄 추가 (dotBounce 애니메이션 포함)
