@@ -397,3 +397,50 @@
   - `#clarifier-shuffle-area`: 보충 카드 그리드 (기존 `.card-back-item` 재활용)
   - `#clarifier-reading-area`: 로딩 dots + 카드 이미지 + 보충 해석 텍스트
 - `style.css`: 클라리파이어 전용 스타일 186줄 추가 (dotBounce 애니메이션 포함)
+
+---
+
+## Phase 45: 클라리파이어 카드 전면 재설계 — 통합 해석 방식 ✅
+
+### 핵심 변경사항
+
+| 항목 | 변경 전 (Phase 44) | 변경 후 (Phase 45) |
+|------|-----------------|-----------------|
+| 선택 시점 | 해석 완료 후 배너 | CARD_REVEAL 오라클 구체 실행 전 |
+| 해석 방식 | 별도 보충 해석 (2회 API 호출) | 단일 통합 해석 (1회 API 호출) |
+| 조건 C | AI 신호 (`<!--CLARIFIER:-->`) | **삭제** (해석 전 감지 불가) |
+| 조건 D | 서버 계산 | 클라이언트로 이동 |
+| API | `POST /api/reading/clarifier` 별도 존재 | **삭제**, `/api/reading`에 통합 |
+
+### 45-1. 서버 변경 (`routes/reading.js`, `services/claudeService.js`)
+- `POST /api/reading` 요청 body에 `clarifierCards` 파라미터 추가 (선택사항, 최대 2장)
+- 켈틱 크로스 clarifierCards 강제 무시, 중복 카드 ID 방어
+- `generateReading()` 시그니처 변경: `clarifierCards = []` 파라미터 추가
+- `formatClarifierCardsForPrompt()` 함수 추가: 프롬프트 내 `**✦ 추가 카드**` 섹션 생성
+- 클라리파이어 카드 있으면 max_tokens `+600` (최대 4096)
+- 응답 구조: `{ reading, cards, clarifierCards }` (`clarifier` 필드 제거)
+- `POST /api/reading/clarifier` 엔드포인트 삭제, `generateClarifierReading()` 삭제
+
+### 45-2. 프롬프트 변경
+- `prompts/one.md`, `prompts/three.md`: `<!--CLARIFIER:-->` 지시 삭제 → `### 추가 카드가 포함된 경우` 섹션으로 교체
+  - 프롬프트에 "✦ 추가 카드" 섹션 있을 때만: 해석 마지막에 카드별 별도 섹션 추가
+  - 제목 형식: `**✦ 추가 카드: 영문명 (한글명)**`
+- `prompts/clarifier.md`: 별도 프롬프트 역할 폐기 → 통합 해석 지침 참고 문서로 재작성
+
+### 45-3. 클라이언트 변경 (`app.js`)
+- `proceedToCardReveal()` 수정: 카드 플립 완료 후 `checkClarifierConditions()` 호출, 조건 충족 시 `openClarifierPreSelection()`, 아니면 즉시 `startOracleAndFetch()`
+- `startOracleAndFetch()` 분리: 로딩 + 오라클 + fetchReading 묶음
+- `fetchReading()`: 요청 body에 `clarifierCards: appState.clarifier.selectedCards` 추가
+- `displayReading()`: `data.clarifierCards` 포함 시 카드 목록 맨 오른쪽에 렌더링, `isClarifier` 플래그 → `.clarifier-badge` 렌더
+- `checkClarifierConditions()`: 조건 A/B/D 클라이언트 전용으로 재작성 (서버 응답 불필요)
+- `openClarifierPreSelection()`, `setupClarifierPreGridListeners()` 신규 함수
+- 구 함수 삭제: `showClarifierBanner()`, `openClarifierShuffle()`, `setupClarifierCardListeners()`, `fetchClarifierReading()`, `renderClarifierResult()`
+
+### 45-4. UI 변경 (`index.html`, `style.css`)
+- `#screen-reading` 내 `#clarifier-section` 전체 삭제
+- `#screen-card-reveal` 내 `#loading-state` 앞에 `#clarifier-before-reading` 추가
+  - 제목 "✦ 추가 카드를 뽑아볼까요?", 이유 텍스트, 카운터, 카드 그리드, "추가 카드 선택 완료" 버튼
+  - 건너뛰기 버튼 없음 (추가 카드는 반드시 선택 후 진행)
+  - 이유 텍스트: 문장 단위 `<br>` 줄바꿈
+- `.clarifier-badge`: sky-400(`#38bdf8`) 색상, 우측 상단 돌출 화살표 (`.card-number-badge` 미러)
+- 구 `.clarifier-banner*`, `.clarifier-loading*`, `.clarifier-result*` 등 스타일 삭제

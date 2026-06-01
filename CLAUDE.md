@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~43 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~44 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,14 +22,14 @@
 
 ---
 
-## 현재 상태 (Phase 44 완료)
+## 현재 상태 (Phase 45 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
 | 백엔드 | Express API, 24시간 사용 제한(쿠키 + IP 이중), 스프레드별 타임아웃/토큰 분리, 3카드 max_tokens 2500 |
-| 클라리파이어 | `POST /api/reading/clarifier` 신규, 기존 응답에 `clarifier` 필드 추가 (조건 C·D 감지), `generateClarifierReading()` |
+| 클라리파이어 | `/api/reading`에 `clarifierCards` 통합, 단일 Claude 호출 통합 해석, 켈틱 비허용, 중복 방어 |
 | 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js + DOMPurify 마크다운(로컬 번들) |
-| 클라리파이어 UI | READING 화면 하단 인라인 배너·카드그리드·보충해석 섹션, 조건 A(비교질문)·B(원카드역방향) 클라이언트 감지 |
+| 클라리파이어 UI | CARD_REVEAL 오라클 전 `#clarifier-before-reading` 카드 선택 UI, 조건 A/B/D 클라이언트 감지 |
 | 애니메이션 | Canvas 파티클 배경, 오라클 구체 로딩, 카드 스파크/플래시, 웰컴 덱 아이콘 룬 궤도 |
 | 모바일 | 반응형 레이아웃 전면 개선, 화면별 상단 여백 정렬, shuffle-info fixed 고정, 진입 애니메이션 버그 수정 |
 | 모바일 UX | READING 카드 목록 자동 스크롤 힌트 (8초 우→2초 대기→8초 좌 복귀, 터치 시 취소), SHUFFLE 진입 시 스크롤 최상단 강제 보정 (`history.scrollRestoration = 'manual'` + rAF 재보정) |
@@ -55,9 +55,9 @@
 | `server.js` | Express 설정, CORS/CSP/보안헤더, Rate Limiting, `/dev` 토큰 게이트, 캐시 버스팅, 에러 핸들러 |
 | `data/cards.js` | 78장 카드 데이터 (id, name 영문, nameKo 한글, keywords, meaning, imageSymbols) |
 | `data/cardImages.js` | 카드 ID → 이미지 파일명 매핑 |
-| `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (IP+쿠키 이중 제한, Prompt Injection 필터, isReversed 검증, clarifier 감지), `POST /api/reading/clarifier` |
+| `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (IP+쿠키 이중 제한, Prompt Injection 필터, isReversed 검증, clarifierCards 통합) |
 | `prompts/*.md` | system / one / three / celtic / clarifier — 서버 재시작 없이 즉시 반영 |
-| `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `generateReading()` + `generateClarifierReading()` |
+| `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `generateReading(clarifierCards)`, `formatClarifierCardsForPrompt()` |
 | `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
 | `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵, 클라리파이어 클라이언트 로직 |
 | `public/js/vendor/` | marked.min.js + purify.min.js 로컬 번들 (CDN 의존 제거) |

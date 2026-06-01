@@ -7,7 +7,7 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-06-01 (Phase 44 기준)
+마지막 수정: 2026-06-01 (Phase 45 기준)
 
 ---
 
@@ -160,7 +160,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 |------|-------------|------|
 | 카드 표시 영역 | `#cards-display` | 스프레드 클래스 동적 부여 (`spread-one` / `spread-three` / `spread-celtic`) |
 | 카드 아이템 | `.card-item` | 각 카드 플립 컨테이너 |
-| 로딩 상태 | `#loading-state` | 플립 완료 후 `.active` 클래스 부여 |
+| 클라리파이어 선택 | `#clarifier-before-reading` | 오라클 전 추가 카드 선택 UI (조건 충족 시만 표시) |
+| 로딩 상태 | `#loading-state` | 클라리파이어 선택 완료 후 `.active` 클래스 부여 |
 | 오라클 구체 | `.oracle-canvas` | Canvas 2D 수정구슬 애니메이션 (200×200px) |
 | 로딩 텍스트 | `.loading-text` | 스프레드별 소요시간 안내 |
 | 해석 요청 버튼 | `#btn-get-reading` | 현재 자동 호출로 `display:none` 상태 |
@@ -193,6 +194,29 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 - **켈틱 크로스**: `repeat(12, 1fr)` 12열 기반, 3+3+2+2 배치
   - 1행: 1, 3, 4번 / 2행: 5, 6, 8번 / 3행: 2, 7번 / 4행: 9, 10번
 
+### 클라리파이어 추가 카드 선택 (`#clarifier-before-reading`)
+
+카드 플립 완료 후, 오라클 구체 실행 전에 조건 충족 시 표시됩니다.
+
+| 요소 | ID / 클래스 | 설명 |
+|------|-------------|------|
+| 전체 섹션 | `#clarifier-before-reading` | 초기 `display:none`, 조건 충족 시 표시 |
+| 제목 | `.clarifier-pre-title` | "✦ 추가 카드를 뽑아볼까요?" (sky-400 색상) |
+| 이유 텍스트 | `#clarifier-pre-reason` | 조건별 안내 문구 (문장 단위 `<br>` 줄바꿈) |
+| 선택 카운터 | `#clarifier-pre-count / #clarifier-pre-required` | "N / N" 형태 |
+| 카드 그리드 | `#clarifier-pre-grid` | 원래 선택 카드 제외한 나머지 `.card-back-item` |
+| 선택 완료 버튼 | `#btn-clarifier-pre-confirm` | 선택 전 `disabled` → 클릭 시 오라클 시작 |
+
+**활성화 조건 (클라이언트 전용, 켈틱 크로스 비허용):**
+| 조건 | 발동 | 카드 수 |
+|------|------|---------|
+| A. 비교/선택 질문 | 정규식: `둘 중`, `어느 쪽`, `아니면`, `vs` 등 | 2장 |
+| B. 원 카드 역방향 | `spread=one && isReversed=true` | 1장 |
+| D. 역방향 과반수 | 선택 카드 중 역방향 >50% (원 카드 제외) | 1장 |
+
+- 우선순위: A > B > D
+- 건너뛰기 없음 — 조건 발동 시 반드시 카드 선택 후 진행
+
 ### 로딩 메시지 (스프레드별)
 | 스프레드 | 메시지 |
 |----------|--------|
@@ -211,8 +235,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 카드 컨테이너 | `.cards-summary-wrapper` | 좌우 카드 컬럼 감싸는 래퍼 |
-| 좌측 카드 컬럼 | `#cards-summary-left` | cards[0~4] 표시 (PC: `position:fixed`) |
-| 우측 카드 컬럼 | `#cards-summary-right` | cards[5~9] 표시 (PC: `position:fixed`) |
+| 좌측 카드 컬럼 | `#cards-summary-left` | allCards[0~4] 표시 (원래 카드 + 클라리파이어 카드 통합, PC: `position:fixed`) |
+| 우측 카드 컬럼 | `#cards-summary-right` | allCards[5~] 표시 (PC: `position:fixed`) |
 | 해석 중앙 래퍼 | `.reading-content-wrapper` | 질문박스 + 해석텍스트 + 안내문구 + 버튼 |
 | 질문 박스 | `#reading-question` | 질문 있을 때만 표시, 파란 테두리 |
 | 질문 레이블 | `.reading-question-label` | "💬 질문" |
@@ -220,50 +244,24 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 해석 컨텐츠 | `.reading-content` | marked.js 마크다운 렌더링 영역 |
 | 해석 텍스트 | `#reading-text` | Claude AI 응답 HTML |
 | 스크린샷 안내 | `.reading-screenshot-notice` | "해석 결과를 다시 볼 수 없어요. 스크린샷을 해주세요." |
-| 클라리파이어 섹션 | `#clarifier-section` | 조건 충족 시 표시 (초기 `display:none`), 스크린샷 안내 아래 |
 | 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME, 가운데 정렬 |
 
 ### 카드 요약 아이템 (`.card-summary-wrap`)
 ```
-.card-summary-wrap  (클릭 시 카드 줌 팝업 오픈, data-card-idx 보유)
+.card-summary-wrap  (클릭 시 카드 줌 팝업 오픈, data-card-idx / data-is-clarifier 보유)
 ├── .card-summary-item        카드 이미지 영역
 │   ├── .csm-bg-image         카드 이미지 (z-index:0, 역방향: scaleY(-1))
 │   ├── .csm-overlay          반투명 오버레이 (z-index:1, 켈틱 크로스 제외)
-│   ├── .card-number-badge    번호 뱃지 (z-index:2, 켈틱 크로스만, 1~10)
+│   ├── .card-number-badge    번호 뱃지 (z-index:2, 켈틱 크로스 원래 카드만, 1~10)
+│   ├── .clarifier-badge      '+' 뱃지 (z-index:2, 클라리파이어 카드만, sky-400 #38bdf8, 우측 상단)
 │   └── .csm-card-info        카드 이름/방향 (카드 하단 오버레이)
 │       ├── .csm-direction    "REVERSE" 텍스트 (금색)
 │       └── .csm-name         카드 영문명
-└── .csm-position-label       위치 레이블 (카드 아래, 1카드 제외) -- 예: 가로막는 것
+└── .csm-position-label       위치 레이블 (카드 아래, 1카드·클라리파이어 카드 제외)
 ```
 
-### 클라리파이어 섹션 (`#clarifier-section`)
-
-리딩 완료 후 특정 조건이 감지되면 READING 화면 하단에 인라인으로 표시됩니다.
-
-| 요소 | ID / 클래스 | 설명 |
-|------|-------------|------|
-| 배너 | `#clarifier-banner` | "✦ 카드가 추가 메시지를 전하고 있어요" + 이유 텍스트 + "추가 카드 뽑기" 버튼 |
-| 이유 텍스트 | `#clarifier-reason-text` | 조건별 안내 문구 (예: "역방향 에너지를 뚫어줄 카드가 있어요") |
-| 추가 카드 뽑기 버튼 | `#btn-draw-clarifier` | 클릭 시 배너 숨김 + 카드 선택 UI 표시 |
-| 카드 선택 영역 | `#clarifier-shuffle-area` | 선택 카운터 + `.clarifier-cards-grid` (기존 카드 제외) |
-| 선택 카운터 | `#clarifier-pick-count / #clarifier-pick-required` | "N / N" 형태 |
-| 카드 그리드 | `#clarifier-cards-grid` | 기존 사용 카드 제외한 나머지 `.card-back-item` 그리드 |
-| 확인 버튼 | `#btn-clarifier-confirm` | 선택 완료 전 `disabled` → 클릭 시 API 호출 |
-| 보충 해석 영역 | `#clarifier-reading-area` | 로딩 dots + 결과 (`#clarifier-result`) |
-| 로딩 | `#clarifier-loading` | `.clarifier-loading-dots` 3점 바운스 애니메이션 |
-| 카드 이미지 행 | `#clarifier-cards-row` | 보충 카드 이미지 + 카드명 표시 |
-| 보충 해석 텍스트 | `#clarifier-reading-text` | Claude 보충 해석 마크다운 렌더링 |
-
-**활성화 조건:**
-| 조건 | 발동 | 카드 수 |
-|------|------|---------|
-| A. 비교/선택 질문 | 클라이언트 정규식 감지 | 2장 |
-| B. 원 카드 역방향 | `spread=one && isReversed=true` | 1장 |
-| C. AI 불확실성 신호 | Claude 응답 내 `<!--CLARIFIER:-->` 태그 | 1장 |
-| D. 역방향 과반수 | 서버 역방향 비율 >50% | 1장 |
-
-- 켈틱 크로스는 모든 조건 비허용
-- 우선순위: A > B > C/D (서버 응답)
+- 원래 카드 + 클라리파이어 카드 모두 `allCards` 배열로 통합 렌더링
+- 클라리파이어 카드는 목록 맨 오른쪽에 위치 (`data-is-clarifier="1"`)
 
 ---
 
