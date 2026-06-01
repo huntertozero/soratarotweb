@@ -82,11 +82,32 @@ function formatCardsForPrompt(cards, cardDatabase, spread) {
     .join('\n');
 }
 
-// Claude로 타로 해석 생성
-async function generateReading(spread, cards, question, cardDatabase) {
-  // 스프레드별 타임아웃/토큰 설정 (catch에서도 참조하므로 함수 스코프에 선언)
+// 클라리파이어 카드 섹션 포맷팅 (통합 해석용)
+function formatClarifierCardsForPrompt(clarifierCards, cardDatabase) {
+  if (!clarifierCards || clarifierCards.length === 0) return '';
+
+  const cardsText = clarifierCards.map((card, i) => {
+    const cardData = cardDatabase.find(c => c.id === card.id);
+    if (!cardData) return '';
+    const direction = card.isReversed ? '역방향' : '정방향';
+    const keywords = card.isReversed
+      ? cardData.keywords.reversed.join(', ')
+      : cardData.keywords.upright.join(', ');
+    const imageSymbols = cardData.imageSymbols
+      ? `\n- 이미지 묘사: ${cardData.imageSymbols}` : '';
+    return `**카드: ${cardData.name} (${cardData.nameKo}) ${direction}**\n- 핵심 키워드: ${keywords}${imageSymbols}`;
+  }).filter(Boolean).join('\n\n');
+
+  return `\n\n**✦ 추가 카드 (클라리파이어)**\n${cardsText}`;
+}
+
+// Claude로 타로 해석 생성 (clarifierCards 포함 시 통합 해석)
+async function generateReading(spread, cards, question, cardDatabase, clarifierCards = []) {
+  // 클라리파이어 카드가 있으면 타임아웃/토큰 소폭 증가
+  const hasClarifier = clarifierCards.length > 0;
   const timeout = ({ one: 30000, three: 45000, celtic: 90000 })[spread] || 30000;
-  const maxTokens = ({ one: 1024, three: 2500, celtic: 4000 })[spread] || 1024;
+  const baseTokens = ({ one: 1024, three: 2500, celtic: 4000 })[spread] || 1024;
+  const maxTokens = hasClarifier ? Math.min(baseTokens + 600, 4096) : baseTokens;
 
   try {
     // 스프레드 정보
@@ -99,6 +120,9 @@ async function generateReading(spread, cards, question, cardDatabase) {
     // 카드 정보 포맷팅
     const formattedCards = formatCardsForPrompt(cards, cardDatabase, spread);
 
+    // 클라리파이어 카드 섹션 (있을 때만 추가)
+    const clarifierSection = formatClarifierCardsForPrompt(clarifierCards, cardDatabase);
+
     // 질문 포함 여부
     const questionPart = question
       ? `\n\n사용자의 질문: "${question}"`
@@ -107,7 +131,7 @@ async function generateReading(spread, cards, question, cardDatabase) {
     // 사용자 프롬프트 구성
     const userPrompt = `${spreadInstruction}
 
-${formattedCards}${questionPart}`;
+${formattedCards}${clarifierSection}${questionPart}`;
 
     // AbortController로 타임아웃 구현
     const controller = new AbortController();
@@ -141,73 +165,7 @@ ${formattedCards}${questionPart}`;
   }
 }
 
-// 클라리파이어(보충) 카드 해석 생성
-async function generateClarifierReading(originalCards, clarifierCards, question, spread, cardDatabase) {
-  const timeout = 30000;
-  const maxTokens = 800;
-
-  try {
-    const systemPrompt = loadPrompt('system.md');
-    const clarifierInstruction = loadPrompt('clarifier.md');
-
-    // 원래 카드 요약 (위치 레이블 포함)
-    const originalPositions = spreadInfo[spread]?.positions || [];
-    const originalCardsText = originalCards.map((card, i) => {
-      const cardData = cardDatabase.find(c => c.id === card.id);
-      if (!cardData) return '';
-      const dir = card.isReversed ? '역방향' : '정방향';
-      return `- ${originalPositions[i] || `위치 ${i + 1}`}: ${cardData.name} (${cardData.nameKo}) ${dir}`;
-    }).filter(Boolean).join('\n');
-
-    // 클라리파이어 카드 상세 정보
-    const clarifierCardsText = clarifierCards.map((card, i) => {
-      const cardData = cardDatabase.find(c => c.id === card.id);
-      if (!cardData) return '';
-      const dir = card.isReversed ? '역방향' : '정방향';
-      const keywords = card.isReversed
-        ? cardData.keywords.reversed.join(', ')
-        : cardData.keywords.upright.join(', ');
-      const imageSymbols = cardData.imageSymbols ? `\n- 이미지 묘사: ${cardData.imageSymbols}` : '';
-      return `**보충 카드 ${i + 1}: ${cardData.name} (${cardData.nameKo}) ${dir}**\n- 핵심 키워드: ${keywords}${imageSymbols}`;
-    }).filter(Boolean).join('\n\n');
-
-    const questionPart = question ? `\n사용자의 질문: "${question}"` : '';
-
-    const userPrompt = `${clarifierInstruction}
-
-앞선 리딩의 카드 (${spread === 'one' ? '원 카드' : spread === 'three' ? '쓰리 카드' : '켈틱 크로스'}):
-${originalCardsText}${questionPart}
-
-보충 카드:
-${clarifierCardsText}`;
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-    const message = await client.messages.create(
-      {
-        model: 'claude-sonnet-4-6',
-        max_tokens: maxTokens,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userPrompt }],
-      },
-      { signal: controller.signal }
-    );
-
-    clearTimeout(timeoutId);
-
-    const reading = message.content[0].type === 'text' ? message.content[0].text : '';
-    return { reading, usage: message.usage };
-  } catch (error) {
-    if (error.name === 'AbortError') {
-      throw new Error('Claude API 요청이 타임아웃되었습니다 (30초). 다시 시도해주세요.');
-    }
-    throw error;
-  }
-}
-
 module.exports = {
   generateReading,
-  generateClarifierReading,
   spreadInfo,
 };
