@@ -463,3 +463,23 @@
   - `stopLoading()` 내부 헬퍼 추출 — 중복 `classList.remove + stopOracleAnimation` 3곳 통합
 - `updateCardSelectionUI()`: 78장 카드 순회 시 `some()` O(n) 탐색 → `Set.has()` O(1) 로 최적화
   - 매 UI 갱신마다 `selectedCards` 배열을 Set으로 미리 변환 후 O(1) 조회
+
+---
+
+## Phase 47: 클라리파이어 UI 세부 개선 ✅
+
+### 47-1. 제목에 카드 장수 동적 표시 (`index.html`, `app.js`)
+- `.clarifier-pre-title` → `#clarifier-pre-title`로 id 추가
+- 정적 문자열 "✦ 추가 카드를 뽑아볼까요?" → `openClarifierPreSelection()` 진입 시 `cardCount` 반영하여 "✦ 추가 카드 N장을 뽑아볼까요?" 동적 설정
+
+### 47-2. 카드 선택 카운터 제거 (`index.html`, `app.js`, `style.css`)
+- `#clarifier-pre-count / #clarifier-pre-required` 스팬과 `.clarifier-pre-count-info` 단락 삭제
+- `openClarifierPreSelection()` / `setupClarifierPreGridListeners()`에서 `pickCount`, `pickRequired` 변수 및 참조 제거
+
+### 47-3. 이유 텍스트 문구·정렬 개선 (`app.js`, `style.css`)
+- 세 조건 reason 문자열 수정 (줄바꿈 위치 조정, "많아요 → 많네요" 어조 변경):
+  - `comparison`: "선택지가 있는 질문에는,\n각 방향을 보여주는 카드가 도움이 돼요"
+  - `one_reversed`: "막혀있는 에너지를 뚫어줄\n돌파구 카드가 있을 것 같아요"
+  - `reversed_majority`: "막혀있는 에너지가 많네요\n흐름을 도와줄 카드가 있을 것 같아요"
+- 렌더링 로직: 구두점 기반 `<br>` 변환 → `\n → <br>` 단순 변환으로 교체
+- `.clarifier-pre-reason`에 `text-align: center` 추가

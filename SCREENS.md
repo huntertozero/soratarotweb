@@ -201,9 +201,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 전체 섹션 | `#clarifier-before-reading` | 초기 `display:none`, 조건 충족 시 표시 |
-| 제목 | `.clarifier-pre-title` | "✦ 추가 카드를 뽑아볼까요?" (sky-400 색상) |
-| 이유 텍스트 | `#clarifier-pre-reason` | 조건별 안내 문구 (문장 단위 `<br>` 줄바꿈) |
-| 선택 카운터 | `#clarifier-pre-count / #clarifier-pre-required` | "N / N" 형태 |
+| 제목 | `#clarifier-pre-title` | "✦ 추가 카드 N장을 뽑아볼까요?" — `cardCount` 동적 삽입 (sky-400 색상) |
+| 이유 텍스트 | `#clarifier-pre-reason` | 조건별 안내 문구 (`\n` → `<br>` 줄바꿈, 가운데 정렬) |
 | 카드 그리드 | `#clarifier-pre-grid` | 원래 선택 카드 제외한 나머지 `.card-back-item` |
 | 선택 완료 버튼 | `#btn-clarifier-pre-confirm` | 선택 전 `disabled` → 클릭 시 오라클 시작 |
 

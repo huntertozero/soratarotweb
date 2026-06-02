@@ -1038,14 +1038,14 @@ function checkClarifierConditions() {
   // 조건 A: 비교/선택 질문 (2장)
   if (detectComparisonQuestion(appState.question)) {
     trigger = 'comparison';
-    reason = '선택지가 있는 질문에는 각 방향을 보여주는 카드가 도움이 돼요';
+    reason = '선택지가 있는 질문에는,\n각 방향을 보여주는 카드가 도움이 돼요';
     cardCount = 2;
   }
 
   // 조건 B: 원 카드 역방향 (1장)
   if (!trigger && appState.selectedSpread === 'one' && appState.selectedCards[0]?.isReversed) {
     trigger = 'one_reversed';
-    reason = '막혀있는 에너지를 뚫어줄 돌파구 카드가 있을 것 같아요';
+    reason = '막혀있는 에너지를 뚫어줄\n돌파구 카드가 있을 것 같아요';
     cardCount = 1;
   }
 
@@ -1054,7 +1054,7 @@ function checkClarifierConditions() {
     const reversedCount = appState.selectedCards.filter(c => c.isReversed).length;
     if (reversedCount / appState.selectedCards.length > 0.5) {
       trigger = 'reversed_majority';
-      reason = '막혀있는 에너지가 많아요. 흐름을 도와줄 카드가 있을 것 같아요';
+      reason = '막혀있는 에너지가 많네요\n흐름을 도와줄 카드가 있을 것 같아요';
       cardCount = 1;
     }
   }
@@ -1072,22 +1072,17 @@ function checkClarifierConditions() {
 // CARD_REVEAL 화면에서 오라클 전 추가 카드 선택 UI 표시
 function openClarifierPreSelection() {
   const section = document.getElementById('clarifier-before-reading');
+  const titleEl = document.getElementById('clarifier-pre-title');
   const reasonEl = document.getElementById('clarifier-pre-reason');
-  const pickCount = document.getElementById('clarifier-pre-count');
-  const pickRequired = document.getElementById('clarifier-pre-required');
   const grid = document.getElementById('clarifier-pre-grid');
   const btnConfirm = document.getElementById('btn-clarifier-pre-confirm');
 
   if (!section) { startOracleAndFetch(); return; }
 
+  if (titleEl) titleEl.textContent = `✦ 추가 카드 ${appState.clarifier.cardCount}장을 뽑아볼까요?`;
   if (reasonEl) {
-    // 마침표/느낌표/물음표 뒤 공백을 줄바꿈으로 변환
-    const reasonHtml = (appState.clarifier.reason || '')
-      .replace(/([.!?])\s+/g, '$1<br>');
-    reasonEl.innerHTML = reasonHtml;
+    reasonEl.innerHTML = (appState.clarifier.reason || '').replace(/\n/g, '<br>');
   }
-  if (pickCount) pickCount.textContent = '0';
-  if (pickRequired) pickRequired.textContent = appState.clarifier.cardCount;
   if (btnConfirm) btnConfirm.disabled = true;
 
   // 미사용 카드만 셔플해서 그리드 생성
@@ -1103,7 +1098,7 @@ function openClarifierPreSelection() {
       el.dataset.cardId = id;
       grid.appendChild(el);
     }
-    setupClarifierPreGridListeners(grid, btnConfirm, pickCount);
+    setupClarifierPreGridListeners(grid, btnConfirm);
   }
 
   section.style.display = 'block';
@@ -1120,7 +1115,7 @@ function openClarifierPreSelection() {
 }
 
 // 클라리파이어 그리드 카드 선택 이벤트
-function setupClarifierPreGridListeners(grid, btnConfirm, pickCount) {
+function setupClarifierPreGridListeners(grid, btnConfirm) {
   const required = appState.clarifier.cardCount;
 
   grid.querySelectorAll('.card-back-item').forEach(item => {
@@ -1140,7 +1135,6 @@ function setupClarifierPreGridListeners(grid, btnConfirm, pickCount) {
       }
 
       const current = appState.clarifier.selectedCards.length;
-      if (pickCount) pickCount.textContent = current;
       if (btnConfirm) btnConfirm.disabled = current < required;
 
       grid.querySelectorAll('.card-back-item').forEach(el => {

@@ -22,14 +22,14 @@
 
 ---
 
-## 현재 상태 (Phase 46 완료)
+## 현재 상태 (Phase 47 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
 | 백엔드 | Express API, 24시간 사용 제한(쿠키 + IP 이중), 스프레드별 타임아웃/토큰 분리, 3카드 max_tokens 2500 |
 | 클라리파이어 | `/api/reading`에 `clarifierCards` 통합, 단일 Claude 호출 통합 해석, 켈틱 비허용, 중복 방어 |
 | 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js + DOMPurify 마크다운(로컬 번들) |
-| 클라리파이어 UI | CARD_REVEAL 오라클 전 `#clarifier-before-reading` 카드 선택 UI, 조건 A/B/D 클라이언트 감지 |
+| 클라리파이어 UI | CARD_REVEAL 오라클 전 `#clarifier-before-reading` 카드 선택 UI, 조건 A/B/D 클라이언트 감지, 제목에 카드 장수 동적 표시, 카운터 제거, reason 가운데 정렬 |
 | 애니메이션 | Canvas 파티클 배경, 오라클 구체 로딩, 카드 스파크/플래시, 웰컴 덱 아이콘 룬 궤도 |
 | 모바일 | 반응형 레이아웃 전면 개선, 화면별 상단 여백 정렬, shuffle-info fixed 고정, 진입 애니메이션 버그 수정 |
 | 모바일 UX | READING 카드 목록 자동 스크롤 힌트 (8초 우→2초 대기→8초 좌 복귀, 터치 시 취소), SHUFFLE 진입 시 스크롤 최상단 강제 보정 (`history.scrollRestoration = 'manual'` + rAF 재보정) |

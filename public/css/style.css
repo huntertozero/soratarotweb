@@ -2018,13 +2018,7 @@ textarea::placeholder {
   color: rgba(224, 213, 255, 0.75);
   line-height: 1.6;
   margin-bottom: 12px;
-}
-
-.clarifier-pre-count-info {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-starlight);
-  margin-bottom: 12px;
+  text-align: center;
 }
 
 .clarifier-pre-grid {
