@@ -28,7 +28,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Railway 등 리버스 프록시 뒤에서 실제 클라이언트 IP를 정확히 추출
-app.set('trust proxy', 1);
+// Railway는 Edge → Load Balancer → 앱 2단계 구조이므로 true로 전체 체인 신뢰
+app.set('trust proxy', true);
 
 // Rate Limiting: /api 전체 — IP당 1분에 20회 (일반 사용 패턴 상 절대 도달 불가)
 const apiLimiter = rateLimit({
