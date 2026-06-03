@@ -466,6 +466,20 @@
 
 ---
 
+## Phase 49: Railway trust proxy 버그 수정 + 질문 입력 힌트 개선 ✅
+
+### 49-1. Railway 다단계 프록시 IP 오인식 버그 수정 (`server.js`)
+- `app.set('trust proxy', 1)` → `app.set('trust proxy', true)`
+- Railway 인프라: Edge → Load Balancer → 앱 컨테이너 (2단계 프록시)
+- `trust proxy: 1`로는 `req.ip`가 Railway 내부 IP로 고정되어 모든 유저가 동일 IP로 인식
+- 결과: 한 유저의 리딩이 전체 사용자에게 제한으로 전파되는 버그 수정
+
+### 49-2. INPUT_QUESTION 질문 힌트 문구 추가 (`index.html`)
+- `.question-hint` 첫 줄에 "하나의 주제에 대해" 추가
+- 최종: "하나의 주제에 대해 / 현실적이고 구체적일수록 / 더 좋은 해석을 받을 수 있습니다"
+
+---
+
 ## Phase 48: 웰컴 타이틀 변경 + SELECT_SPREAD 기본 슬라이드 ✅
 
 ### 48-1. 웰컴 화면 타이틀 변경 (`index.html`)

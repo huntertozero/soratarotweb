@@ -101,7 +101,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 제목 | `h2` | "마음 속 고민은 무엇인가요?" |
-| 안내 텍스트 | `.question-hint` | "현실적이고 구체적일수록 / 더 좋은 해석을 받을 수 있습니다" (줄바꿈) + "선택사항" gold 강조, 200자 제한 안내, 가운데 정렬 |
+| 안내 텍스트 | `.question-hint` | "하나의 주제에 대해 / 현실적이고 구체적일수록 / 더 좋은 해석을 받을 수 있습니다" (줄바꿈) + "선택사항" gold 강조, 200자 제한 안내, 가운데 정렬 |
 | 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200, 예시 placeholder 포함 |
 | 글자 수 카운터 | `.question-info > #char-count` | "N / 200" 형태 |
 | 이전 버튼 | `#btn-back-spread` | → SELECT_SPREAD 이동 |
