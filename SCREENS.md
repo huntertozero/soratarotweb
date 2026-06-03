@@ -43,7 +43,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 카드 덱 아이콘 | `.deck-icon` | 3장이 겹친 CSS 전용 카드 일러스트 + `.deck-canvas` 캔버스 |
-| 메인 제목 | `.title` | "신비로운 타로 리딩" (Noto Serif KR, 48px) |
+| 메인 제목 | `.title` | "크리시엘 타로 리딩" (Noto Serif KR, 48px) |
 | 부제목 | `.subtitle` | "카드가 당신의 길을 안내합니다" (보라색) |
 | 설명 텍스트 | `.description` | "질문을 입력하고 카드를 뽑으면 / AI가 개인화된 해석을 제공합니다" |
 | 시작 버튼 | `#btn-start-reading` | "무료 리딩 시작하기" → SELECT_SPREAD 이동 |
@@ -76,6 +76,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 ### 기능
 - **PC**: 3장 카드 나란히 그리드 배치, 클릭으로 선택
 - **모바일**: 스택 카드 슬라이더, 터치 스와이프로 전환, 페이지 도트 클릭 가능
+- **기본 슬라이드**: 화면 진입 시 잠금 상태 조회 후 자동 결정 — 쓰리 카드 우선, three 잠금 시 원 카드, 둘 다 잠금 시 켈틱 크로스
 - **24시간 제한**: 잠긴 카드에 `.locked` 클래스 + `.spread-countdown` 해제 시각 표시
   - 표시 형식: "오늘/내일 오전/오후 N시 N분부터 가능" (+1분 보정 적용)
   - 1초마다 로컬 카운트다운, 만료 시 서버 재조회

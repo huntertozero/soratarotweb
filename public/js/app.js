@@ -40,6 +40,7 @@ const appState = {
 const IS_DEV_MODE = document.querySelector('meta[name="app-mode"]')?.content === 'dev';
 let spreadLimitIntervalId = null;
 let spreadLimitData = {};
+let goToSpreadSlide = null; // 모바일 슬라이더 이동 함수 참조
 
 // ========== READING 화면 레이아웃 동기화 핸들러 ==========
 // displayReading() 재호출 시 리스너 누적 방지용
@@ -184,7 +185,7 @@ function showScreen(screenId) {
 
   // select-spread 화면 진입 시마다 잠금 상태 최신화
   if (screenId === 'select-spread') {
-    fetchSpreadLimits();
+    fetchSpreadLimits().then(() => applyDefaultSpreadSlide());
   }
 
   // 웰컴 화면 덱 아이콘 궤도 애니메이션 제어
@@ -949,6 +950,21 @@ function startCardListHintScroll() {
   });
 }
 
+// 진입 시 잠금 상태에 따라 기본 슬라이드 결정 (모바일 전용)
+// three → 사용 가능 시 기본 / three 잠금 → one / 둘 다 잠금 → celtic
+function applyDefaultSpreadSlide() {
+  if (!goToSpreadSlide) return;
+  const three = spreadLimitData['three'];
+  const one = spreadLimitData['one'];
+  if (!three?.locked) {
+    goToSpreadSlide(1);
+  } else if (!one?.locked) {
+    goToSpreadSlide(0);
+  } else {
+    goToSpreadSlide(2);
+  }
+}
+
 // 스프레드 슬라이더 초기화 (모바일: 스택 카드, PC: 그리드)
 function setupSpreadSlider() {
   const track = document.getElementById('spread-slider-track');
@@ -963,7 +979,7 @@ function setupSpreadSlider() {
 
   // 모바일에서만 스택 카드 효과 적용
   if (isMobile) {
-    let currentIndex = 0;
+    let currentIndex = 1; // 기본: 쓰리 카드(index 1)
 
     function updateStack() {
       slides.forEach((slide, i) => {
@@ -995,6 +1011,8 @@ function setupSpreadSlider() {
       currentIndex = (index + totalSlides) % totalSlides;
       updateStack();
     }
+
+    goToSpreadSlide = goTo;
 
     dots.forEach(dot => {
       dot.addEventListener('click', () => goTo(parseInt(dot.dataset.index)));

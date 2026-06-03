@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~46 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~47 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 47 완료)
+## 현재 상태 (Phase 48 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -38,6 +38,7 @@
 | UX | 켈틱 크로스 카드 번호 뱃지, 켈틱 로딩 자동 스크롤, 웰컴 subtitle 수직 중앙 정렬, 텍스트 전면 개선 |
 | UX | 카드 줌 팝업(위치레이블→카드명→키워드 순), 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
+| UX | 웰컴 화면 타이틀 "크리시엘 타로 리딩"으로 변경, SELECT_SPREAD 진입 시 쓰리 카드 기본 선택 (모바일 슬라이더 — three잠금→one, 둘다잠금→celtic fallback) |
 | 모바일 UX | h2·#shuffle-message 폰트 10% 축소(32/25px) + 가운데 정렬, .question-hint·shuffle 부가설명 줄바꿈, .spread-subtitle 문구 개선("24시간 제한" gold 강조) |
 | 카드 한글명 | `data/cards.js` nameKo 한글화(지팡이/컵/칼/동전), API `name`+`nameKo` 동시 응답, 팝업·해석 텍스트 일치 |
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거, CARD_NAMES_KO 상수 제거, `fetchReading` loadingState 통합·stopLoading 헬퍼, `updateCardSelectionUI` Set 최적화, claudeService 스프레드 상수 분리, reading 클라리파이어 이중 조회 제거 |
@@ -59,7 +60,7 @@
 | `prompts/*.md` | system / one / three / celtic / clarifier — 서버 재시작 없이 즉시 반영 |
 | `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `generateReading(clarifierCards)`, `formatClarifierCardsForPrompt()` |
 | `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
-| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵, 클라리파이어 클라이언트 로직 |
+| `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵, 클라리파이어 클라이언트 로직, SELECT_SPREAD 기본 슬라이드(`applyDefaultSpreadSlide`) |
 | `public/js/vendor/` | marked.min.js + purify.min.js 로컬 번들 (CDN 의존 제거) |
 | `public/js/animation.js` | 카드 플립, PC/모바일 순서 분기 |
 | `public/js/effects.js` | 스파크, 지속 파티클, 플립 플래시, 오라클 캔버스 |

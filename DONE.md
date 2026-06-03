@@ -466,6 +466,21 @@
 
 ---
 
+## Phase 48: 웰컴 타이틀 변경 + SELECT_SPREAD 기본 슬라이드 ✅
+
+### 48-1. 웰컴 화면 타이틀 변경 (`index.html`)
+- `.title` 텍스트: "신비로운 타로 리딩" → "크리시엘 타로 리딩"
+
+### 48-2. SELECT_SPREAD 진입 시 기본 슬라이드 설정 (`app.js`)
+- 모바일 슬라이더 초기 index: 0(원 카드) → 1(쓰리 카드)
+- `goToSpreadSlide` 모듈 변수 추가 — `setupSpreadSlider()` 내 `goTo` 참조 저장
+- `applyDefaultSpreadSlide()` 함수 추가
+  - `three` 사용 가능 → index 1 / `three` 잠금 → index 0 / 둘 다 잠금 → index 2(celtic)
+- `showScreen('select-spread')` 에서 `fetchSpreadLimits().then(() => applyDefaultSpreadSlide())` 체인
+  - 잠금 상태 조회 완료 후 기본 슬라이드 결정 (비동기 순서 보장)
+
+---
+
 ## Phase 47: 클라리파이어 UI 세부 개선 ✅
 
 ### 47-1. 제목에 카드 장수 동적 표시 (`index.html`, `app.js`)
