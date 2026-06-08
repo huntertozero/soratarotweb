@@ -7,7 +7,7 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-06-08 (Phase 50 기준)
+마지막 수정: 2026-06-09 (Phase 51 기준)
 
 ---
 
@@ -84,10 +84,10 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 부제목 | `.spread-subtitle` | "다음 4가지 옵션 중 / 하나를 골라 눌러주세요 / …" — Pretendard, 14px, `#fef3c7` ("24시간 제한" `#f59e0b` gold 강조) |
 | 슬라이더 래퍼 | `#spread-slider-wrapper` | 카드 4장 감싸는 슬라이더 컨테이너 |
 | 슬라이더 트랙 | `#spread-slider-track` | 실제 슬라이드가 나열되는 영역 |
-| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드" `.spread-card h3` — Pretendard, 20px, `#fef3c7` / "지금 이 순간" `.spread-desc` — Pretendard, 600, 14px, `#f59e0b` / 상세 설명 `.spread-detail` — Pretendard, 13px, `#e2e8f0` |
-| 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | ▲ 아이콘, "쓰리 카드" / "과거, 현재 그리고 미래" / 상세 설명 (동일 스타일) |
-| 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | ⊕ 아이콘, "켈틱 크로스" / "심층 분석" / 상세 설명 (동일 스타일) |
-| 하트 소나 슬라이드 | `.spread-slide[data-spread="heart"]` | ♥ 아이콘, "하트 소나" / "사랑의 울림" / "연애, 감정, 관계의 에너지를 / 7장의 카드로 면밀히 살펴봅니다" — `.locked` 클래스 고정(준비 중), 활성 glow 핑크(`#f472b6`) |
+| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | **All-Seeing Eye SVG** 아이콘(gold `#f59e0b`), "원 카드" `.spread-card h3` — Pretendard, 20px, `#fef3c7` / "지금 이 순간" `.spread-desc` — Pretendard, 600, 14px, `#f59e0b` / 상세 설명 `.spread-detail` — Pretendard, 13px, `#e2e8f0` |
+| 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | **Triquetra SVG** 아이콘(gold), "쓰리 카드" / "과거, 현재 그리고 미래" / 상세 설명 (동일 스타일) |
+| 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | **Ornate Celtic Cross SVG** 아이콘(gold), "켈틱 크로스" / "심층 분석" / 상세 설명 (동일 스타일) |
+| 하트 소나 슬라이드 | `.spread-slide[data-spread="heart"]` | **Sonar Heart SVG** 아이콘(gold), "하트 소나" / "사랑의 울림" / "연애, 감정, 관계의 에너지를 / 7장의 카드로 면밀히 살펴봅니다" — `.locked` 클래스 고정(준비 중), 활성 glow 핑크(`#f472b6`) |
 | 잠금 카운트다운 | `.spread-countdown` | "오늘/내일 N시 N분부터 가능" 또는 "준비 중입니다" — Pretendard, 600, 12px, `#f59e0b` |
 | 페이지 도트 | `#spread-dots > .spread-dot` | 현재 슬라이드 인디케이터 4개 (모바일) |
 

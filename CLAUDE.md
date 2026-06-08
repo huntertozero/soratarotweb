@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~50 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~51 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 50 완료)
+## 현재 상태 (Phase 51 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -40,6 +40,7 @@
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
 | UX | 웰컴 타이틀 "Creciel Tarot" (Cinzel Decorative 400), SELECT_SPREAD 진입 시 쓰리 카드 기본 선택 (모바일 슬라이더 — three잠금→one, 둘다잠금→celtic fallback) |
 | UX | SELECT_SPREAD 하트 소나 슬라이드 추가 (준비 중 잠금, 핑크 glow `#f472b6`), 부제목 "4가지" 수정 |
+| UX | SELECT_SPREAD 슬라이드 아이콘 인라인 SVG 교체 — 원 카드(All-Seeing Eye), 쓰리 카드(Triquetra), 켈틱 크로스(Ornate Celtic Cross), 하트 소나(Sonar Heart), 4개 전체 골드 톤 통일 |
 | 모바일 UX | h2·#shuffle-message 폰트 10% 축소(32/25px) + 가운데 정렬, .question-hint·shuffle 부가설명 줄바꿈, .spread-subtitle 문구 개선("24시간 제한" gold 강조) |
 | 카드 한글명 | `data/cards.js` nameKo 한글화(지팡이/컵/칼/동전), API `name`+`nameKo` 동시 응답, 팝업·해석 텍스트 일치 |
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거, CARD_NAMES_KO 상수 제거, `fetchReading` loadingState 통합·stopLoading 헬퍼, `updateCardSelectionUI` Set 최적화, claudeService 스프레드 상수 분리, reading 클라리파이어 이중 조회 제거 |

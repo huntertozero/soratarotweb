@@ -466,6 +466,22 @@
 
 ---
 
+## Phase 51: SELECT_SPREAD 슬라이드 아이콘 SVG 교체 ✅
+
+### 51-1. 4개 스프레드 슬라이드 아이콘 인라인 SVG로 교체 (`index.html`)
+- **원 카드**: `✦` → All-Seeing Eye SVG (아몬드형 눈꺼풀 + 홍채 원 + 방사선 8가닥 + 동공 + 속눈썹 3가닥)
+- **쓰리 카드**: `▲` → Triquetra SVG (3개 원호 + 하단 수평선 + 중심점)
+- **켈틱 크로스**: `⊕` → Ornate Celtic Cross SVG (십자 막대 + 장식 원 2겹 + 4끝단 다이아몬드 + 중심 보석)
+- **하트 소나**: `♥` → Sonar Heart SVG (동심원 소나 파동 3겹 + 채움 하트 + 반사광)
+- 모든 아이콘 `currentColor` 기반 → 4개 전체 `--color-gold` (#f59e0b) 통일
+
+### 51-2. `.spread-icon` CSS 정리 (`style.css`)
+- `color: var(--color-gold)` 기본값 추가 (SVG `currentColor` 상속)
+- `nth-child(2) .spread-icon { font-size: 32px }` 삭제 (SVG에 font-size 무관)
+- 아이콘별 색상 오버라이드 없음 — 전체 골드 톤 통일
+
+---
+
 ## Phase 50: UI 디자인 개선 + 하트 소나 슬라이드 추가 ✅
 
 ### 50-1. WELCOME `.title` 폰트·텍스트 변경 (`index.html`, `style.css`)

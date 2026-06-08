@@ -359,12 +359,9 @@ body {
   height: 60px;
   margin-left: auto;
   margin-right: auto;
+  color: var(--color-gold);
 }
 
-/* 삼각형(세모) 이모티콘만 작게 조정 */
-.spread-card:nth-child(2) .spread-icon {
-  font-size: 32px;
-}
 
 .spread-card h3 {
   font-size: 20px;
