@@ -466,6 +466,34 @@
 
 ---
 
+## Phase 50: UI 디자인 개선 + 하트 소나 슬라이드 추가 ✅
+
+### 50-1. WELCOME `.title` 폰트·텍스트 변경 (`index.html`, `style.css`)
+- 텍스트: "크리시엘 타로 리딩" → "Creciel Tarot"
+- Google Fonts에 `Cinzel Decorative` 추가
+- `#screen-welcome .title`에 `font-family: 'Cinzel Decorative', serif; font-weight: 400` 적용
+- 다른 화면의 `.title`(Noto Serif KR)은 영향 없음
+
+### 50-2. WELCOME `.description` 텍스트 강조 (`index.html`)
+- "질문을 입력하고" 중 '질문' 글자에 `<span style="color:#f59e0b">` 적용 → gold 색상 강조
+
+### 50-3. SELECT_SPREAD 하트 소나 슬라이드 추가 (`index.html`, `style.css`)
+- 새 슬라이드: `data-spread="heart"`, `.locked` 클래스 고정 (클릭 불가, 준비 중 상태)
+  - 아이콘: ♥ / 제목: 하트 소나 / 부제목: 사랑의 울림
+  - 설명: "연애, 감정, 관계의 에너지를 / 7장의 카드로 면밀히 살펴봅니다"
+  - `.spread-countdown`: "준비 중입니다"
+- `spreadGlowHeart` 애니메이션 추가 — 핑크(`#f472b6`) 계열 glow (활성화 시 적용)
+- 페이지 도트 4번째 추가 (`data-index="3"`)
+
+### 50-4. SELECT_SPREAD `.spread-subtitle` 수정 (`index.html`)
+- "다음 3가지 옵션 중" → "다음 4가지 옵션 중"
+
+### 50-5. SCREENS.md 폰트·색상 전체 보강
+- 공통 폰트·색상 변수 참조표 추가 (Pretendard / Noto Serif KR / 6개 CSS 변수)
+- 전 화면 텍스트 요소에 font-family, font-size, color 명시
+
+---
+
 ## Phase 49: Railway trust proxy 버그 수정 + 질문 입력 힌트 개선 ✅
 
 ### 49-1. Railway 다단계 프록시 IP 오인식 버그 수정 (`server.js`)

@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~48 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~50 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,13 +22,13 @@
 
 ---
 
-## 현재 상태 (Phase 49 완료)
+## 현재 상태 (Phase 50 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
 | 백엔드 | Express API, 24시간 사용 제한(쿠키 + IP 이중), 스프레드별 타임아웃/토큰 분리, 3카드 max_tokens 2500 |
 | 클라리파이어 | `/api/reading`에 `clarifierCards` 통합, 단일 Claude 호출 통합 해석, 켈틱 비허용, 중복 방어 |
-| 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js + DOMPurify 마크다운(로컬 번들) |
+| 프론트엔드 | 78장 선택(매 진입마다 위치 랜덤화), 카드 플립, READING 3열 레이아웃, marked.js + DOMPurify 마크다운(로컬 번들), Cinzel Decorative 웰컴 타이틀 |
 | 클라리파이어 UI | CARD_REVEAL 오라클 전 `#clarifier-before-reading` 카드 선택 UI, 조건 A/B/D 클라이언트 감지, 제목에 카드 장수 동적 표시, 카운터 제거, reason 가운데 정렬 |
 | 애니메이션 | Canvas 파티클 배경, 오라클 구체 로딩, 카드 스파크/플래시, 웰컴 덱 아이콘 룬 궤도 |
 | 모바일 | 반응형 레이아웃 전면 개선, 화면별 상단 여백 정렬, shuffle-info fixed 고정, 진입 애니메이션 버그 수정 |
@@ -38,7 +38,8 @@
 | UX | 켈틱 크로스 카드 번호 뱃지, 켈틱 로딩 자동 스크롤, 웰컴 subtitle 수직 중앙 정렬, 텍스트 전면 개선 |
 | UX | 카드 줌 팝업(위치레이블→카드명→키워드 순), 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
-| UX | 웰컴 화면 타이틀 "크리시엘 타로 리딩"으로 변경, SELECT_SPREAD 진입 시 쓰리 카드 기본 선택 (모바일 슬라이더 — three잠금→one, 둘다잠금→celtic fallback) |
+| UX | 웰컴 타이틀 "Creciel Tarot" (Cinzel Decorative 400), SELECT_SPREAD 진입 시 쓰리 카드 기본 선택 (모바일 슬라이더 — three잠금→one, 둘다잠금→celtic fallback) |
+| UX | SELECT_SPREAD 하트 소나 슬라이드 추가 (준비 중 잠금, 핑크 glow `#f472b6`), 부제목 "4가지" 수정 |
 | 모바일 UX | h2·#shuffle-message 폰트 10% 축소(32/25px) + 가운데 정렬, .question-hint·shuffle 부가설명 줄바꿈, .spread-subtitle 문구 개선("24시간 제한" gold 강조) |
 | 카드 한글명 | `data/cards.js` nameKo 한글화(지팡이/컵/칼/동전), API `name`+`nameKo` 동시 응답, 팝업·해석 텍스트 일치 |
 | 코드 품질 | Dead code 제거, 중복 로직 정리, 디버그 로그 제거, CARD_NAMES_KO 상수 제거, `fetchReading` loadingState 통합·stopLoading 헬퍼, `updateCardSelectionUI` Set 최적화, claudeService 스프레드 상수 분리, reading 클라리파이어 이중 조회 제거 |

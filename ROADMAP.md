@@ -1,7 +1,7 @@
 # 타로 리딩 웹 앱 - 구현 로드맵
 
-**마지막 업데이트**: 2026-06-01  
-**현재 버전**: Phase 46 완료
+**마지막 업데이트**: 2026-06-08  
+**현재 버전**: Phase 50 완료
 
 > 상세 구현 이력(Phase 1~31) → **DONE.md**  
 > 현재 개발 가이드 → **CLAUDE.md**  
@@ -93,6 +93,11 @@
 - READING 화면 카드 목록에 클라리파이어 카드 포함 (맨 오른쪽, sky-400 `+` 뱃지)
 - `prompts/one.md`, `three.md` 통합 해석 지시로 프롬프트 교체
 
+### UI 디자인 개선 + 신규 스프레드 준비 (Phase 47~50) ✅
+- 클라리파이어 UI 세부 개선, 웰컴 타이틀 → "Creciel Tarot" (Cinzel Decorative)
+- SELECT_SPREAD 하트 소나 슬라이드 추가 (준비 중 잠금), 부제목 4가지 수정
+- Railway trust proxy 버그 수정, SCREENS.md 폰트·색상 전체 문서화
+
 ### 코드 최적화 (Phase 46) ✅
 - `claudeService.js`: 스프레드별 타임아웃·토큰 인라인 객체 → 파일 레벨 상수 분리
 - `routes/reading.js`: 클라리파이어 카드 `cards.find()` 이중 조회 제거
@@ -128,4 +133,4 @@
 | 마크다운 | marked.js v12 + DOMPurify v3 (로컬 번들, `public/js/vendor/`) |
 | 배포 | Railway (NIXPACKS) |
 | 모니터링 | Slack Incoming Webhook |
-| 폰트 | Noto Serif KR (제목), Pretendard (본문) |
+| 폰트 | Cinzel Decorative (웰컴 타이틀), Noto Serif KR (화면 제목), Pretendard (본문) |

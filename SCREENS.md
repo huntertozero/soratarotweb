@@ -7,7 +7,23 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-06-01 (Phase 45 기준)
+마지막 수정: 2026-06-08 (Phase 50 기준)
+
+---
+
+## 공통 폰트·색상 변수
+
+| 변수 | 값 | 용도 |
+|------|----|------|
+| `--font-serif` | Noto Serif KR | 화면 h2·#shuffle-message 제목 |
+| `--font-sans` | Pretendard | 본문·UI 전체 기본 |
+| `--color-starlight` | `#fef3c7` | 주요 제목·버튼 텍스트 |
+| `--color-silver` | `#e2e8f0` | 본문·설명 텍스트 |
+| `--color-arcane` | `#9333ea` | 부제목 강조 |
+| `--color-gold` | `#f59e0b` | 금색 강조, 카운터, REVERSE, 뱃지 |
+| `--color-void` | `#0a0a1a` | 배경 기본 (뱃지 텍스트에도 사용) |
+
+> WELCOME 화면 `.title`만 예외: **Cinzel Decorative, 400, 48px**
 
 ---
 
@@ -43,11 +59,11 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 카드 덱 아이콘 | `.deck-icon` | 3장이 겹친 CSS 전용 카드 일러스트 + `.deck-canvas` 캔버스 |
-| 메인 제목 | `.title` | "크리시엘 타로 리딩" (Noto Serif KR, 48px) |
-| 부제목 | `.subtitle` | "카드가 당신의 길을 안내합니다" (보라색) |
-| 설명 텍스트 | `.description` | "질문을 입력하고 카드를 뽑으면 / AI가 개인화된 해석을 제공합니다" |
-| 시작 버튼 | `#btn-start-reading` | "무료 리딩 시작하기" → SELECT_SPREAD 이동 |
-| 면책 문구 | `.welcome-disclaimer` | "개인 정보를 수집 또는 이용하거나 / 별도의 비용을 요구하지 않습니다." (버튼 하단 80px, 12px 이탤릭, 불투명도 20%) |
+| 메인 제목 | `.title` | "Creciel Tarot" — Cinzel Decorative, 400, 48px, `#fef3c7` (웰컴 화면 전용 폰트) |
+| 부제목 | `.subtitle` | "카드가 당신의 길을 안내합니다" — Pretendard, italic, 24px, `#9333ea` |
+| 설명 텍스트 | `.description` | "질문을 입력하고 카드를 뽑으면 / AI가 개인화된 해석을 제공합니다" — Pretendard, 16px, `#e2e8f0` |
+| 시작 버튼 | `#btn-start-reading` | "무료 리딩 시작하기" — Pretendard, 700, 14px, uppercase, `#fef3c7` → SELECT_SPREAD 이동 |
+| 면책 문구 | `.welcome-disclaimer` | "개인 정보를 수집 또는 이용하거나 / 별도의 비용을 요구하지 않습니다." — Pretendard, italic, 12px, `rgba(255,255,255,0.2)` (버튼 하단 80px) |
 
 ### 특이사항
 - Critical CSS 인라인 처리: 외부 CSS 로드 전에도 정상 렌더링 보장
@@ -64,17 +80,19 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
-| 제목 | `h2` | "어떤 리딩을 원하십니까?" |
-| 부제목 | `.spread-subtitle` | "다음 3가지 옵션 중 / 하나를 골라 눌러주세요 / (각 옵션은 **24시간 제한**이 있어요)" — "24시간 제한" gold색 강조 |
-| 슬라이더 래퍼 | `#spread-slider-wrapper` | 카드 3장 감싸는 슬라이더 컨테이너 |
+| 제목 | `h2` | "어떤 리딩을 원하십니까?" — Noto Serif KR, 700, 48px, `#fef3c7` |
+| 부제목 | `.spread-subtitle` | "다음 4가지 옵션 중 / 하나를 골라 눌러주세요 / …" — Pretendard, 14px, `#fef3c7` ("24시간 제한" `#f59e0b` gold 강조) |
+| 슬라이더 래퍼 | `#spread-slider-wrapper` | 카드 4장 감싸는 슬라이더 컨테이너 |
 | 슬라이더 트랙 | `#spread-slider-track` | 실제 슬라이드가 나열되는 영역 |
-| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드", "지금 이 순간", 상세 설명(`.spread-detail`: "별도의 질문 없이 / 현재 상황과 에너지를 읽습니다") |
-| 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | ▲ 아이콘, "쓰리 카드", "과거, 현재 그리고 미래", 상세 설명(`.spread-detail`) |
-| 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | ⊕ 아이콘, "켈틱 크로스", "심층 분석", 상세 설명(`.spread-detail`) |
-| 페이지 도트 | `#spread-dots > .spread-dot` | 현재 슬라이드 인디케이터 (모바일) |
+| 원 카드 슬라이드 | `.spread-slide[data-spread="one"]` | ✦ 아이콘, "원 카드" `.spread-card h3` — Pretendard, 20px, `#fef3c7` / "지금 이 순간" `.spread-desc` — Pretendard, 600, 14px, `#f59e0b` / 상세 설명 `.spread-detail` — Pretendard, 13px, `#e2e8f0` |
+| 쓰리 카드 슬라이드 | `.spread-slide[data-spread="three"]` | ▲ 아이콘, "쓰리 카드" / "과거, 현재 그리고 미래" / 상세 설명 (동일 스타일) |
+| 켈틱 크로스 슬라이드 | `.spread-slide[data-spread="celtic"]` | ⊕ 아이콘, "켈틱 크로스" / "심층 분석" / 상세 설명 (동일 스타일) |
+| 하트 소나 슬라이드 | `.spread-slide[data-spread="heart"]` | ♥ 아이콘, "하트 소나" / "사랑의 울림" / "연애, 감정, 관계의 에너지를 / 7장의 카드로 면밀히 살펴봅니다" — `.locked` 클래스 고정(준비 중), 활성 glow 핑크(`#f472b6`) |
+| 잠금 카운트다운 | `.spread-countdown` | "오늘/내일 N시 N분부터 가능" 또는 "준비 중입니다" — Pretendard, 600, 12px, `#f59e0b` |
+| 페이지 도트 | `#spread-dots > .spread-dot` | 현재 슬라이드 인디케이터 4개 (모바일) |
 
 ### 기능
-- **PC**: 3장 카드 나란히 그리드 배치, 클릭으로 선택
+- **PC**: 4장 카드 나란히 그리드 배치, 클릭으로 선택
 - **모바일**: 스택 카드 슬라이더, 터치 스와이프로 전환, 페이지 도트 클릭 가능
 - **기본 슬라이드**: 화면 진입 시 잠금 상태 조회 후 자동 결정 — 쓰리 카드 우선, three 잠금 시 원 카드, 둘 다 잠금 시 켈틱 크로스
 - **24시간 제한**: 잠긴 카드에 `.locked` 클래스 + `.spread-countdown` 해제 시각 표시
@@ -100,12 +118,12 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
-| 제목 | `h2` | "마음 속 고민은 무엇인가요?" |
-| 안내 텍스트 | `.question-hint` | "하나의 주제에 대해 / 현실적이고 구체적일수록 / 더 좋은 해석을 받을 수 있습니다" (줄바꿈) + "선택사항" gold 강조, 200자 제한 안내, 가운데 정렬 |
-| 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200, 예시 placeholder 포함 |
-| 글자 수 카운터 | `.question-info > #char-count` | "N / 200" 형태 |
-| 이전 버튼 | `#btn-back-spread` | → SELECT_SPREAD 이동 |
-| 다음 버튼 | `#btn-next-question` | → SHUFFLE 이동 |
+| 제목 | `h2` | "마음 속 고민은 무엇인가요?" — Noto Serif KR, 700, 48px, `#fef3c7` |
+| 안내 텍스트 | `.question-hint` | "하나의 주제에 대해 / …" — Pretendard, 14px, `#fef3c7` ("선택사항" `#f59e0b` gold 강조) |
+| 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200 — Pretendard, 16px, `#e2e8f0` (배경 `#1a1040`, placeholder `#4c1d95`) |
+| 글자 수 카운터 | `.question-info > #char-count` | "N / 200" — Pretendard, 12px, `#e2e8f0`, 우측 정렬 |
+| 이전 버튼 | `#btn-back-spread` | → SELECT_SPREAD 이동 — Pretendard, 600, 14px, uppercase, `#e2e8f0` |
+| 다음 버튼 | `#btn-next-question` | → SHUFFLE 이동 — Pretendard, 600, 14px, uppercase, `#fef3c7` |
 
 ### 기능
 - `input` 이벤트로 실시간 글자 수 카운팅
@@ -123,12 +141,12 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 상단 고정 정보 | `.shuffle-info` | PC: `position: sticky; top: 0` / 모바일: `position: fixed; top: 0` |
-| 메시지 | `#shuffle-message` | "그럼 카드를 선택해볼까요?" |
-| 부가 설명 | (인라인 `<p>`) | "카드들의 주파수를 느끼며 / 신중히 선택해주세요" (줄바꿈, 가운데 정렬, margin: 16px 위 8px 아래) |
-| 선택 카운터 | `#shuffle-count` | "N / N" 형태 (예: "3 / 10") |
-| 카드 그리드 | `#cards-grid` | 78장 `.card-back-item` 동적 생성 |
-| 이전 버튼 | `#btn-back-question` | → INPUT_QUESTION (3카드·켈틱) / → SELECT_SPREAD (원 카드), selectedCards 초기화 |
-| 선택 완료 버튼 | `#btn-cards-selected` | 선택 완료 전 `disabled`, → CARD_REVEAL |
+| 메시지 | `#shuffle-message` | "그럼 카드를 선택해볼까요?" — Noto Serif KR, 700, 48px, `#fef3c7` |
+| 부가 설명 | (인라인 `<p>`) | "카드들의 주파수를 느끼며 / 신중히 선택해주세요" — Pretendard, 기본, `#e2e8f0` |
+| 선택 카운터 | `#shuffle-count` | "N / N" — Pretendard, 600, 16px, `#f59e0b` |
+| 카드 그리드 | `#cards-grid` | 78장 `.card-back-item` 동적 생성 (★ 아이콘 40px, `#f59e0b`) |
+| 이전 버튼 | `#btn-back-question` | → INPUT_QUESTION (3카드·켈틱) / → SELECT_SPREAD (원 카드), selectedCards 초기화 — Pretendard, 600, 14px, uppercase, `#e2e8f0` |
+| 선택 완료 버튼 | `#btn-cards-selected` | 선택 완료 전 `disabled`, → CARD_REVEAL — Pretendard, 600, 14px, uppercase, `#fef3c7` |
 
 ### 카드 그리드 (`#cards-grid`)
 - 78장의 `.card-back-item`을 진입 시마다 랜덤 순서로 생성
@@ -164,20 +182,20 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 클라리파이어 선택 | `#clarifier-before-reading` | 오라클 전 추가 카드 선택 UI (조건 충족 시만 표시) |
 | 로딩 상태 | `#loading-state` | 클라리파이어 선택 완료 후 `.active` 클래스 부여 |
 | 오라클 구체 | `.oracle-canvas` | Canvas 2D 수정구슬 애니메이션 (200×200px) |
-| 로딩 텍스트 | `.loading-text` | 스프레드별 소요시간 안내 |
+| 로딩 텍스트 | `.loading-text` | 스프레드별 소요시간 안내 — Pretendard, 16px, `#e2e8f0` |
 | 해석 요청 버튼 | `#btn-get-reading` | 현재 자동 호출로 `display:none` 상태 |
 
 ### 카드 아이템 구조 (`.card-item`)
 ```
 .card-item
 └── .card-container
-    ├── .card-position-label   위치 레이블 (쓰리 카드: 가운데, 켈틱: 상단)
+    ├── .card-position-label   위치 레이블 — Pretendard, 600, 12px, `#fef3c7` (쓰리 카드: 가운데, 켈틱: 상단)
     └── .card-inner            3D 플립 컨테이너
         ├── .card-back         초기 표시 (별 아이콘 뒷면)
         └── .card-front        플립 후 표시 (카드 이미지 + 카드 정보)
             ├── .card-image    역방향 시 scaleY(-1)
-            ├── .card-direction  "Reverse" 텍스트 (파란색)
-            └── .card-name     카드 이름 (한글)
+            ├── .card-direction  "Reverse" — Pretendard, uppercase, 12px, `#f59e0b`
+            └── .card-name     카드 이름 (한글) — Pretendard, 600, 18px, `#fef3c7`
 ```
 
 ### 플립 애니메이션
@@ -202,8 +220,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 전체 섹션 | `#clarifier-before-reading` | 초기 `display:none`, 조건 충족 시 표시 |
-| 제목 | `#clarifier-pre-title` | "✦ 추가 카드 N장을 뽑아볼까요?" — `cardCount` 동적 삽입 (sky-400 색상) |
-| 이유 텍스트 | `#clarifier-pre-reason` | 조건별 안내 문구 (`\n` → `<br>` 줄바꿈, 가운데 정렬) |
+| 제목 | `#clarifier-pre-title` | "✦ 추가 카드 N장을 뽑아볼까요?" — Pretendard, 기본, 기본크기, `#38bdf8` (sky-400) |
+| 이유 텍스트 | `#clarifier-pre-reason` | 조건별 안내 문구 — Pretendard, 기본, `#e2e8f0`, 가운데 정렬 (`\n` → `<br>`) |
 | 카드 그리드 | `#clarifier-pre-grid` | 원래 선택 카드 제외한 나머지 `.card-back-item` |
 | 선택 완료 버튼 | `#btn-clarifier-pre-confirm` | 선택 전 `disabled` → 클릭 시 오라클 시작 |
 
@@ -239,12 +257,12 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 우측 카드 컬럼 | `#cards-summary-right` | allCards[5~] 표시 (PC: `position:fixed`) |
 | 해석 중앙 래퍼 | `.reading-content-wrapper` | 질문박스 + 해석텍스트 + 안내문구 + 버튼 |
 | 질문 박스 | `#reading-question` | 질문 있을 때만 표시, 파란 테두리 |
-| 질문 레이블 | `.reading-question-label` | "💬 질문" |
-| 질문 텍스트 | `#reading-question-text` | 사용자 입력 질문 |
+| 질문 레이블 | `.reading-question-label` | "💬 질문" — Pretendard, 700, 11px, uppercase, `#64b5f6` |
+| 질문 텍스트 | `#reading-question-text` | 사용자 입력 질문 — Pretendard, 기본, 15px, `#e2e8f0` |
 | 해석 컨텐츠 | `.reading-content` | marked.js 마크다운 렌더링 영역 |
-| 해석 텍스트 | `#reading-text` | Claude AI 응답 HTML |
-| 스크린샷 안내 | `.reading-screenshot-notice` | "해석 결과를 다시 볼 수 없어요. 스크린샷을 해주세요." |
-| 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME, 가운데 정렬 |
+| 해석 텍스트 | `#reading-text` | Claude AI 응답 — Pretendard, 기본, 15px, `#e2e8f0` |
+| 스크린샷 안내 | `.reading-screenshot-notice` | "해석 결과를 다시 볼 수 없어요. 스크린샷을 해주세요." — Pretendard, 13px, `#e2e8f0`, opacity 0.7 |
+| 처음으로 버튼 | `#btn-home` | 모든 상태 초기화 → WELCOME — Pretendard, 600, 14px, uppercase, `#fef3c7` |
 
 ### 카드 요약 아이템 (`.card-summary-wrap`)
 ```
@@ -255,9 +273,9 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 │   ├── .card-number-badge    번호 뱃지 (z-index:2, 켈틱 크로스 원래 카드만, 1~10)
 │   ├── .clarifier-badge      '+' 뱃지 (z-index:2, 클라리파이어 카드만, sky-400 #38bdf8, 우측 상단)
 │   └── .csm-card-info        카드 이름/방향 (카드 하단 오버레이)
-│       ├── .csm-direction    "REVERSE" 텍스트 (금색)
-│       └── .csm-name         카드 영문명
-└── .csm-position-label       위치 레이블 (카드 아래, 1카드·클라리파이어 카드 제외)
+│       ├── .csm-direction    "REVERSE" — Pretendard, 700, 11px, uppercase, `#f59e0b`
+│       └── .csm-name         카드 영문명 — Pretendard, 600, 12px, `#fef3c7`
+└── .csm-position-label       위치 레이블 — Pretendard, 600, 10px, `#fef3c7`, opacity 0.85 (카드 아래, 1카드·클라리파이어 카드 제외)
 ```
 
 - 원래 카드 + 클라리파이어 카드 모두 `allCards` 배열로 통합 렌더링
@@ -283,7 +301,13 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 ### 해석 텍스트 스타일
 - `marked.js` v12 마크다운 파싱 (`breaks: true` - 단일 줄바꿈도 `<br>`)
-- 마크다운 요소 스타일: 중첩 리스트, `em`, `hr`, 제목 여백 등
+- 마크다운 요소 폰트:
+  - `h1` — Pretendard, 22px, `#fef3c7`
+  - `h2` — Pretendard, 18px, `#fef3c7`
+  - `h3` — Pretendard, 15px, `#fef3c7`
+  - `strong` — Pretendard, 700, 기본크기, `#f59e0b`
+  - `em` — Pretendard, italic, 기본크기, `#c4b5fd`
+  - `p`, `li` — Pretendard, 15px, `#e2e8f0`
 
 ---
 
@@ -294,9 +318,9 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
 | 모달 오버레이 | `#modal-error.modal` | 활성화: `.modal.active` |
-| 제목 | `h3` | "오류가 발생했습니다" |
-| 에러 메시지 | `#error-message` | 동적으로 텍스트 주입 |
-| 닫기 버튼 | `#btn-close-error` | 모달 비활성화 |
+| 제목 | `h3` | "오류가 발생했습니다" — Pretendard, 기본, 20px, `#fef3c7` |
+| 에러 메시지 | `#error-message` | 동적으로 텍스트 주입 — Pretendard, 기본, 기본크기, `#e2e8f0` |
+| 닫기 버튼 | `#btn-close-error` | 모달 비활성화 — Pretendard, 600, 14px, uppercase, `#fef3c7` |
 
 ---
 
@@ -310,13 +334,13 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 팝업 컨테이너 | `.card-zoom-popup` | `slideUp` 0.25s 진입 애니메이션 |
 | 카드 이미지 영역 | `#card-zoom-card (.card-zoom-card-wrap)` | 240px 너비, 2.5:4 비율 |
 | 카드 배경 이미지 | `.card-zoom-bg-image` | 역방향 시 `scaleY(-1)` |
-| 번호 뱃지 | `.card-zoom-number-badge` | 켈틱 크로스만 표시 (2× 스케일) |
-| 위치 레이블 | `.card-zoom-position-label` | 원 카드 제외, 쓰리 카드는 중앙 정렬 |
+| 번호 뱃지 | `.card-zoom-number-badge` | 켈틱 크로스만 표시 — Pretendard, 700, 20px, `#0a0a1a` (배경 `#f59e0b`) |
+| 위치 레이블 | `.card-zoom-position-label` | 원 카드 제외, 쓰리 카드는 중앙 정렬 — Pretendard, 600, 12px, `rgba(224,213,255,0.72)` |
 | 카드 정보 영역 | `#card-zoom-info (.card-zoom-card-info)` | 카드 아래 표시 |
-| 키워드 | `.card-zoom-keywords` | 카드 keywords 배열 쉼표 구분 |
-| 방향 | `.card-zoom-direction` | 역방향 시 "REVERSE" 금색 표시 |
-| 카드명 | `.card-zoom-name` | 한글 카드 이름 |
-| 닫기 안내 | `.card-zoom-hint` | "카드를 다시 누르면 꺼집니다" |
+| 키워드 | `.card-zoom-keywords` | 카드 keywords 배열 쉼표 구분 — Pretendard, 기본, 12px, `rgba(224,213,255,0.72)` |
+| 방향 | `.card-zoom-direction` | 역방향 시 "REVERSE" — Pretendard, 700, 10px, uppercase, `#f59e0b` |
+| 카드명 | `.card-zoom-name` | 한글 카드 이름 — Pretendard, 700, 15px, `#fef3c7` |
+| 닫기 안내 | `.card-zoom-hint` | "카드를 다시 누르면 꺼집니다" — Pretendard, 기본, 12px, `rgba(255,255,255,0.42)` |
 
 ### 기능
 - READING 화면 카드(`.card-summary-item`) 클릭 → `openCardZoom()` 호출

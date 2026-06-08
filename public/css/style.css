@@ -156,6 +156,11 @@ body {
   text-shadow: 0 0 20px rgba(249, 158, 11, 0.3);
 }
 
+#screen-welcome .title {
+  font-family: 'Cinzel Decorative', serif;
+  font-weight: 400;
+}
+
 .subtitle {
   font-size: 24px;
   color: var(--color-arcane);
@@ -378,6 +383,28 @@ body {
   font-size: 13px;
   color: var(--color-silver);
   line-height: 1.5;
+}
+
+/* 하트 소나 전용 핑크 glow */
+.spread-card[data-spread="heart"].active {
+  border-color: #f472b6;
+  box-shadow: 0 0 30px rgba(244, 114, 182, 0.8),
+              0 0 60px rgba(244, 114, 182, 0.5),
+              inset 0 0 30px rgba(244, 114, 182, 0.2);
+  animation: spreadGlowHeart 2s ease-in-out infinite;
+}
+
+@keyframes spreadGlowHeart {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(244, 114, 182, 0.8),
+                0 0 60px rgba(244, 114, 182, 0.5),
+                inset 0 0 30px rgba(244, 114, 182, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(244, 114, 182, 1),
+                0 0 80px rgba(244, 114, 182, 0.8),
+                inset 0 0 40px rgba(244, 114, 182, 0.3);
+  }
 }
 
 /* ========== 스프레드 사용 제한 (잠금 상태) ========== */
