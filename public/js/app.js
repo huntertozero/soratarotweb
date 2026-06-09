@@ -17,6 +17,15 @@ const SPREAD_POSITIONS = {
     '희망과 두려움',
     '최종 결과',
   ],
+  heart: [
+    '나의 현재 감정',
+    '상대방의 현재 감정',
+    '관계의 장애물',
+    '관계의 핵심',
+    '가능성 / 기회',
+    '나에게 주는 조언',
+    '결과 / 앞으로의 방향',
+  ],
 };
 
 // ========== 상태 관리 ==========
@@ -198,7 +207,7 @@ function showScreen(screenId) {
   }
 }
 
-// 1카드 선택 시 질문 입력 화면 상태 적용 (비활성화 or 복원)
+// 스프레드별 질문 입력 화면 상태 적용
 function applyInputQuestionState() {
   const textarea = document.getElementById('input-question-text');
   const hint = document.querySelector('.question-hint');
@@ -208,6 +217,7 @@ function applyInputQuestionState() {
   if (!textarea) return;
 
   const isOne = appState.selectedSpread === 'one';
+  const isHeart = appState.selectedSpread === 'heart';
 
   if (isOne) {
     textarea.value = '원 카드 옵션은 별도의 질문을 입력하지 않고,\n지금 이 순간 당신에게 가장 필요한 메시지를 전달합니다.';
@@ -217,11 +227,27 @@ function applyInputQuestionState() {
     if (questionInfo) questionInfo.classList.add('is-transparent');
     if (charCount) charCount.textContent = '0';
     if (h2) h2.textContent = '마음 속 고민이 있으신가요?';
+  } else if (isHeart) {
+    textarea.value = '';
+    textarea.disabled = false;
+    textarea.classList.remove('one-card-message');
+    textarea.placeholder = '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 지금 고백하면 어떤 결과가 올까요? / 이 관계를 계속 이어가는 게 맞을까요?';
+    if (hint) {
+      hint.classList.remove('is-transparent');
+      hint.innerHTML = '연인, 짝사랑, 현재 관계 등<br>한 명의 상대에 대해 구체적으로 물어볼수록<br>더 깊은 해석을 받을 수 있습니다<br>(<span style="color: var(--color-gold);">선택사항</span>, 최대 200자)';
+    }
+    if (questionInfo) questionInfo.classList.remove('is-transparent');
+    if (charCount) charCount.textContent = '0';
+    if (h2) h2.textContent = '이 관계에 대해 무엇이 궁금하신가요?';
   } else {
     textarea.value = '';
     textarea.disabled = false;
     textarea.classList.remove('one-card-message');
-    if (hint) hint.classList.remove('is-transparent');
+    textarea.placeholder = '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 올해 안에 저는 무엇을 조심해야 할까요?';
+    if (hint) {
+      hint.classList.remove('is-transparent');
+      hint.innerHTML = '하나의 주제에 대해<br>현실적이고 구체적일수록<br>더 좋은 해석을 받을 수 있습니다<br>(<span style="color: var(--color-gold);">선택사항</span>, 최대 200자)';
+    }
     if (questionInfo) questionInfo.classList.remove('is-transparent');
     if (charCount) charCount.textContent = '0';
     if (h2) h2.textContent = '마음 속 고민은 무엇인가요?';
@@ -553,6 +579,7 @@ function getCardCountForSpread(spread) {
     one: 1,
     three: 3,
     celtic: 10,
+    heart: 7,
   };
   return cardCounts[spread] || 1;
 }
@@ -609,6 +636,7 @@ async function fetchReading() {
         one:    '타로 마스터가 카드를 읽고 있어요.<br>최대 20초 정도 걸려요.',
         three:  '타로 마스터가 카드를 읽고 있어요.<br>최대 30초 정도 걸려요.',
         celtic: '타로 마스터가 카드를 읽고 있어요.<br>최대 40초 정도 걸려요.',
+        heart:  '타로 마스터가 카드를 읽고 있어요.<br>최대 35초 정도 걸려요.',
       };
       const msgEl = loadingState.querySelector('p');
       if (msgEl) {
@@ -722,7 +750,7 @@ function displayReading(data) {
   // 해석 화면에 스프레드 클래스 부여 (CSS 타게팅용)
   const screenReading = document.getElementById('screen-reading');
   if (screenReading) {
-    screenReading.classList.remove('spread-one', 'spread-three', 'spread-celtic');
+    screenReading.classList.remove('spread-one', 'spread-three', 'spread-celtic', 'spread-heart');
     screenReading.classList.add(`spread-${appState.selectedSpread}`);
   }
 
@@ -750,18 +778,18 @@ function displayReading(data) {
       // 역방향: 이미지만 상하반전 (텍스트는 정상)
       const imgTransform = card.isReversed ? 'transform: scaleY(-1);' : '';
 
-      // 켈틱 크로스일 때만 번호 뱃지 (1-based 표시), 클라리파이어 카드는 '+' 뱃지
-      const isCeltic = appState.selectedSpread === 'celtic';
+      // 켈틱/하트 소나: 번호 뱃지 (1-based 표시), 클라리파이어 카드는 '+' 뱃지
+      const isNumbered = ['celtic', 'heart'].includes(appState.selectedSpread);
       let badgeHtml = '';
       if (card.isClarifier) {
         badgeHtml = '<div class="clarifier-badge">+</div>';
-      } else if (isCeltic) {
+      } else if (isNumbered) {
         badgeHtml = `<div class="card-number-badge">${positionIndex + 1}</div>`;
       }
 
-      // 켈틱 크로스 해석 화면: 오버레이 제거, 이미지 폴백 투명화
-      const bgExtraStyle = isCeltic ? ' background-color: transparent;' : '';
-      const overlayHtml = isCeltic ? '' : '<div class="csm-overlay"></div>';
+      // 켈틱/하트 소나 해석 화면: 오버레이 제거, 이미지 폴백 투명화
+      const bgExtraStyle = isNumbered ? ' background-color: transparent;' : '';
+      const overlayHtml = isNumbered ? '' : '<div class="csm-overlay"></div>';
 
       // 카드 이름: 영문명만 표시
       const displayName = card.name;

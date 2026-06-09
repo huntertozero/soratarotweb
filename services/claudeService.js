@@ -21,8 +21,8 @@ function loadPrompt(filename) {
 }
 
 // 스프레드별 Claude API 타임아웃(ms) / 최대 토큰 수
-const SPREAD_TIMEOUTS   = { one: 30000, three: 45000, celtic: 90000 };
-const SPREAD_BASE_TOKENS = { one: 1024,  three: 2500,  celtic: 4000  };
+const SPREAD_TIMEOUTS    = { one: 30000, three: 45000, celtic: 90000, heart: 60000 };
+const SPREAD_BASE_TOKENS = { one: 1024,  three: 2500,  celtic: 4000,  heart: 3500  };
 
 // 스프레드 정보 (포지션 이름은 코드에서 관리, 프롬프트 내용은 prompts/*.md에서 관리)
 const spreadInfo = {
@@ -51,6 +51,19 @@ const spreadInfo = {
       '최종 결과',
     ],
     promptFile: 'celtic.md',
+  },
+  heart: {
+    cardCount: 7,
+    positions: [
+      '나의 현재 감정',
+      '상대방의 현재 감정',
+      '관계의 장애물',
+      '관계의 핵심',
+      '가능성 / 기회',
+      '나에게 주는 조언',
+      '결과 / 앞으로의 방향',
+    ],
+    promptFile: 'heart.md',
   },
 };
 

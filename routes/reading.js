@@ -9,8 +9,8 @@ const router = express.Router();
 // ========== 24시간 사용 제한 헬퍼 ==========
 
 const LIMIT_DURATION_MS = 24 * 60 * 60 * 1000;
-const LIMIT_SPREADS = ['one', 'three', 'celtic'];
-const SPREAD_NAMES = { one: '원 카드', three: '쓰리 카드', celtic: '켈틱 크로스' };
+const LIMIT_SPREADS = ['one', 'three', 'celtic', 'heart'];
+const SPREAD_NAMES = { one: '원 카드', three: '쓰리 카드', celtic: '켈틱 크로스', heart: '하트 소나' };
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 // IP 기반 서버사이드 사용 기록: Map<ip, Map<spread, timestamp>>
@@ -97,9 +97,9 @@ router.post('/reading', async (req, res) => {
     const { spread, question, cards: requestCards, clarifierCards: rawClarifierCards } = req.body;
 
     // 1. spread 검증
-    if (!spread || !['one', 'three', 'celtic'].includes(spread)) {
+    if (!spread || !['one', 'three', 'celtic', 'heart'].includes(spread)) {
       return res.status(400).json({
-        error: '잘못된 spread 타입입니다. "one", "three", "celtic" 중 하나여야 합니다.',
+        error: '잘못된 spread 타입입니다. "one", "three", "celtic", "heart" 중 하나여야 합니다.',
       });
     }
 
@@ -118,7 +118,7 @@ router.post('/reading', async (req, res) => {
     }
 
     // 2. 카드 수 검증
-    const expectedCardCounts = { one: 1, three: 3, celtic: 10 };
+    const expectedCardCounts = { one: 1, three: 3, celtic: 10, heart: 7 };
     const expectedCount = expectedCardCounts[spread];
 
     if (!Array.isArray(requestCards) || requestCards.length !== expectedCount) {
