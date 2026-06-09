@@ -466,6 +466,35 @@
 
 ---
 
+## Phase 52: 하트 소나 스프레드 구현 ✅
+
+### 52-1. 스프레드 전체 활성화 (`index.html`, `app.js`)
+- SELECT_SPREAD 하트 소나 슬라이드 `.locked` 클래스 제거 — 클릭 가능, 정식 출시
+- INPUT_QUESTION: 하트 소나 전용 placeholder 텍스트 (연애·관계 맞춤, h2·힌트는 공통 유지)
+- SHUFFLE: `getCardCountForSpread('heart') = 7`
+
+### 52-2. CARD_REVEAL 2-2-3 레이아웃 (`style.css`, `app.js`)
+- `.spread-heart` 그리드: CSS 6열 명시 배치
+  - 1행: 1번(col 1-3), 2번(col 4-6) / 2행: 3번(col 1-3), 4번(col 4-6) / 3행: 5(col 1-2), 6(col 3-4), 7(col 5-6)
+- 모바일: `nth-child` 기반 `width` 미디어쿼리로 데스크탑 200px 무력화
+- 오라클 구체 로딩 자동 스크롤: 켈틱 크로스와 동일하게 하트 소나도 적용
+
+### 52-3. READING 화면 (`app.js`, `style.css`)
+- 번호 뱃지 1~7 표시 (켈틱 크로스와 동일 스타일)
+- 포지션 레이블 7개: 나의 현재 감정 / 상대방의 현재 감정 / 관계의 장애물 / 관계의 핵심 / 가능성·기회 / 나에게 주는 조언 / 결과·앞으로의 방향
+- 모바일: `#screen-reading.spread-heart`에 fadeInOpacity 적용 (transform 스태킹 컨텍스트 제거)
+
+### 52-4. 백엔드 (`services/claudeService.js`, `routes/reading.js`)
+- `claudeService.js`: heart 타임아웃 60초, max_tokens 3500, promptFile `prompts/heart.md`
+- `reading.js`: heart 스프레드 검증, 카드 수 7장 확인, 24시간 제한 적용
+- 클라리파이어: heart 허용 (켈틱 크로스만 비허용 정책 유지)
+
+### 52-5. 프롬프트 (`prompts/`)
+- `heart.md` 신규 생성: 7포지션 배치 해석, 연애·감정·관계 특화 지침
+- `one.md` / `three.md` / `celtic.md`: 명령형 문체 → 존댓말 전면 정비
+
+---
+
 ## Phase 51: SELECT_SPREAD 슬라이드 아이콘 SVG 교체 ✅
 
 ### 51-1. 4개 스프레드 슬라이드 아이콘 인라인 SVG로 교체 (`index.html`)

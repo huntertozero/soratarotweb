@@ -7,7 +7,7 @@
   - "SHUFFLE 화면의 카드 그리드(#cards-grid) .shivering 애니메이션 속도를 ..."
   - "켈틱 크로스의 번호 뱃지(.card-number-badge) 디자인을 ..."
 
-마지막 수정: 2026-06-09 (Phase 51 기준)
+마지막 수정: 2026-06-09 (Phase 52 기준)
 
 ---
 
@@ -160,7 +160,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
   - `.shivering`: 카드 떨림 효과 (선택 안 된 카드 중 1~2장, 1초마다 랜덤 변경)
 
 ### 기능
-- 스프레드별 필요 카드 수: `one=1` / `three=3` / `celtic=10`
+- 스프레드별 필요 카드 수: `one=1` / `three=3` / `celtic=10` / `heart=7`
 - **모바일 버튼 핀**: `IntersectionObserver`로 마지막 카드 가시성 감지 → 버튼 자동 고정/해제 (`is-pinned`)
   - `is-pinned` 상태: `position: fixed; bottom: 0` + `cardsGrid`에 `paddingBottom` 보정
   - 데스크탑(769px 이상)에서는 버튼 핀 동작 없음 (레이아웃 변경 없음)
@@ -177,7 +177,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 
 | 요소 | ID / 클래스 | 설명 |
 |------|-------------|------|
-| 카드 표시 영역 | `#cards-display` | 스프레드 클래스 동적 부여 (`spread-one` / `spread-three` / `spread-celtic`) |
+| 카드 표시 영역 | `#cards-display` | 스프레드 클래스 동적 부여 (`spread-one` / `spread-three` / `spread-celtic` / `spread-heart`) |
 | 카드 아이템 | `.card-item` | 각 카드 플립 컨테이너 |
 | 클라리파이어 선택 | `#clarifier-before-reading` | 오라클 전 추가 카드 선택 UI (조건 충족 시만 표시) |
 | 로딩 상태 | `#loading-state` | 클라리파이어 선택 완료 후 `.active` 클래스 부여 |
@@ -212,6 +212,8 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 - **쓰리 카드**: `repeat(3, 1fr)` 3열 가로
 - **켈틱 크로스**: `repeat(12, 1fr)` 12열 기반, 3+3+2+2 배치
   - 1행: 1, 3, 4번 / 2행: 5, 6, 8번 / 3행: 2, 7번 / 4행: 9, 10번
+- **하트 소나**: 6열 CSS 배치, 2-2-3 행 구성
+  - 1행: 1번(col 1-3), 2번(col 4-6) / 2행: 3번(col 1-3), 4번(col 4-6) / 3행: 5번(col 1-2), 6번(col 3-4), 7번(col 5-6)
 
 ### 클라리파이어 추가 카드 선택 (`#clarifier-before-reading`)
 
@@ -241,6 +243,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 원 카드 | "최대 20초 정도 걸려요" |
 | 쓰리 카드 | "최대 30초 정도 걸려요" |
 | 켈틱 크로스 | "최대 40초 정도 걸려요" |
+| 하트 소나 | "최대 40초 정도 걸려요" |
 
 ---
 
@@ -270,7 +273,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 ├── .card-summary-item        카드 이미지 영역
 │   ├── .csm-bg-image         카드 이미지 (z-index:0, 역방향: scaleY(-1))
 │   ├── .csm-overlay          반투명 오버레이 (z-index:1, 켈틱 크로스 제외)
-│   ├── .card-number-badge    번호 뱃지 (z-index:2, 켈틱 크로스 원래 카드만, 1~10)
+│   ├── .card-number-badge    번호 뱃지 (z-index:2, 켈틱 크로스 1~10 / 하트 소나 1~7)
 │   ├── .clarifier-badge      '+' 뱃지 (z-index:2, 클라리파이어 카드만, sky-400 #38bdf8, 우측 상단)
 │   └── .csm-card-info        카드 이름/방향 (카드 하단 오버레이)
 │       ├── .csm-direction    "REVERSE" — Pretendard, 700, 11px, uppercase, `#f59e0b`
@@ -287,6 +290,17 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 - 해석 화면 진입 0.6초 후 `startCardListHintScroll()` 실행
 - `.cards-summary-wrapper` scrollLeft: 0 → 끝(8초) → 2초 대기 → 0(8초)
 - 터치·클릭 시 즉시 취소 / 스크롤 여백 ≤20px이면 실행 안 함
+
+### 하트 소나 포지션 레이블 (7장)
+| 번호 | 포지션 |
+|------|--------|
+| 1 | 나의 현재 감정 |
+| 2 | 상대방의 현재 감정 |
+| 3 | 관계의 장애물 |
+| 4 | 관계의 핵심 |
+| 5 | 가능성 / 기회 |
+| 6 | 나에게 주는 조언 |
+| 7 | 결과 / 앞으로의 방향 |
 
 ### PC 레이아웃
 - 좌우 카드 컬럼: JS `syncLayout()`으로 `.reading-content-wrapper` 좌우에 `position:fixed` 배치

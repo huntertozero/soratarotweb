@@ -8,7 +8,7 @@
 - **AI 모델**: Claude Sonnet 4.6
 - **실행**: `npm start` / 개발용: `http://localhost:3000/dev` (24시간 제한 없음)
 
-> 완료된 Phase 1~51 상세 이력 → **DONE.md** 참고
+> 완료된 Phase 1~52 상세 이력 → **DONE.md** 참고
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 현재 상태 (Phase 51 완료)
+## 현재 상태 (Phase 52 완료)
 
 | 영역 | 완료 내용 |
 |------|-----------|
@@ -39,7 +39,6 @@
 | UX | 카드 줌 팝업(위치레이블→카드명→키워드 순), 잠금 해제 시각 표시, 질문 입력 화면 제목 PC 줄바꿈 방지 |
 | UX | 웰컴 화면 면책 문구 추가 (개인정보 미수집·무료 고지, 버튼 하단 80px 여백 흐린 이탤릭) |
 | UX | 웰컴 타이틀 "Creciel Tarot" (Cinzel Decorative 400), SELECT_SPREAD 진입 시 쓰리 카드 기본 선택 (모바일 슬라이더 — three잠금→one, 둘다잠금→celtic fallback) |
-| UX | SELECT_SPREAD 하트 소나 슬라이드 추가 (준비 중 잠금, 핑크 glow `#f472b6`), 부제목 "4가지" 수정 |
 | UX | SELECT_SPREAD 슬라이드 아이콘 인라인 SVG 교체 — 원 카드(All-Seeing Eye), 쓰리 카드(Triquetra), 켈틱 크로스(Ornate Celtic Cross), 하트 소나(Sonar Heart), 4개 전체 골드 톤 통일 |
 | 모바일 UX | h2·#shuffle-message 폰트 10% 축소(32/25px) + 가운데 정렬, .question-hint·shuffle 부가설명 줄바꿈, .spread-subtitle 문구 개선("24시간 제한" gold 강조) |
 | 카드 한글명 | `data/cards.js` nameKo 한글화(지팡이/컵/칼/동전), API `name`+`nameKo` 동시 응답, 팝업·해석 텍스트 일치 |
@@ -48,6 +47,8 @@
 | 모니터링 | Slack Incoming Webhook 리딩 알림 (스프레드/질문/카드/토큰/비용/응답시간/접속정보) |
 | 보안 | Rate Limiting, IP 기반 24시간 제한, CSP/CORS/보안헤더(cdn.jsdelivr.net script-src 제거), DOMPurify XSS 방어, Prompt Injection 필터, /dev 토큰 게이트, Railway trust proxy 버그 수정 |
 | UX | INPUT_QUESTION `.question-hint` 첫 줄 "하나의 주제에 대해" 추가 |
+| 하트 소나 스프레드 | 7장, 연애·관계 특화 (`prompts/heart.md`), CARD_REVEAL 2-2-3 그리드, READING 번호 뱃지 1~7, claudeService timeout 60초·max_tokens 3500, 24시간 제한 적용, 클라리파이어 허용 |
+| 프롬프트 | one/three/celtic 존댓말 문체 정비, heart.md 신규 추가 |
 | 문서 | `SECURITY.md` 생성 (9개 취약점 전체 조치 기록), `SCREENS.md`, `README.md`, `ROADMAP.md` 현행화 |
 
 ---
@@ -60,7 +61,7 @@
 | `data/cards.js` | 78장 카드 데이터 (id, name 영문, nameKo 한글, keywords, meaning, imageSymbols) |
 | `data/cardImages.js` | 카드 ID → 이미지 파일명 매핑 |
 | `routes/reading.js` | `GET/DELETE /api/limits`, `POST /api/reading` (IP+쿠키 이중 제한, Prompt Injection 필터, isReversed 검증, clarifierCards 통합) |
-| `prompts/*.md` | system / one / three / celtic / clarifier — 서버 재시작 없이 즉시 반영 |
+| `prompts/*.md` | system / one / three / celtic / heart / clarifier — 서버 재시작 없이 즉시 반영 |
 | `services/claudeService.js` | Claude API 호출 (스프레드별 max_tokens / timeout), `generateReading(clarifierCards)`, `formatClarifierCardsForPrompt()` |
 | `services/slackService.js` | Slack Incoming Webhook 알림 (리딩 성공 시 비동기 전송) |
 | `public/js/app.js` | 상태 관리, 화면 전환, API fetch, IS_DEV_MODE(meta 태그 감지), 모바일 카드 자동 스크롤 힌트, 브라우저 스크롤 복원 비활성화, 원 카드 INPUT_QUESTION 스킵, 클라리파이어 클라이언트 로직, SELECT_SPREAD 기본 슬라이드(`applyDefaultSpreadSlide`) |
@@ -83,7 +84,7 @@ $body = @{ spread = "one"; question = "나의 길은?"; cards = @(@{ id = 0; isR
 Invoke-RestMethod -Uri "http://localhost:3000/api/reading" -Method Post -Headers @{ "Content-Type" = "application/json" } -Body $body
 ```
 
-UI: `npm start` → `http://localhost:3000/dev` (3가지 스프레드 각각 테스트)
+UI: `npm start` → `http://localhost:3000/dev` (4가지 스프레드 각각 테스트)
 
 ---
 
