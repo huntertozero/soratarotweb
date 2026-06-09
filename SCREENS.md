@@ -120,7 +120,7 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 |------|-------------|------|
 | 제목 | `h2` | "마음 속 고민은 무엇인가요?" — Noto Serif KR, 700, 48px, `#fef3c7` |
 | 안내 텍스트 | `.question-hint` | "하나의 주제에 대해 / …" — Pretendard, 14px, `#fef3c7` ("선택사항" `#f59e0b` gold 강조) |
-| 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200 — Pretendard, 16px, `#e2e8f0` (배경 `#1a1040`, placeholder `#4c1d95`) |
+| 텍스트에어리어 | `#input-question-text` | rows=4, maxlength=200 — Pretendard, 16px, `#e2e8f0` (배경 `#1a1040`, placeholder `#4c1d95`) · placeholder 예문 스프레드별 분기 (three·celtic: 삶의 방향/결정 테마 / heart: 연애·관계 테마) |
 | 글자 수 카운터 | `.question-info > #char-count` | "N / 200" — Pretendard, 12px, `#e2e8f0`, 우측 정렬 |
 | 이전 버튼 | `#btn-back-spread` | → SELECT_SPREAD 이동 — Pretendard, 600, 14px, uppercase, `#e2e8f0` |
 | 다음 버튼 | `#btn-next-question` | → SHUFFLE 이동 — Pretendard, 600, 14px, uppercase, `#fef3c7` |
@@ -241,9 +241,9 @@ WELCOME → SELECT_SPREAD → INPUT_QUESTION → SHUFFLE → CARD_REVEAL → REA
 | 스프레드 | 메시지 |
 |----------|--------|
 | 원 카드 | "최대 20초 정도 걸려요" |
-| 쓰리 카드 | "최대 30초 정도 걸려요" |
-| 켈틱 크로스 | "최대 40초 정도 걸려요" |
-| 하트 소나 | "최대 40초 정도 걸려요" |
+| 쓰리 카드 | "최대 35초 정도 걸려요" |
+| 켈틱 크로스 | "최대 60초 정도 걸려요" |
+| 하트 소나 | "최대 50초 정도 걸려요" |
 
 ---
 

@@ -230,10 +230,13 @@ function applyInputQuestionState() {
     textarea.value = '';
     textarea.disabled = false;
     textarea.classList.remove('one-card-message');
-    // 하트 소나: 연애·관계 특화 placeholder
-    textarea.placeholder = appState.selectedSpread === 'heart'
-      ? '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 지금 고백하면 어떤 결과가 올까요? / 이 관계를 계속 이어가는 게 맞을까요?'
-      : '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 올해 안에 저는 무엇을 조심해야 할까요?';
+    // 스프레드별 특화 placeholder
+    const placeholders = {
+      heart:  '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 지금 고백하면 어떤 결과가 올까요? / 이 관계를 계속 이어가는 게 맞을까요?',
+      three:  '예: 지금 내 삶의 방향이 맞는 걸까요? / 현재 나를 가로막고 있는 것은 무엇인가요? / 이 결정을 내려도 괜찮을까요?',
+      celtic: '예: 지금 내 삶의 방향이 맞는 걸까요? / 현재 나를 가로막고 있는 것은 무엇인가요? / 이 결정을 내려도 괜찮을까요?',
+    };
+    textarea.placeholder = placeholders[appState.selectedSpread] ?? '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 올해 안에 저는 무엇을 조심해야 할까요?';
     if (hint) {
       hint.classList.remove('is-transparent');
       hint.innerHTML = '하나의 주제에 대해<br>현실적이고 구체적일수록<br>더 좋은 해석을 받을 수 있습니다<br>(<span style="color: var(--color-gold);">선택사항</span>, 최대 200자)';
@@ -624,9 +627,9 @@ async function fetchReading() {
     if (loadingState) {
       const loadingMessages = {
         one:    '타로 마스터가 카드를 읽고 있어요.<br>최대 20초 정도 걸려요.',
-        three:  '타로 마스터가 카드를 읽고 있어요.<br>최대 30초 정도 걸려요.',
-        celtic: '타로 마스터가 카드를 읽고 있어요.<br>최대 40초 정도 걸려요.',
-        heart:  '타로 마스터가 카드를 읽고 있어요.<br>최대 35초 정도 걸려요.',
+        three:  '타로 마스터가 카드를 읽고 있어요.<br>최대 35초 정도 걸려요.',
+        celtic: '타로 마스터가 카드를 읽고 있어요.<br>최대 60초 정도 걸려요.',
+        heart:  '타로 마스터가 카드를 읽고 있어요.<br>최대 50초 정도 걸려요.',
       };
       const msgEl = loadingState.querySelector('p');
       if (msgEl) {
