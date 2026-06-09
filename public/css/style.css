@@ -1542,8 +1542,9 @@ textarea::placeholder {
     padding-top: 60px;
   }
 
-  /* transform 사용 시 position:fixed 기준이 뷰포트 → 부모로 바뀌어 shuffle-info가 튀는 현상 방지 */
-  #screen-shuffle {
+  /* transform 사용 시 position:fixed/sticky 기준이 뷰포트 → 부모로 바뀌어 레이아웃이 튀는 현상 방지 */
+  #screen-shuffle,
+  #screen-reading {
     animation: fadeInOpacity 0.5s ease-in-out;
   }
 
@@ -1762,7 +1763,7 @@ textarea::placeholder {
   }
 
   #cards-display.spread-heart .card-item {
-    width: 100%;
+    width: 100% !important; /* 데스크탑 nth-child width:200px 무력화 */
     box-sizing: border-box;
     padding: 4px;
     min-width: 0;

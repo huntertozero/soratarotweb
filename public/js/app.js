@@ -217,7 +217,6 @@ function applyInputQuestionState() {
   if (!textarea) return;
 
   const isOne = appState.selectedSpread === 'one';
-  const isHeart = appState.selectedSpread === 'heart';
 
   if (isOne) {
     textarea.value = '원 카드 옵션은 별도의 질문을 입력하지 않고,\n지금 이 순간 당신에게 가장 필요한 메시지를 전달합니다.';
@@ -227,23 +226,14 @@ function applyInputQuestionState() {
     if (questionInfo) questionInfo.classList.add('is-transparent');
     if (charCount) charCount.textContent = '0';
     if (h2) h2.textContent = '마음 속 고민이 있으신가요?';
-  } else if (isHeart) {
-    textarea.value = '';
-    textarea.disabled = false;
-    textarea.classList.remove('one-card-message');
-    textarea.placeholder = '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 지금 고백하면 어떤 결과가 올까요? / 이 관계를 계속 이어가는 게 맞을까요?';
-    if (hint) {
-      hint.classList.remove('is-transparent');
-      hint.innerHTML = '연인, 짝사랑, 현재 관계 등<br>한 명의 상대에 대해 구체적으로 물어볼수록<br>더 깊은 해석을 받을 수 있습니다<br>(<span style="color: var(--color-gold);">선택사항</span>, 최대 200자)';
-    }
-    if (questionInfo) questionInfo.classList.remove('is-transparent');
-    if (charCount) charCount.textContent = '0';
-    if (h2) h2.textContent = '이 관계에 대해 무엇이 궁금하신가요?';
   } else {
     textarea.value = '';
     textarea.disabled = false;
     textarea.classList.remove('one-card-message');
-    textarea.placeholder = '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 올해 안에 저는 무엇을 조심해야 할까요?';
+    // 하트 소나: 연애·관계 특화 placeholder
+    textarea.placeholder = appState.selectedSpread === 'heart'
+      ? '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 지금 고백하면 어떤 결과가 올까요? / 이 관계를 계속 이어가는 게 맞을까요?'
+      : '예: 그 사람은 저를 생각하고 있나요? / 재회할 수 있을까요? / 올해 안에 저는 무엇을 조심해야 할까요?';
     if (hint) {
       hint.classList.remove('is-transparent');
       hint.innerHTML = '하나의 주제에 대해<br>현실적이고 구체적일수록<br>더 좋은 해석을 받을 수 있습니다<br>(<span style="color: var(--color-gold);">선택사항</span>, 최대 200자)';
@@ -610,8 +600,8 @@ function startOracleAndFetch() {
   if (loadingState) {
     loadingState.classList.add('active');
     if (window.Effects) window.Effects.startOracleAnimation();
-    // 켈틱 크로스만: 로딩 인디케이터가 화면 밖으로 밀려나므로 스크롤
-    if (appState.selectedSpread === 'celtic') {
+    // 켈틱·하트 소나: 카드 많아 로딩 인디케이터가 화면 밖으로 밀려나므로 스크롤
+    if (['celtic', 'heart'].includes(appState.selectedSpread)) {
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 100);
